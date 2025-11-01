@@ -1,0 +1,12 @@
+# AI Workspace - Personal files (never commit)
+.ai-workspace-active
+.ai-config
+.ai-backups/
+claude.md
+gemini.md
+agents.md
+codex.md
+.ai-session-*.json
+
+# Optional (comment out if you want to commit these)
+.ai-summaries/

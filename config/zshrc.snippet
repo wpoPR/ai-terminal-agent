@@ -1,0 +1,21 @@
+# ═══════════════════════════════════════════════════════════
+# AI Terminal Agent
+# ═══════════════════════════════════════════════════════════
+
+# Add ~/bin to PATH if not already present
+if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
+  export PATH="$HOME/bin:$PATH"
+fi
+
+# Aliases (optional)
+alias ais='ai-status'
+alias air='ai-recent'
+alias aih='ai-health-check'
+alias aiu='ai-update'
+
+# Auto-completion for ai-* commands (optional)
+# _ai_commands() {
+#   local commands=(start stop status recent recover health-check git-config diff export import update help)
+#   _describe 'ai commands' commands
+# }
+# compdef _ai_commands ai-start ai-stop ai-status ai-recent ai-recover ai-health-check ai-git-config ai-diff ai-export ai-import ai-update ai-help

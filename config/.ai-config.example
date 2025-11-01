@@ -1,0 +1,36 @@
+{
+  "layout": "default",
+  "splits": {
+    "claude": 0.6,
+    "gemini": 0.5,
+    "codex": 0.5
+  },
+  "flags": {
+    "claude": "--dangerously-skip-permissions",
+    "gemini": "",
+    "codex": ""
+  },
+  "primary_ai": "claude",
+  "auto_sync": true,
+  "auto_backup": true,
+  "backup": {
+    "enabled": true,
+    "retention_days": 3,
+    "max_backups_per_project": 10
+  },
+  "template": "coding-project",
+  "project_name": "My Project",
+  "summary": {
+    "mode": "auto",
+    "generator": "gemini",
+    "template": "detailed",
+    "auto_clipboard": true,
+    "save_format": "markdown"
+  },
+  "git": {
+    "commit_contexts": false,
+    "commit_config": false,
+    "commit_backups": false
+  },
+  "custom_ais": []
+}
