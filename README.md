@@ -36,6 +36,44 @@ ai-status         # Check active workspaces
 ai-help           # Full documentation
 ```
 
+### Exemplo de Workflow
+
+```
+1. cd ~/meu-projeto && ai-start
+   ↓
+   iTerm2 abre com 3 AIs em split
+
+2. Tab 1 - Claude (painel esquerdo):
+   "Analise este projeto e crie .ai-context/project-status.md"
+   ↓
+   Claude cria resumo com: objetivo, progresso, próximos passos
+
+3. Tab 1 - Gemini (painel superior direito):
+   "Leia .ai-context/project-status.md"
+   "Pesquise melhores bibliotecas JWT para Node.js"
+   ↓
+   Gemini pesquisa e recomenda
+
+4. Tab 1 - Codex (painel inferior direito):
+   "/init"
+   "Leia .ai-context/project-status.md"
+   "Implemente middleware JWT"
+   ↓
+   Codex escreve o código
+
+5. Tab 1 - Claude (revisão):
+   "Revise o código de auth criado pelo Codex"
+   ↓
+   Claude valida e sugere melhorias
+
+6. Tab 2 - Control Console:
+   ai-status  # Ver progresso
+   ↓
+   ai-stop    # Gera resumo do dia
+```
+
+**Resultado:** Cada AI fez o que faz melhor, compartilhando contexto via `.ai-context/`
+
 ## 📋 Prerequisites
 
 - **macOS** (tested on 14+)
@@ -47,8 +85,17 @@ ai-help           # Full documentation
 
 ## 📚 Documentation
 
-- [Installation Guide](docs/installation.md) - Detailed installation steps
-- [Usage Guide](docs/usage.md) - How to use all commands
+### Getting Started
+- 🚀 **[Quick Reference](docs/quick-reference.md)** - Cheatsheet e comandos essenciais
+- 📖 [Installation Guide](docs/installation.md) - Detailed installation steps
+- 💡 [Usage Guide](docs/usage.md) - How to use all commands
+
+### Workflows
+- 🔍 **[Analyzing Existing Projects](docs/workflows/analyzing-existing-project.md)** - Como usar os 3 AIs em conjunto
+- 🎯 Cenários práticos: bugs, features, refactoring, deploy, etc
+- 💬 Como compartilhar contexto entre Claude, Gemini e Codex
+
+### Advanced
 - [Configuration](docs/configuration.md) - Configure your workspace
 - [Architecture](docs/architecture.md) - How it works internally
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
