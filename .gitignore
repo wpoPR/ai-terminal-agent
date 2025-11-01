@@ -1,0 +1,46 @@
+# AI Terminal Agent - Repository .gitignore
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Logs e temporários
+*.log
+tmp/
+temp/
+*.tmp
+
+# Não versionar configs locais do dev
+config.local.json
+
+# Não versionar testes locais
+tests/local/
+tests/*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+
+# Node (se houver)
+node_modules/
+
+# Python (se houver)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Não ignorar (manter versionado):
+# !bin/*.sh           # Scripts principais
+# !templates/*.md     # Templates
+# !config/*.example   # Exemplos
+# !config/*.template  # Templates de config
+# !docs/*.md          # Documentação
