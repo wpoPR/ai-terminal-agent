@@ -144,6 +144,7 @@ create_symlinks() {
     "ai-git-config.sh:ai-git-config"
     "ai-export.sh:ai-export"
     "ai-import.sh:ai-import"
+    "ai-tips.sh:ai-tips"
     "generate-daily-summary.sh:generate-daily-summary"
   )
 

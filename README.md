@@ -33,6 +33,7 @@ cd ~/your-project
 ai-start          # Launch workspace
 ai-stop           # Close with summary
 ai-status         # Check active workspaces
+ai-tips           # Quick tips and AI division of work
 ai-help           # Full documentation
 ```
 
@@ -115,6 +116,12 @@ ai-stop --no-summary      # Close without summary
 ai-status                 # Show active workspaces
 ai-recent                 # List recent workspaces
 ai-recover                # Recover from crashes
+
+# Quick reference
+ai-tips                   # Show quick tips and AI usage
+ai-tips division          # Show AI division of work
+ai-tips examples          # Show practical examples
+ai-tips dicas             # Show important tips
 
 # Configuration
 ai-git-config             # Manage git global ignore

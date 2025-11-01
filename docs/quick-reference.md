@@ -20,6 +20,7 @@ iTerm2 abrirá com:
 | `ai-start` | Inicia workspace no projeto atual |
 | `ai-stop` | Fecha workspace e gera resumo |
 | `ai-status` | Mostra workspaces ativos |
+| `ai-tips` | Quick tips: divisão de trabalho, exemplos, dicas |
 | `ai-help` | Ajuda completa |
 
 ---
