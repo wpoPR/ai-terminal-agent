@@ -1,0 +1,12 @@
+{
+  "name": "research",
+  "display_name": "Research & Investigation",
+  "description": "Pesquisa, investigação e análise de performance",
+  "agents": [
+    "gemini-research-assistant",
+    "search-specialist",
+    "performance-engineer"
+  ],
+  "estimated_tokens": 8600
+}
+

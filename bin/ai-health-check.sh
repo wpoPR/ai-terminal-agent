@@ -46,7 +46,6 @@ fi
 
 # iTerm2
 if [[ -d "/Applications/iTerm.app" ]]; then
-  local iterm_version=$(/Applications/iTerm.app/Contents/MacOS/iTerm2 --version 2>/dev/null | head -n1 || echo "unknown")
   check_pass "iTerm2 installed"
 else
   check_warn "iTerm2 not found at /Applications/iTerm.app"
@@ -72,7 +71,6 @@ echo "AI CLIs:"
 
 # Claude
 if command -v claude &> /dev/null; then
-  local claude_version=$(claude --version 2>/dev/null | head -n1 || echo "unknown")
   check_pass "Claude CLI installed"
 
   # Check if authenticated
@@ -106,7 +104,7 @@ echo "Git Configuration:"
 
 # Global ignore
 if git config --global core.excludesfile &> /dev/null; then
-  local excludefile=$(git config --global core.excludesfile)
+  excludefile=$(git config --global core.excludesfile)
   check_pass "Git global ignore configured"
 
   if [[ -f "$excludefile" ]]; then
@@ -139,7 +137,7 @@ else
 fi
 
 if [[ -d "$HOME/templates/ai-contexts" ]]; then
-  local template_count=$(ls -1 "$HOME/templates/ai-contexts"/*.md 2>/dev/null | wc -l | tr -d ' ')
+  template_count=$(ls -1 "$HOME/templates/ai-contexts"/*.md 2>/dev/null | wc -l | tr -d ' ')
   check_pass "Templates installed ($template_count templates)"
 else
   check_warn "Templates directory not found"
@@ -154,10 +152,10 @@ if [[ -d "$HOME/bin" ]]; then
   check_pass "~/bin/ directory exists"
 
   # Check key scripts
-  local scripts=("ai-start" "ai-stop" "ai-status" "ai-help")
+  scripts=("ai-start" "ai-stop" "ai-status" "ai-help")
   for script in "${scripts[@]}"; do
     if [[ -L "$HOME/bin/$script" ]]; then
-      local target=$(readlink "$HOME/bin/$script")
+      target=$(readlink "$HOME/bin/$script")
       if [[ -f "$target" ]]; then
         check_pass "$script symlink valid"
       else
@@ -186,7 +184,7 @@ echo ""
 echo "Repository:"
 
 if [[ -f "$HOME/.ai-workspace/config.json" ]]; then
-  local repo_path=$(jq -r '.repo_path' "$HOME/.ai-workspace/config.json" 2>/dev/null || echo "")
+  repo_path=$(jq -r '.repo_path' "$HOME/.ai-workspace/config.json" 2>/dev/null || echo "")
 
   if [[ -d "$repo_path" ]]; then
     check_pass "Repository found at: $repo_path"

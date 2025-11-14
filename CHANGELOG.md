@@ -5,6 +5,145 @@ All notable changes to AI Terminal Agent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-11-13
+
+### Added
+- **Workspace Manager Agent**: New meta-agent that knows the entire ai-terminal-agent system
+  - Expert in agent management and optimization
+  - Reference for all 45 agents and their capabilities
+  - Task-to-agent mapping guide
+  - Multi-AI coordination strategies
+  - Performance optimization guidelines
+- **ai-agents-activate**: New command for mechanical agent activation
+  - Simple file copier (no analysis logic)
+  - Designed to be called by Gemini after intelligent analysis
+  - Accepts space-separated agent list
+  - Supports --profile and --list options
+  - Auto-updates .ai-config
+
+### Architecture
+- **Intelligent Analysis Layer**: Gemini reads workspace-manager.md and analyzes tasks
+- **Mechanical Execution Layer**: ai-agents-activate just copies files
+- **Separation of Concerns**: AI does thinking, script does copying
+- **Cost Optimization**: 70-80% token savings vs Claude analyzing
+
+### Features
+- Gemini can intelligently select agents based on task analysis
+- Claude receives pre-selected agents (no restart needed!)
+- Workspace-manager.md serves as knowledge base for all AIs
+- Intelligent task-to-profile mapping
+- Automatic performance monitoring guidelines
+- Context-aware agent selection strategies
+
+## [1.2.1] - 2024-11-13
+
+### Fixed
+- **Agent Setup Menu**: Menu now displays properly during `ai-start` interactive setup
+- **ai-context-init**: Fixed symlink resolution to find templates directory correctly
+- **ai-context-init**: Fixed color codes in output messages
+- Improved descriptions for each profile option
+- Better UX for profile selection with clear descriptions
+- Fixed profile combination option to work correctly
+
+### Improved
+- More descriptive profile names in interactive menu
+- Added "Opções especiais" section for better visibility
+- Clearer instructions for combining profiles
+
+## [1.2.0] - 2024-11-13
+
+### Added
+- **AI Context Structure Initialization**: New `ai-context-init` command
+- **Context Templates**: 5 pre-defined templates for shared AI context
+  - `project-status.md` - Project overview and current state
+  - `current-task.md` - Active task tracking with implementation plan
+  - `decisions.md` - Technical decisions log (ADR style)
+  - `known-issues.md` - Bugs, limitations, and technical debt
+  - `roadmap.md` - Future plans and milestones
+- **Initial Prompts**: Auto-generated initialization prompts for Claude, Gemini, and Codex
+- **Context README**: Comprehensive guide for using .ai-context/ structure
+
+### Commands
+- `ai-context-init` - Initialize .ai-context/ structure with templates
+- `ai-context-init --with-prompts` - Include AI initialization prompts
+- `ai-context-init --minimal` - Create minimal structure only
+- `ai-context-init --force` - Overwrite existing files
+
+### Documentation
+- New section in README about AI Context Structure
+- Step-by-step guide for initializing and using context files
+- Best practices for context sharing between AIs
+
+### Benefits
+- **Organized Context**: Standardized structure for all projects
+- **Less Repetition**: AIs read shared context instead of re-explaining
+- **Better Continuity**: AIs build on each other's work
+- **Documentation**: Automatic documentation of decisions and progress
+
+## [1.1.1] - 2024-11-13
+
+### Added
+- **Context Sharing Documentation**: New `ai-tips sharing` command explains how AIs share context
+- **Agent System Explainer**: New `ai-agents explain` command provides comprehensive guide to agent management
+- Enhanced agent management documentation in all tips and help sections
+
+### Improved
+- `ai-tips` now includes "sharing" section explaining context files between AIs
+- Better visibility of which files Claude, Gemini, and Codex can read
+- More detailed explanation of CLAUDE.md files (global vs project-specific)
+- Clearer documentation of `.ai-context/`, `.claude/agents/`, and `definitions.md` roles
+
+### Documentation
+- Added context sharing guide to `ai-tips`
+- Enhanced help sections with agent system references
+- Updated README with new commands
+
+## [1.1.0] - 2024-11-13
+
+### Added
+- **Dynamic Agent Management System**: Complete overhaul of Claude agent loading
+- **Agent Profiles**: 11 pre-defined profiles (frontend, backend, fullstack, mobile, devops, data, ai-ml, security, docs, research, minimal)
+- **Token Optimization**: Reduced token usage from ~34k to ~8-12k (60-70% reduction)
+- **Global Agent Library**: 45 specialized agents available system-wide
+- **Project-Based Agent Activation**: Only load agents relevant to current project
+- **New CLAUDE.md Structure**: 
+  - Global `~/.claude/CLAUDE.md` with dynamic agent system instructions
+  - Project-specific `CLAUDE.md` template with active agent list
+  - `definitions.md` as comprehensive agent reference
+
+### Commands
+- `ai-agents list` - List all available agents
+- `ai-agents active` - Show active agents in current project
+- `ai-agents enable <name>` - Enable specific agent
+- `ai-agents disable <name>` - Disable specific agent
+- `ai-agents profile list` - List available profiles
+- `ai-agents profile <name>` - Activate agent profile
+- `ai-agents profile <p1>+<p2>` - Combine multiple profiles
+- `ai-agents stats` - Show detailed token statistics
+- `ai-agents suggest` - Suggest profile based on project
+- `ai-agents doctor` - Run diagnostics
+- `ai-agents info <name>` - Show agent information
+- `ai-agents update` - Update agent library
+- `ai-agents reset` - Reset to minimal profile
+- `ai-agents search <keyword>` - Search agents by keyword
+
+### Scripts
+- `bin/ai-agents.sh` - Main agent management script
+- `bin/ai-agents-setup-interactive.sh` - Interactive profile selection
+- `bin/generate-agent-index.sh` - Generate agent metadata
+- `bin/generate-project-claude.sh` - Generate project-specific CLAUDE.md
+
+### Improved
+- `ai-start` now includes interactive agent profile selection
+- `ai-status` displays active agents, profile, and token usage
+- Enhanced installation process with automatic agent library setup
+
+### Documentation
+- New `docs/agent-management.md` with comprehensive guide
+- New `docs/claude-configuration.md` explaining CLAUDE.md structure
+- New `config/CLAUDE-migration-note.md` with migration information
+- Updated README with agent management section
+
 ## [1.0.0] - 2024-11-01
 
 ### Added
@@ -67,13 +206,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Easy portability between machines
 - Comprehensive inline documentation
 
+## [1.1.0] - 2025-01-13
+
+### Added
+- **Agent Management System**: Complete dynamic agent management
+  - 45 agents in global library (`~/.ai-workspace/agents/`)
+  - 11 pre-defined profiles (frontend, backend, fullstack, mobile, devops, data, ai-ml, security, docs, research, minimal)
+  - Interactive menu during `ai-start` for first-time setup
+  - Token tracking and statistics (~34k → ~8-12k tokens reduction)
+  - `ai-agents` command with multiple subcommands:
+    - `list` - List all available agents
+    - `active` - Show active agents in project
+    - `enable/disable` - Manage individual agents
+    - `profile` - Activate profiles (supports combining with `+`)
+    - `stats` - Detailed token statistics
+    - `suggest` - Intelligent profile suggestion based on project
+    - `doctor` - System diagnostics
+    - `search` - Search agents by keyword
+    - `info` - Agent details
+    - `update` - Update agent library
+  - Automatic profile detection and loading on `ai-start`
+  - Profile combination support (e.g., `frontend+security`)
+  - Smart project analysis for profile suggestions
+- Agent information in `ai-status` command
+- New documentation: `docs/agent-management.md` (comprehensive guide)
+- Agent profiles configuration in `config/agent-profiles/`
+- Agent index generation script for metadata
+
+### Changed
+- Updated `install.sh` to setup agent library and profiles during installation
+- Enhanced `ai-workspace-launcher.sh` with agent configuration workflow
+- Updated `ai-status.sh` to display agent statistics and token usage
+- Extended `.ai-config.example` with agents configuration section
+- Updated `README.md` with agent management information and Quick Start
+- Improved performance by reducing active agent tokens by 60-70%
+
+### Technical Details
+- Agents copied to `.claude/agents/` per project (project-specific)
+- JSON-based profile configuration system
+- Automatic token calculation (1 token ≈ 4 characters)
+- jq-based configuration management
+- Interactive menu with 11 profile options
+- Support for combined profiles with union of agents
+- Duplicate agent removal in combined profiles
+
 ## [Unreleased]
 
-### Planned for v1.1
+### Planned for v1.2
 - Improved error messages
 - Additional template types
 - Performance optimizations
 - Enhanced daily summary formats
+- Custom agent creation wizard
 
 ### Planned for v2.0
 - `ai-uninstall` - Clean uninstallation script

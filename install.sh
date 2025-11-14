@@ -145,6 +145,11 @@ create_symlinks() {
     "ai-export.sh:ai-export"
     "ai-import.sh:ai-import"
     "ai-tips.sh:ai-tips"
+    "ai-agents.sh:ai-agents"
+    "ai-agents-setup-interactive.sh:ai-agents-setup-interactive"
+    "ai-agents-activate.sh:ai-agents-activate"
+    "ai-context-init.sh:ai-context-init"
+    "generate-project-claude.sh:generate-project-claude"
     "generate-daily-summary.sh:generate-daily-summary"
   )
 
@@ -182,7 +187,56 @@ install_templates() {
   echo ""
 }
 
-# 7. Configure Git Global Ignore
+# 7. Setup Agent Management System
+setup_agents() {
+  echo "🤖 Setting up Agent Management System..."
+  
+  local agents_dir="$WORKSPACE_DIR/agents"
+  local profiles_dir="$WORKSPACE_DIR/agent-profiles"
+  
+  # Create directories
+  mkdir -p "$agents_dir"
+  mkdir -p "$profiles_dir"
+  
+  # Copy agents from agents-list/ to global library
+  if [[ -d "$REPO_DIR/agents-list" ]]; then
+    cp -r "$REPO_DIR/agents-list/"*.md "$agents_dir/" 2>/dev/null || true
+    local agent_count=$(find "$agents_dir" -name "*.md" -type f | wc -l | tr -d ' ')
+    print_success "Copied $agent_count agents to library"
+  else
+    print_warning "agents-list/ not found, skipping agent copy"
+  fi
+  
+  # Copy agent profiles
+  if [[ -d "$REPO_DIR/config/agent-profiles" ]]; then
+    cp -r "$REPO_DIR/config/agent-profiles/"*.json "$profiles_dir/" 2>/dev/null || true
+    local profile_count=$(find "$profiles_dir" -name "*.json" -type f | wc -l | tr -d ' ')
+    print_success "Installed $profile_count agent profiles"
+  else
+    print_warning "config/agent-profiles/ not found, skipping profiles"
+  fi
+  
+  # Generate agent index
+  if [[ -x "$REPO_DIR/bin/generate-agent-index.sh" ]] && [[ -d "$agents_dir" ]]; then
+    "$REPO_DIR/bin/generate-agent-index.sh" "$agents_dir" "$WORKSPACE_DIR/agent-index.json" > /dev/null 2>&1 || true
+    if [[ -f "$WORKSPACE_DIR/agent-index.json" ]]; then
+      print_success "Generated agent index"
+    fi
+  fi
+  
+  # Setup global CLAUDE.md
+  local claude_dir="$HOME/.claude"
+  mkdir -p "$claude_dir"
+  
+  if [[ -f "$REPO_DIR/templates/claude-global.md" ]]; then
+    cp "$REPO_DIR/templates/claude-global.md" "$claude_dir/CLAUDE.md"
+    print_success "Configured global CLAUDE.md"
+  fi
+  
+  echo ""
+}
+
+# 8. Configure Git Global Ignore
 setup_git_ignore() {
   echo "📦 Configuring Git global ignore..."
 
@@ -288,6 +342,7 @@ main() {
   create_directories
   create_symlinks
   install_templates
+  setup_agents
   setup_git_ignore
   update_zshrc
   save_repo_location

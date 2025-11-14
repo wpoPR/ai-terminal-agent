@@ -1,0 +1,13 @@
+{
+  "name": "frontend",
+  "display_name": "Frontend Development",
+  "description": "Desenvolvimento frontend com React/Next.js e design",
+  "agents": [
+    "frontend-developer",
+    "frontend-security-coder",
+    "ui-ux-designer",
+    "code-reviewer"
+  ],
+  "estimated_tokens": 10400
+}
+

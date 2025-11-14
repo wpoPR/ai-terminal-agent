@@ -121,6 +121,46 @@ show_context_structure() {
   echo ""
 }
 
+show_context_sharing() {
+  echo -e "${BOLD}${CYAN}🔄 Compartilhamento de Contexto${NC}"
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+
+  echo -e "${BOLD}Arquivos que os AIs compartilham:${NC}"
+  echo ""
+  
+  echo -e "${GREEN}1. Contexto Compartilhado (.ai-context/)${NC}"
+  echo "   • Todos os AIs podem ler e escrever"
+  echo "   • Use para compartilhar informações entre AIs"
+  echo "   • Exemplos: project-status.md, decisions.md"
+  echo ""
+
+  echo -e "${GREEN}2. Agentes Ativos (.claude/agents/)${NC}"
+  echo "   • Apenas Claude Code lê automaticamente"
+  echo "   • Agentes especializados por projeto"
+  echo "   • Gerenciado via: ai-agents"
+  echo ""
+
+  echo -e "${GREEN}3. Configuração Global${NC}"
+  echo "   • ${CYAN}~/.claude/CLAUDE.md${NC} - Instruções globais para Claude"
+  echo "   • ${CYAN}definitions.md${NC} - Referência completa de agentes"
+  echo ""
+
+  echo -e "${BOLD}Como funcionam os agentes:${NC}"
+  echo ""
+  echo "  Claude Code (você) lê:"
+  echo "  ├── ${CYAN}~/.claude/CLAUDE.md${NC} (regras globais)"
+  echo "  ├── ${CYAN}.claude/agents/*.md${NC} (agentes ativos do projeto)"
+  echo "  └── ${CYAN}CLAUDE.md${NC} (contexto do projeto, se existir)"
+  echo ""
+
+  echo -e "${CYAN}💡 Comandos úteis:${NC}"
+  echo "  ${GREEN}ai-agents active${NC}    - Ver quais agentes estão ativos"
+  echo "  ${GREEN}ai-agents explain${NC}   - Explicar sistema de agentes"
+  echo "  ${GREEN}ai-status${NC}           - Ver agentes + tokens usados"
+  echo ""
+}
+
 show_quick_start() {
   echo -e "${BOLD}${CYAN}🚀 Quick Start para Projeto Existente${NC}"
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -159,10 +199,16 @@ show_footer() {
   echo "  cat ~/workspace/primavera/ai-terminal-agent/docs/quick-reference.md"
   echo ""
   echo -e "${CYAN}💡 Comandos úteis:${NC}"
-  echo "  ai-tips division  - Mostrar divisão de trabalho"
-  echo "  ai-tips examples  - Mostrar exemplos práticos"
-  echo "  ai-tips dicas     - Mostrar dicas"
+  echo "  ai-tips division   - Mostrar divisão de trabalho"
+  echo "  ai-tips examples   - Mostrar exemplos práticos"
+  echo "  ai-tips dicas      - Mostrar dicas"
+  echo "  ai-tips sharing    - Como AIs compartilham contexto"
   echo "  ai-tips quickstart - Quick start para projeto existente"
+  echo ""
+  echo -e "${CYAN}🤖 Sistema de Agentes:${NC}"
+  echo "  ai-agents active   - Ver agentes ativos"
+  echo "  ai-agents explain  - Explicar sistema de agentes"
+  echo "  ai-agents help     - Ajuda completa"
   echo ""
 }
 
@@ -201,6 +247,12 @@ case "$SECTION" in
     show_footer
     ;;
 
+  sharing|compartilhamento|share)
+    show_header
+    show_context_sharing
+    show_footer
+    ;;
+
   quickstart|start|inicio)
     show_header
     show_quick_start
@@ -215,6 +267,7 @@ case "$SECTION" in
     echo "  ai-tips examples     - Exemplos práticos"
     echo "  ai-tips dicas        - Dicas importantes"
     echo "  ai-tips context      - Estrutura do .ai-context/"
+    echo "  ai-tips sharing      - Como AIs compartilham contexto"
     echo "  ai-tips quickstart   - Quick start para projeto existente"
     echo ""
     ;;
@@ -223,7 +276,7 @@ case "$SECTION" in
     echo -e "${YELLOW}⚠${NC}  Seção desconhecida: $SECTION"
     echo ""
     echo "Seções disponíveis:"
-    echo "  all, division, examples, dicas, context, quickstart"
+    echo "  all, division, examples, dicas, context, sharing, quickstart"
     echo ""
     echo "Use: ai-tips help"
     exit 1

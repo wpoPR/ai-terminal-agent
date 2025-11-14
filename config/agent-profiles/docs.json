@@ -1,0 +1,13 @@
+{
+  "name": "docs",
+  "display_name": "Documentation",
+  "description": "Documentação técnica, APIs e tutoriais",
+  "agents": [
+    "docs-architect",
+    "api-documenter",
+    "tutorial-engineer",
+    "mermaid-diagram-expert"
+  ],
+  "estimated_tokens": 10800
+}
+

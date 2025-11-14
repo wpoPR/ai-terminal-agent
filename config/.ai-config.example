@@ -32,5 +32,11 @@
     "commit_config": false,
     "commit_backups": false
   },
+  "agents": {
+    "profile": "fullstack",
+    "enabled": ["frontend-developer", "backend-architect", "database-architect", "code-reviewer"],
+    "auto_update": true,
+    "token_limit": 15000
+  },
   "custom_ais": []
 }

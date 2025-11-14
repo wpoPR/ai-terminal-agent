@@ -5,6 +5,7 @@ Sistema completo para gerenciar workspaces AI (Claude, Gemini, Codex) no iTerm2.
 ## ✨ Features
 
 - 🚀 **One-command workspace**: `ai-start` para abrir layout completo
+- 🤖 **Agent Management**: Sistema dinâmico de agentes com perfis pré-definidos
 - 🔄 **Context sync**: Sincroniza contextos entre AIs automaticamente
 - 📊 **Daily summaries**: Relatório agregado gerado por Gemini (free!)
 - 💾 **Auto backup**: Retenção de 3 dias
@@ -113,19 +114,33 @@ ai-stop                   # Close workspace with summary
 ai-stop --no-summary      # Close without summary
 
 # Status and history
-ai-status                 # Show active workspaces
+ai-status                 # Show active workspaces and agents
 ai-recent                 # List recent workspaces
 ai-recover                # Recover from crashes
+
+# Agent Management (NEW!)
+ai-agents list            # List all available agents
+ai-agents active          # Show active agents in project
+ai-agents profile list    # List available profiles
+ai-agents profile <name>  # Activate agent profile
+ai-agents enable <name>   # Enable specific agent
+ai-agents disable <name>  # Disable specific agent
+ai-agents stats           # Show detailed token statistics
+ai-agents suggest         # Suggest profile based on project
+ai-agents doctor          # Run diagnostics
+ai-agents explain         # Explain agent system
 
 # Quick reference
 ai-tips                   # Show quick tips and AI usage
 ai-tips division          # Show AI division of work
 ai-tips examples          # Show practical examples
+ai-tips sharing           # Context sharing between AIs
 ai-tips dicas             # Show important tips
 
 # Configuration
 ai-git-config             # Manage git global ignore
 ai-health-check           # Verify installation
+ai-context-init           # Initialize .ai-context/ structure
 ai-help [command]         # Show help
 
 # Maintenance
@@ -133,6 +148,133 @@ ai-update                 # Update from git
 ai-export [file]          # Export configuration
 ai-import [file]          # Import configuration
 ```
+
+## 🤖 Agent Management
+
+O sistema de agentes permite que você ative apenas os agentes especializados que precisa, reduzindo o uso de tokens de ~34k para ~8-12k.
+
+### Perfis Disponíveis
+
+- **frontend** (4 agentes) - React/Next.js, UI/UX, segurança frontend
+- **backend** (4 agentes) - APIs, arquitetura backend, segurança
+- **fullstack** (4 agentes) - Frontend + Backend + Database
+- **mobile** (3 agentes) - Desenvolvimento mobile
+- **devops** (5 agentes) - Kubernetes, Terraform, deployment
+- **data** (4 agentes) - Engenharia de dados, analytics
+- **ai-ml** (4 agentes) - AI/ML, MLOps, prompts
+- **security** (4 agentes) - Auditoria e segurança
+- **docs** (4 agentes) - Documentação e tutoriais
+- **research** (3 agentes) - Pesquisa e performance
+- **minimal** (2 agentes) - Apenas code review
+
+### Quick Start
+
+```bash
+# Durante ai-start, escolha um perfil interativamente
+cd ~/meu-projeto
+ai-start
+
+# Ou ative manualmente depois
+ai-agents profile fullstack
+
+# Adicionar/remover agentes individuais
+ai-agents enable test-automator
+ai-agents disable frontend-security-coder
+
+# Combinar perfis
+ai-agents profile frontend+security
+
+# Ver estatísticas
+ai-agents stats
+
+# Sugestão automática baseada no projeto
+ai-agents suggest
+```
+
+### Como Funciona
+
+1. **Biblioteca Global**: 45+ agentes em `~/.ai-workspace/agents/`
+2. **Agentes Ativos**: Cópias em `.claude/agents/` por projeto
+3. **Perfis**: Combinações pré-definidas de agentes
+4. **Token Tracking**: Monitoramento automático de uso
+5. **Auto-Otimização**: Meta-agente workspace-manager pode auto-gerenciar configuração
+
+### 🤖 Workspace Manager (NEW!)
+
+Um meta-agente especialista no próprio ai-terminal-agent que pode:
+- ✅ Analisar tarefas e sugerir perfis de agentes ideais
+- ✅ Monitorar uso de tokens e otimizar automaticamente
+- ✅ Coordenar workflows entre Claude, Gemini e Codex
+- ✅ Detectar problemas de performance proativamente
+- ✅ Sugerir mudanças de configuração com justificativa
+
+**Uso:**
+```bash
+ai-agents enable workspace-manager
+
+# No Claude:
+"Analise a tarefa atual e sugira a configuração
+ideal de agentes para otimizar o trabalho"
+```
+
+Para mais detalhes, veja [Agent Management Guide](docs/agent-management.md)
+
+## 📂 AI Context Structure
+
+A estrutura `.ai-context/` permite compartilhar informações entre Claude, Gemini e Codex de forma organizada.
+
+### Inicialização Rápida
+
+```bash
+cd ~/meu-projeto
+ai-context-init --with-prompts
+```
+
+### Estrutura Criada
+
+```
+.ai-context/
+├── project-status.md     # Status geral do projeto
+├── current-task.md       # Tarefa atual
+├── decisions.md          # Decisões técnicas (ADR)
+├── known-issues.md       # Bugs e limitações
+├── roadmap.md            # Próximos passos
+└── README.md             # Guia de uso
+```
+
+### Como Usar
+
+**1. Inicialize a Estrutura**
+```bash
+ai-context-init --with-prompts  # Cria estrutura + prompts iniciais
+```
+
+**2. No Claude** (após `ai-start`)
+```bash
+cat .ai-context/initial-prompts/claude-init.md
+# Copie e execute o prompt
+```
+
+**3. No Gemini**
+```bash
+cat .ai-context/initial-prompts/gemini-init.md
+# Copie e execute o prompt
+```
+
+**4. No Codex**
+```bash
+cat .ai-context/initial-prompts/codex-init.md
+# Copie e execute o prompt
+```
+
+### Benefícios
+
+- **Contexto Compartilhado**: Todas as IAs leem os mesmos arquivos
+- **Menos Repetição**: Não precisa explicar o projeto toda vez
+- **Continuidade**: IAs trabalham com base no que outras fizeram
+- **Organização**: Decisões e progresso documentados
+
+Para mais detalhes: `ai-tips sharing`
 
 ## 🛠️ Development
 

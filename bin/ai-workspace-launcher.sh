@@ -68,8 +68,75 @@ if [[ "$CONTEXT_EXISTS" == "false" ]]; then
   fi
 fi
 
-# Create backup
+# Setup agents if needed
 echo ""
+if [[ ! -f ".ai-config" ]]; then
+  # No config yet - run interactive setup
+  echo "🤖 Agent Setup..."
+  echo ""
+  
+  if [[ -x "$HOME/bin/ai-agents-setup-interactive" ]]; then
+    "$HOME/bin/ai-agents-setup-interactive"
+  elif [[ -x "$(dirname "$0")/ai-agents-setup-interactive.sh" ]]; then
+    "$(dirname "$0")/ai-agents-setup-interactive.sh"
+  else
+    echo -e "${YELLOW}⚠${NC}  Interactive agent setup not available"
+    echo -e "${BLUE}ℹ${NC}  Use 'ai-agents profile <name>' to configure later"
+  fi
+  echo ""
+else
+  # Config exists - check if agents are configured
+  if command -v jq &> /dev/null; then
+    HAS_AGENTS=$(jq 'has("agents")' .ai-config 2>/dev/null || echo "false")
+    
+    if [[ "$HAS_AGENTS" == "false" ]]; then
+      # Old config without agents - offer to configure
+      echo "🤖 Agent configuration not found"
+      echo ""
+      read -p "Configure agents now? (y/n): " -r -n 1
+      echo ""
+      
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if [[ -x "$HOME/bin/ai-agents-setup-interactive" ]]; then
+          "$HOME/bin/ai-agents-setup-interactive"
+        fi
+      else
+        echo -e "${BLUE}ℹ${NC}  Use 'ai-agents profile <name>' to configure later"
+      fi
+      echo ""
+    else
+      # Agents configured - apply profile
+      PROFILE=$(jq -r '.agents.profile // "none"' .ai-config 2>/dev/null || echo "none")
+      
+      if [[ "$PROFILE" != "none" ]] && [[ -n "$PROFILE" ]]; then
+        echo "🤖 Loading agent profile: $PROFILE"
+        
+        if command -v ai-agents &> /dev/null; then
+          # Re-apply profile to ensure agents are copied
+          AGENTS_LIB="$WORKSPACE_DIR/agents"
+          AGENTS_DIR=".claude/agents"
+          
+          mkdir -p "$AGENTS_DIR"
+          
+          # Get agents from config
+          ENABLED_AGENTS=($(jq -r '.agents.enabled[]? // empty' .ai-config 2>/dev/null))
+          
+          if [[ ${#ENABLED_AGENTS[@]} -gt 0 ]]; then
+            for agent in "${ENABLED_AGENTS[@]}"; do
+              if [[ -f "$AGENTS_LIB/${agent}.md" ]] && [[ ! -f "$AGENTS_DIR/${agent}.md" ]]; then
+                cp "$AGENTS_LIB/${agent}.md" "$AGENTS_DIR/" 2>/dev/null || true
+              fi
+            done
+            echo -e "${GREEN}✓${NC} ${#ENABLED_AGENTS[@]} agent(s) loaded"
+          fi
+        fi
+        echo ""
+      fi
+    fi
+  fi
+fi
+
+# Create backup
 echo "📦 Creating backup..."
 mkdir -p "$WORKSPACE_DIR/backups/$(basename "$PROJECT_DIR")"
 for file in claude.md gemini.md agents.md codex.md; do

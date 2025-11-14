@@ -1,0 +1,13 @@
+{
+  "name": "ai-ml",
+  "display_name": "AI & Machine Learning",
+  "description": "Desenvolvimento e deployment de modelos AI/ML",
+  "agents": [
+    "ai-engineer",
+    "ml-production-engineer",
+    "mlops-engineer",
+    "prompt-engineer"
+  ],
+  "estimated_tokens": 12400
+}
+
