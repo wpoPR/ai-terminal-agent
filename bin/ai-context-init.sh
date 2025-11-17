@@ -126,6 +126,7 @@ FILES=(
   "decisions.md"
   "known-issues.md"
   "roadmap.md"
+  "agents-reference.md"
 )
 
 if [[ "$MINIMAL" == "true" ]]; then
@@ -162,6 +163,7 @@ This directory contains shared context files for AI assistants (Claude, Gemini, 
 - **decisions.md** - Technical decisions and architecture choices (ADR style)
 - **known-issues.md** - Bugs, limitations, and technical debt
 - **roadmap.md** - Future plans, milestones, and feature roadmap
+- **agents-reference.md** - Quick reference of all 45 available agents (for Gemini analysis)
 
 ## 🤖 Usage by AIs
 
@@ -176,16 +178,23 @@ This directory contains shared context files for AI assistants (Claude, Gemini, 
 - Architectural changes
 - Code reviews
 
-### Gemini (Research & Documentation)
+### Gemini (Research & Agent Selection)
 **Read before:**
 - Researching libraries
-- Writing documentation
+- Writing documentation  
 - Comparing approaches
+- **ANALYZING TASKS FOR AGENT SELECTION** ← Most important!
+
+**For Agent Selection:**
+1. Read **agents-reference.md** to know all 45 available agents
+2. Read **current-task.md** to understand the task
+3. Analyze which domains are involved
+4. Execute: `ai-agents-activate <agent1> <agent2> ...`
 
 **Update after:**
 - Research completed
 - Documentation written
-- Decisions researched
+- Agents activated
 
 ### Codex (Implementation)
 **Read before:**
@@ -223,6 +232,24 @@ This directory contains shared context files for AI assistants (Claude, Gemini, 
 - Update dates when making changes
 - Link related files and decisions
 - Be specific about what changed and why
+
+## 🤖 Agent Selection (Gemini)
+
+**Gemini's special role:** Analyzing tasks and activating optimal agents
+
+1. **Read** `.ai-context/agents-reference.md` (knows all 45 agents)
+2. **Read** `.ai-context/current-task.md` (understands task)
+3. **Analyze** which domains involved (frontend, backend, etc)
+4. **Execute** `ai-agents-activate <agent1> <agent2> ...`
+5. **Report** which agents activated and why
+
+**Why Gemini?** Saves 70-80% tokens vs Claude analyzing!
+
+**Example prompt:**
+```
+Read .ai-context/agents-reference.md and .ai-context/current-task.md,
+analyze the task domains, and execute: ai-agents-activate <agents>
+```
 
 ---
 
