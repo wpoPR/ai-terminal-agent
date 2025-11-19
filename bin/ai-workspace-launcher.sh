@@ -136,6 +136,38 @@ else
   fi
 fi
 
+# Generate AI configuration files
+echo "📝 Generating AI configurations..."
+
+# Claude
+if command -v generate-project-claude &> /dev/null; then
+  generate-project-claude .claude/claude.md 2>/dev/null && {
+    echo -e "${GREEN}✓${NC} Claude configuration generated"
+  } || {
+    echo -e "${YELLOW}⚠${NC}  Could not generate Claude configuration"
+  }
+fi
+
+# Gemini
+if command -v generate-project-gemini &> /dev/null; then
+  generate-project-gemini Gemini.md 2>/dev/null && {
+    echo -e "${GREEN}✓${NC} Gemini configuration generated"
+  } || {
+    echo -e "${YELLOW}⚠${NC}  Could not generate Gemini configuration"
+  }
+fi
+
+# Codex
+if command -v generate-project-codex &> /dev/null; then
+  generate-project-codex Codex.md 2>/dev/null && {
+    echo -e "${GREEN}✓${NC} Codex configuration generated"
+  } || {
+    echo -e "${YELLOW}⚠${NC}  Could not generate Codex configuration"
+  }
+fi
+
+echo ""
+
 # Create backup
 echo "📦 Creating backup..."
 mkdir -p "$WORKSPACE_DIR/backups/$(basename "$PROJECT_DIR")"

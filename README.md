@@ -6,7 +6,7 @@ Sistema completo para gerenciar workspaces AI (Claude, Gemini, Codex) no iTerm2.
 
 - 🚀 **One-command workspace**: `ai-start` para abrir layout completo
 - 🤖 **Agent Management**: Sistema dinâmico de agentes com perfis pré-definidos
-- 🔄 **Context sync**: Sincroniza contextos entre AIs automaticamente
+- 📁 **Shared Context**: AIs compartilham informação via .ai-context/ (leitura manual por cada AI)
 - 📊 **Daily summaries**: Relatório agregado gerado por Gemini (free!)
 - 💾 **Auto backup**: Retenção de 3 dias
 - 🔧 **Git integration**: Global ignore para arquivos pessoais
@@ -102,6 +102,29 @@ ai-help           # Full documentation
 - [Architecture](docs/architecture.md) - How it works internally
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 - [Original Plan](PLAN.md) - Complete implementation plan
+
+## 🤖 Quick FAQ
+
+### Como sincronizar contexto entre AIs?
+```bash
+ai-quick sync       # Workflow completo explicado
+```
+**Nota:** Não há sincronização automática! Cada AI lê `.ai-context/` manualmente.
+
+### Como fazer Gemini ativar agentes?
+```bash
+ai-quick gemini     # Passo a passo com detecção automática
+```
+
+### Quais arquivos são compartilhados?
+```bash
+ai-quick shared     # Lista completa com descrições
+```
+
+### Estado atual do projeto?
+```bash
+ai-quick check      # Diagnóstico inteligente automático
+```
 
 ## 🎯 Key Commands
 

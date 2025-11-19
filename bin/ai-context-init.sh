@@ -99,12 +99,57 @@ if [[ ! -d "$TEMPLATES_DIR" ]]; then
   exit 1
 fi
 
+# Função para verificar estrutura existente
+check_existing_structure() {
+  if [[ -d "$CONTEXT_DIR" ]]; then
+    local missing_files=()
+    
+    # Verificar arquivos críticos
+    for file in project-status.md current-task.md decisions.md known-issues.md roadmap.md agents-reference.md; do
+      [[ ! -f "$CONTEXT_DIR/$file" ]] && missing_files+=("$file")
+    done
+    
+    # Se tudo existe
+    if [[ ${#missing_files[@]} -eq 0 ]]; then
+      print_success "Estrutura .ai-context já existe e está completa!"
+      echo ""
+      print_info "Nada a fazer. Use:"
+      echo "  ai-quick check       → Ver status do projeto"
+      echo "  ai-agents active     → Ver agentes ativos"
+      exit 0
+    fi
+    
+    # Se incompleta
+    if [[ ${#missing_files[@]} -gt 0 ]]; then
+      print_warning "Estrutura .ai-context incompleta"
+      echo ""
+      echo "Arquivos faltando:"
+      for file in "${missing_files[@]}"; do
+        echo "  • $file"
+      done
+      echo ""
+      read -p "Adicionar arquivos faltando? (y/n): " -n 1 -r
+      echo ""
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        print_info "Operação cancelada"
+        exit 0
+      fi
+      CREATE_MISSING_ONLY=true
+    fi
+  fi
+}
+
 # Create .ai-context directory
 echo ""
 echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BOLD}${BLUE}  Initializing AI Context Structure${NC}"
 echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
+
+# Chamar verificação antes do prompt de overwrite
+if [[ "$FORCE" != "true" ]]; then
+  check_existing_structure
+fi
 
 if [[ -d "$CONTEXT_DIR" ]] && [[ "$FORCE" == "false" ]]; then
   print_warning "$CONTEXT_DIR already exists"

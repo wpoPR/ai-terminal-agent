@@ -126,7 +126,58 @@ create_directories() {
   echo ""
 }
 
-# 5. Create symlinks in ~/bin/
+# 5. Pre-install check
+pre_install_check() {
+  local errors=0
+  
+  # Verificar se diretório bin existe
+  if [[ ! -d "$BIN_DIR" ]]; then
+    echo "📁 Creating $BIN_DIR..."
+    if ! mkdir -p "$BIN_DIR" 2>/dev/null; then
+      print_error "Failed to create $BIN_DIR"
+      print_info "Try: mkdir -p $BIN_DIR"
+      ((errors++))
+    fi
+  fi
+  
+  # Verificar permissão de escrita
+  if [[ ! -w "$BIN_DIR" ]]; then
+    print_warning "No write permission in $BIN_DIR"
+    print_info "Installation will continue, but you may need sudo"
+  fi
+  
+  # Verificar se há conflitos (comandos já existentes)
+  local conflicts=()
+  for cmd in ai-start ai-stop ai-quick ai-context-check; do
+    if command -v "$cmd" &>/dev/null; then
+      local existing_path=$(which "$cmd")
+      if [[ "$existing_path" != "$BIN_DIR/$cmd" ]]; then
+        conflicts+=("$cmd ($existing_path)")
+      fi
+    fi
+  done
+  
+  if [[ ${#conflicts[@]} -gt 0 ]]; then
+    print_warning "Commands already exist in different location:"
+    for conflict in "${conflicts[@]}"; do
+      echo "  • $conflict"
+    done
+    echo ""
+    read -p "Overwrite? (y/n): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      print_info "Installation cancelled by user"
+      exit 0
+    fi
+  fi
+  
+  if [[ $errors -gt 0 ]]; then
+    print_error "Pre-install check failed: $errors error(s)"
+    exit 1
+  fi
+}
+
+# 6. Create symlinks in ~/bin/
 create_symlinks() {
   echo "🔗 Creating symlinks in ~/bin/..."
 
@@ -149,7 +200,11 @@ create_symlinks() {
     "ai-agents-setup-interactive.sh:ai-agents-setup-interactive"
     "ai-agents-activate.sh:ai-agents-activate"
     "ai-context-init.sh:ai-context-init"
+    "ai-context-check.sh:ai-context-check"
+    "ai-quick.sh:ai-quick"
     "generate-project-claude.sh:generate-project-claude"
+    "generate-project-gemini.sh:generate-project-gemini"
+    "generate-project-codex.sh:generate-project-codex"
     "generate-daily-summary.sh:generate-daily-summary"
   )
 
@@ -337,6 +392,7 @@ show_quickstart() {
 # Main installation flow
 main() {
   check_dependencies
+  pre_install_check
   setup_iterm_keybinding
   check_ai_clis
   create_directories

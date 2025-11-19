@@ -6,7 +6,10 @@ set -e
 
 WORKSPACE_DIR="$HOME/.ai-workspace"
 AI_CONFIG=".ai-config"
-OUTPUT_FILE="${1:-CLAUDE.md}"
+OUTPUT_FILE="${1:-.claude/claude.md}"
+
+# Ensure .claude directory exists
+mkdir -p .claude
 
 # Check if in project with .ai-config
 if [[ ! -f "$AI_CONFIG" ]]; then

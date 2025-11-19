@@ -5,6 +5,24 @@ All notable changes to AI Terminal Agent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2024-11-19
+
+### Fixed
+- **ai-start**: Now automatically generates configuration files for all AIs
+  - **Claude**: Calls `generate-project-claude` to create `.claude/claude.md` with Sequential Thinking and agent references
+  - **Gemini**: Calls `generate-project-gemini` to create `Gemini.md` with task analysis workflow and shared context rules
+  - **Codex**: Calls `generate-project-codex` to create `Codex.md` with coordination rules and shared context access
+  - Bug: Previously only loaded agents but didn't generate AI configuration files
+  - Impact: AIs weren't reading project-specific rules, agent context, and shared file structure
+  - Solution: Added automatic generation for all three AIs after loading agents
+  - Users no longer need workarounds - everything works out of the box
+
+### Added
+- **Templates**: Created `gemini-project.md` and `codex-project.md` templates
+- **Scripts**: Added `generate-project-gemini.sh` and `generate-project-codex.sh`
+- **Shared Context Documentation**: All AIs now understand `.ai-context/` structure and file sharing rules
+- **No-Agent Rule**: Clarified that Gemini and Codex don't use agents (only Claude does)
+
 ## [1.3.0] - 2024-11-13
 
 ### Added
