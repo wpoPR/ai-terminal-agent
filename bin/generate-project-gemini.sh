@@ -15,7 +15,7 @@ SCRIPT_DIR="$( cd -P "$( dirname "$SCRIPT_SOURCE" )" && pwd )"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 TEMPLATE_FILE="$REPO_ROOT/templates/gemini-project.md"
-OUTPUT_FILE="${1:-Gemini.md}"
+OUTPUT_FILE="${1:-GEMINI.md}"
 AI_CONFIG=".ai-config"
 
 # Check if template exists

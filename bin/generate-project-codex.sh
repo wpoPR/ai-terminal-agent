@@ -15,7 +15,7 @@ SCRIPT_DIR="$( cd -P "$( dirname "$SCRIPT_SOURCE" )" && pwd )"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 TEMPLATE_FILE="$REPO_ROOT/templates/codex-project.md"
-OUTPUT_FILE="${1:-Codex.md}"
+OUTPUT_FILE="${1:-AGENTS.md}"
 AI_CONFIG=".ai-config"
 
 # Check if template exists

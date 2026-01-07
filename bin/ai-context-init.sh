@@ -65,6 +65,7 @@ EOF
 FORCE=false
 MINIMAL=false
 WITH_PROMPTS=false
+SILENT=false
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -80,6 +81,10 @@ while [[ $# -gt 0 ]]; do
       WITH_PROMPTS=true
       shift
       ;;
+    --silent|-q)
+      SILENT=true
+      shift
+      ;;
     -h|--help)
       show_help
       exit 0
@@ -91,6 +96,14 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# Override print functions for silent mode
+if [[ "$SILENT" == "true" ]]; then
+  print_success() { :; }
+  print_error() { echo "$1" >&2; }
+  print_info() { :; }
+  print_warning() { :; }
+fi
 
 # Check if templates exist
 if [[ ! -d "$TEMPLATES_DIR" ]]; then
@@ -140,24 +153,38 @@ check_existing_structure() {
 }
 
 # Create .ai-context directory
-echo ""
-echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BOLD}${BLUE}  Initializing AI Context Structure${NC}"
-echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo ""
-
-# Chamar verificação antes do prompt de overwrite
-if [[ "$FORCE" != "true" ]]; then
-  check_existing_structure
-fi
-
-if [[ -d "$CONTEXT_DIR" ]] && [[ "$FORCE" == "false" ]]; then
-  print_warning "$CONTEXT_DIR already exists"
-  read -p "Overwrite existing files? (y/n): " -r -n 1
+if [[ "$SILENT" != "true" ]]; then
   echo ""
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    print_info "Cancelled"
-    exit 0
+  echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${BOLD}${BLUE}  Initializing AI Context Structure${NC}"
+  echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+
+  # Chamar verificação antes do prompt de overwrite
+  if [[ "$FORCE" != "true" ]]; then
+    check_existing_structure
+  fi
+
+  if [[ -d "$CONTEXT_DIR" ]] && [[ "$FORCE" == "false" ]]; then
+    print_warning "$CONTEXT_DIR already exists"
+    read -p "Overwrite existing files? (y/n): " -r -n 1
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      print_info "Cancelled"
+      exit 0
+    fi
+  fi
+else
+  # Silent mode: skip if already complete, else create missing
+  if [[ -d "$CONTEXT_DIR" ]]; then
+    # Check if essential files exist
+    ESSENTIAL_COUNT=0
+    for file in project-status.md current-task.md decisions.md; do
+      [[ -f "$CONTEXT_DIR/$file" ]] && ((ESSENTIAL_COUNT++))
+    done
+    
+    # If 3/3 essential files exist, skip silently (already initialized)
+    [[ $ESSENTIAL_COUNT -ge 3 ]] && exit 0
   fi
 fi
 
@@ -178,9 +205,11 @@ if [[ "$MINIMAL" == "true" ]]; then
   FILES=("project-status.md" "current-task.md")
 fi
 
-echo ""
-echo "Copying template files..."
-echo ""
+if [[ "$SILENT" != "true" ]]; then
+  echo ""
+  echo "Copying template files..."
+  echo ""
+fi
 
 for file in "${FILES[@]}"; do
   if [[ -f "$TEMPLATES_DIR/$file" ]]; then
@@ -397,40 +426,42 @@ CODEXEOF
   print_success "initial-prompts/codex-init.md"
 fi
 
-# Show summary
-echo ""
-echo -e "${BOLD}${GREEN}✓ Context structure initialized!${NC}"
-echo ""
-echo -e "${CYAN}Structure created:${NC}"
-echo ""
-tree -L 2 "$CONTEXT_DIR" 2>/dev/null || find "$CONTEXT_DIR" -type f | sed 's|[^/]*/| |g'
+# Show summary (skip in silent mode)
+if [[ "$SILENT" != "true" ]]; then
+  echo ""
+  echo -e "${BOLD}${GREEN}✓ Context structure initialized!${NC}"
+  echo ""
+  echo -e "${CYAN}Structure created:${NC}"
+  echo ""
+  tree -L 2 "$CONTEXT_DIR" 2>/dev/null || find "$CONTEXT_DIR" -type f | sed 's|[^/]*/| |g'
 
-echo ""
-echo -e "${CYAN}Next steps:${NC}"
-echo ""
+  echo ""
+  echo -e "${CYAN}Next steps:${NC}"
+  echo ""
 
-if [[ "$WITH_PROMPTS" == "true" ]]; then
-  echo -e "1. Start your AI workspace: ${GREEN}ai-start${NC}"
-  echo "2. In Claude console, run the prompt from:"
-  echo -e "   ${BLUE}cat .ai-context/initial-prompts/claude-init.md${NC}"
+  if [[ "$WITH_PROMPTS" == "true" ]]; then
+    echo -e "1. Start your AI workspace: ${GREEN}ai-start${NC}"
+    echo "2. In Claude console, run the prompt from:"
+    echo -e "   ${BLUE}cat .ai-context/initial-prompts/claude-init.md${NC}"
+    echo ""
+    echo "3. In Gemini console, run the prompt from:"
+    echo -e "   ${BLUE}cat .ai-context/initial-prompts/gemini-init.md${NC}"
+    echo ""
+    echo "4. In Codex console, run the prompt from:"
+    echo -e "   ${BLUE}cat .ai-context/initial-prompts/codex-init.md${NC}"
+  else
+    echo -e "1. Fill in ${BLUE}.ai-context/project-status.md${NC} with project details"
+    echo -e "2. Update ${BLUE}.ai-context/current-task.md${NC} with current work"
+    echo "3. Tell your AIs to read these files before starting work"
+    echo ""
+    echo -e "Or run: ${GREEN}ai-context-init --with-prompts${NC}"
+    echo "to generate initialization prompts for each AI"
+  fi
+
   echo ""
-  echo "3. In Gemini console, run the prompt from:"
-  echo -e "   ${BLUE}cat .ai-context/initial-prompts/gemini-init.md${NC}"
+  echo -e "${CYAN}Learn more:${NC}"
+  echo -e "  ${GREEN}ai-tips sharing${NC}     - How AIs share context"
+  echo -e "  ${GREEN}cat $CONTEXT_DIR/README.md${NC}"
   echo ""
-  echo "4. In Codex console, run the prompt from:"
-  echo -e "   ${BLUE}cat .ai-context/initial-prompts/codex-init.md${NC}"
-else
-  echo -e "1. Fill in ${BLUE}.ai-context/project-status.md${NC} with project details"
-  echo -e "2. Update ${BLUE}.ai-context/current-task.md${NC} with current work"
-  echo "3. Tell your AIs to read these files before starting work"
-  echo ""
-  echo -e "Or run: ${GREEN}ai-context-init --with-prompts${NC}"
-  echo "to generate initialization prompts for each AI"
 fi
-
-echo ""
-echo -e "${CYAN}Learn more:${NC}"
-echo -e "  ${GREEN}ai-tips sharing${NC}     - How AIs share context"
-echo -e "  ${GREEN}cat $CONTEXT_DIR/README.md${NC}"
-echo ""
 

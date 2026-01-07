@@ -41,11 +41,11 @@ show_agent_menu() {
   echo ""
 }
 
-# Get user choice
+# Get user choice (deprecated - now inline in main)
 get_user_choice() {
-  read -p "Escolha [1-11/s/c/n]: " -r choice
-  echo ""
-  echo "$choice"
+  local user_choice
+  read -p "Escolha [1-11/s/c/n]: " -r user_choice
+  echo "$user_choice"
 }
 
 # Apply profile
@@ -170,7 +170,14 @@ main() {
   fi
   
   show_agent_menu
-  local choice=$(get_user_choice)
+  
+  # Read with fallback for non-interactive mode
+  local choice
+  if [[ -t 0 ]]; then
+    read -p "Escolha [1-11/s/c/n]: " -r choice
+  else
+    choice="11"  # Default to minimal in non-interactive mode
+  fi
   
   case "$choice" in
     1)

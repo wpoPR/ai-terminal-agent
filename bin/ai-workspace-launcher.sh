@@ -33,39 +33,49 @@ if [[ -f ".ai-workspace-active" ]]; then
   fi
 fi
 
-# Check for context files
-CONTEXT_EXISTS=false
-for file in claude.md gemini.md agents.md codex.md; do
-  if [[ -f "$file" ]]; then
-    CONTEXT_EXISTS=true
-    echo -e "${GREEN}✓${NC} Found: $file"
-  fi
-done
-
+# Check for existing AI configuration files
+echo "📋 Checking AI configuration..."
+[[ -d ".claude" ]] && echo -e "${GREEN}✓${NC} Found: .claude/"
+[[ -f "GEMINI.md" ]] && echo -e "${GREEN}✓${NC} Found: GEMINI.md"
+[[ -f "AGENTS.md" ]] && echo -e "${GREEN}✓${NC} Found: AGENTS.md"
+[[ -d ".ai-context" ]] && echo -e "${GREEN}✓${NC} Found: .ai-context/"
 echo ""
 
-# If no context files, offer to create from template
-if [[ "$CONTEXT_EXISTS" == "false" ]]; then
-  echo "No context files found."
-  echo ""
-  echo "Available templates:"
-  ls -1 "$HOME/templates/ai-contexts"/*.md 2>/dev/null | xargs -n1 basename | sed 's/^/  - /'
-  echo ""
-  read -p "Create from template? (y/n) " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo ""
-    echo "Select template:"
-    select template in "$HOME/templates/ai-contexts"/*.md; do
-      if [[ -n "$template" ]]; then
-        cp "$template" "claude.md"
-        cp "$template" "gemini.md"
-        cp "$template" "agents.md"
-        echo -e "${GREEN}✓${NC} Context files created"
-        break
-      fi
-    done
+# Initialize .ai-context structure if it doesn't exist
+if [[ ! -d ".ai-context" ]]; then
+  echo "📂 Initializing AI context structure..."
+  
+  if command -v ai-context-init &> /dev/null; then
+    ai-context-init --silent 2>/dev/null && {
+      echo -e "${GREEN}✓${NC} .ai-context/ structure created"
+    } || {
+      echo -e "${YELLOW}⚠${NC}  Could not create .ai-context/ automatically"
+      echo "   Run manually: ai-context-init"
+    }
+  else
+    # Fallback: create minimal structure manually
+    mkdir -p .ai-context
+    
+    # Get templates path
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    REPO_DIR="$(dirname "$SCRIPT_DIR")"
+    TEMPLATES_DIR="$REPO_DIR/templates/context"
+    
+    if [[ -d "$TEMPLATES_DIR" ]]; then
+      for template in project-status.md current-task.md decisions.md known-issues.md agents-reference.md; do
+        if [[ -f "$TEMPLATES_DIR/$template" ]] && [[ ! -f ".ai-context/$template" ]]; then
+          cp "$TEMPLATES_DIR/$template" ".ai-context/"
+        fi
+      done
+      echo -e "${GREEN}✓${NC} .ai-context/ structure created"
+    else
+      echo -e "${YELLOW}⚠${NC}  Templates not found, creating minimal structure"
+      echo "# Project Status" > .ai-context/project-status.md
+      echo "# Current Task" > .ai-context/current-task.md
+      echo "# Decisions" > .ai-context/decisions.md
+    fi
   fi
+  echo ""
 fi
 
 # Setup agents if needed
@@ -93,7 +103,11 @@ else
       # Old config without agents - offer to configure
       echo "🤖 Agent configuration not found"
       echo ""
-      read -p "Configure agents now? (y/n): " -r -n 1
+      if [[ -t 0 ]]; then
+        read -p "Configure agents now? (y/n): " -r -n 1
+      else
+        REPLY="n"  # Default to no in non-interactive mode
+      fi
       echo ""
       
       if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -150,19 +164,19 @@ fi
 
 # Gemini
 if command -v generate-project-gemini &> /dev/null; then
-  generate-project-gemini Gemini.md 2>/dev/null && {
-    echo -e "${GREEN}✓${NC} Gemini configuration generated"
+  generate-project-gemini GEMINI.md 2>/dev/null && {
+    echo -e "${GREEN}✓${NC} GEMINI.md generated (Gemini CLI)"
   } || {
-    echo -e "${YELLOW}⚠${NC}  Could not generate Gemini configuration"
+    echo -e "${YELLOW}⚠${NC}  Could not generate GEMINI.md"
   }
 fi
 
-# Codex
+# Codex (AGENTS.md)
 if command -v generate-project-codex &> /dev/null; then
-  generate-project-codex Codex.md 2>/dev/null && {
-    echo -e "${GREEN}✓${NC} Codex configuration generated"
+  generate-project-codex AGENTS.md 2>/dev/null && {
+    echo -e "${GREEN}✓${NC} AGENTS.md generated (Codex CLI)"
   } || {
-    echo -e "${YELLOW}⚠${NC}  Could not generate Codex configuration"
+    echo -e "${YELLOW}⚠${NC}  Could not generate AGENTS.md"
   }
 fi
 
@@ -170,12 +184,15 @@ echo ""
 
 # Create backup
 echo "📦 Creating backup..."
-mkdir -p "$WORKSPACE_DIR/backups/$(basename "$PROJECT_DIR")"
-for file in claude.md gemini.md agents.md codex.md; do
-  if [[ -f "$file" ]]; then
-    cp "$file" "$WORKSPACE_DIR/backups/$(basename "$PROJECT_DIR")/${file}.$(date +%Y%m%d_%H%M%S).bak"
-  fi
-done
+BACKUP_DIR="$WORKSPACE_DIR/backups/$(basename "$PROJECT_DIR")"
+mkdir -p "$BACKUP_DIR"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+# Backup new config files
+[[ -f ".claude/claude.md" ]] && cp ".claude/claude.md" "$BACKUP_DIR/claude.md.$TIMESTAMP.bak"
+[[ -f "GEMINI.md" ]] && cp "GEMINI.md" "$BACKUP_DIR/GEMINI.md.$TIMESTAMP.bak"
+[[ -f "AGENTS.md" ]] && cp "AGENTS.md" "$BACKUP_DIR/AGENTS.md.$TIMESTAMP.bak"
+
 echo -e "${GREEN}✓${NC} Backup created"
 
 # Create workspace-active marker
