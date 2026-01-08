@@ -2,6 +2,8 @@
 
 A complete system for managing AI workspaces (Claude, Gemini, Codex) in iTerm2.
 
+![AI Terminal Agent - Claude, Gemini, and Codex running in iTerm2](docs/images/screenshot.png)
+
 ## Features
 
 - **Unified CLI**: Single `ai` command with intuitive subcommands
