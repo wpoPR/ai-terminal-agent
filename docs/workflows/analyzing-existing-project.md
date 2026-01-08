@@ -1,594 +1,591 @@
-# Workflow: Analisando Projeto Existente
+# Workflow: Analyzing an Existing Project
 
-## Objetivo
-Usar o AI Terminal Agent para entender o status atual de um projeto em andamento e compartilhar esse contexto entre todos os AIs.
+## Objective
 
-## Passo a Passo
-
-### 1. Inicie o Workspace
-```bash
-cd ~/seu-projeto
-ai-start
-```
-
-### 2. Use Claude para Análise Inicial (Tab 1, Painel Esquerdo)
-
-Na sessão do Claude, execute:
-
-```
-Por favor, analise este projeto:
-
-1. Liste todos os arquivos .md do projeto
-2. Leia README.md, PLAN.md, TODO.md (se existirem)
-3. Analise a estrutura de pastas
-4. Identifique:
-   - Objetivo do projeto
-   - Estado atual (% completo)
-   - Tarefas pendentes
-   - Próximos passos
-   - Tecnologias usadas
-
-Crie um resumo executivo em .ai-context/project-status.md
-```
-
-### 3. Claude Criará o Contexto Compartilhado
-
-Claude irá criar `.ai-context/project-status.md` com algo como:
-
-```markdown
-# Project Status: Nome do Projeto
-
-**Última Atualização:** 2025-11-01
-**Analisado por:** Claude
-
-## Resumo Executivo
-Breve descrição do projeto e estado atual.
-
-## Progresso Geral
-- ✅ Completado: feature X, Y, Z
-- 🚧 Em andamento: feature A, B
-- ⏳ Pendente: feature C, D
-
-## Arquitetura
-- Stack: React + Node.js + PostgreSQL
-- Estrutura: src/, docs/, tests/
-
-## Próximos Passos
-1. Implementar autenticação
-2. Adicionar testes unitários
-3. Deploy em staging
-
-## Notas Técnicas
-Decisões importantes, bloqueios conhecidos, etc.
-```
-
-### 4. Compartilhe com os Outros AIs
-
-**Quando precisar de cada AI:**
-
-- **Gemini** (Tab 1, Painel Superior Direito):
-  ```
-  Leia .ai-context/project-status.md
-
-  Agora me ajude a pesquisar: [sua pergunta sobre tecnologias, bibliotecas, etc]
-  ```
-
-- **Codex** (Tab 1, Painel Inferior Direito):
-  ```
-  /init
-
-  [Após iniciar]
-  Leia .ai-context/project-status.md
-
-  Agora implemente: [funcionalidade específica]
-  ```
-
-### 5. Mantenha o Contexto Atualizado
-
-Sempre que houver mudanças significativas:
-
-```bash
-# No tab de Control Console:
-echo "$(date): Feature X completada" >> .ai-context/changelog.md
-```
-
-Ou peça ao Claude:
-```
-Atualize .ai-context/project-status.md com as mudanças que fizemos hoje
-```
-
-## Divisão de Trabalho Sugerida
-
-### Claude (Análise & Arquitetura)
-- ✅ Análise de código existente
-- ✅ Revisão de documentação
-- ✅ Planejamento de features
-- ✅ Refatoração complexa
-- ✅ Debug de problemas difíceis
-
-### Gemini (Pesquisa & Documentação)
-- ✅ Pesquisar bibliotecas/ferramentas
-- ✅ Comparar abordagens técnicas
-- ✅ Escrever documentação
-- ✅ Gerar exemplos de uso
-- ✅ Explorar APIs externas
-
-### Codex (Implementação Rápida)
-- ✅ Escrever código repetitivo
-- ✅ Gerar testes unitários
-- ✅ Criar componentes simples
-- ✅ Completar código parcial
-- ✅ Snippets e helpers
-
-## Exemplo Prático
-
-### Cenário: Adicionar autenticação ao projeto
-
-1. **Claude**: Analise o projeto e crie plano de implementação
-   ```
-   Com base no .ai-context/project-status.md, crie um plano
-   detalhado para adicionar autenticação JWT ao projeto.
-   Salve em .ai-context/auth-implementation-plan.md
-   ```
-
-2. **Gemini**: Pesquise melhores práticas
-   ```
-   Leia .ai-context/auth-implementation-plan.md
-   Pesquise as melhores bibliotecas JWT para Node.js e
-   compare passport.js vs jsonwebtoken
-   ```
-
-3. **Codex**: Implemente o código
-   ```
-   Leia .ai-context/auth-implementation-plan.md
-   Implemente o middleware de autenticação conforme o plano
-   ```
-
-4. **Claude**: Revise o resultado
-   ```
-   Revise o código de autenticação criado pelo Codex.
-   Verifique segurança e boas práticas.
-   ```
-
-## Dicas
-
-### ✅ Faça
-- Mantenha `.ai-context/` atualizado com decisões importantes
-- Use cada AI para sua especialidade
-- Peça resumos executivos curtos (não textos longos)
-- Versione o `.ai-context/` no Git se útil para a equipe
-
-### ❌ Evite
-- Fazer a mesma pergunta para os 3 AIs (desperdício)
-- Deixar contexto desatualizado
-- Pedir código complexo ao Gemini (use Claude/Codex)
-- Pedir pesquisa ao Codex (use Gemini)
-
-## Atalhos Úteis
-
-```bash
-# Ver status do workspace
-ai-status
-
-# Criar snapshot do progresso
-echo "# $(date)" >> .ai-context/daily-log.md
-echo "Hoje implementamos: ..." >> .ai-context/daily-log.md
-
-# Fechar workspace com resumo
-ai-stop
-```
-
-## Próximos Passos
-
-Após análise inicial:
-1. Execute os testes existentes
-2. Identifique débito técnico
-3. Priorize próximas tarefas
-4. Divida trabalho entre os AIs
+Use AI Terminal Agent to understand the current status of an ongoing project and share context between all AIs.
 
 ---
 
-## Cenários Comuns
+## Step by Step
 
-### 📦 Cenário 1: Projeto Node.js/React com Docs Desatualizadas
+### 1. Start the Workspace
 
-**Situação:** Projeto antigo, documentação não reflete código atual
+```bash
+cd ~/your-project
+ai start
+```
+
+### 2. Use Claude for Initial Analysis (Left Panel)
+
+In Claude's session, run:
+
+```
+Please analyze this project:
+
+1. List all .md files in the project
+2. Read README.md, PLAN.md, TODO.md (if they exist)
+3. Analyze the folder structure
+4. Identify:
+   - Project objective
+   - Current state (% complete)
+   - Pending tasks
+   - Next steps
+   - Technologies used
+
+Create an executive summary in .ai-context/project-status.md
+```
+
+### 3. Claude Creates Shared Context
+
+Claude will create `.ai-context/project-status.md` with something like:
+
+```markdown
+# Project Status: Project Name
+
+**Last Updated:** 2026-01-08
+**Analyzed by:** Claude
+
+## Executive Summary
+Brief description of the project and current state.
+
+## Overall Progress
+- Completed: feature X, Y, Z
+- In progress: feature A, B
+- Pending: feature C, D
+
+## Architecture
+- Stack: React + Node.js + PostgreSQL
+- Structure: src/, docs/, tests/
+
+## Next Steps
+1. Implement authentication
+2. Add unit tests
+3. Deploy to staging
+
+## Technical Notes
+Important decisions, known blockers, etc.
+```
+
+### 4. Share with Other AIs
+
+**When you need each AI:**
+
+- **Gemini** (Top Right Panel):
+  ```
+  Read .ai-context/project-status.md
+
+  Now help me research: [your question about technologies, libraries, etc]
+  ```
+
+- **Codex** (Bottom Right Panel):
+  ```
+  Read .ai-context/project-status.md
+
+  Now implement: [specific functionality]
+  ```
+
+### 5. Keep Context Updated
+
+Whenever there are significant changes:
+
+```bash
+# Ask Claude:
+Update .ai-context/project-status.md with today's changes
+```
+
+---
+
+## Suggested Work Division
+
+### Claude (Analysis & Architecture)
+- Code analysis
+- Documentation review
+- Feature planning
+- Complex refactoring
+- Difficult debugging
+
+### Gemini (Research & Documentation)
+- Research libraries/tools
+- Compare technical approaches
+- Write documentation
+- Generate usage examples
+- Explore external APIs
+
+### Codex (Fast Implementation)
+- Write repetitive code
+- Generate unit tests
+- Create simple components
+- Complete partial code
+- Snippets and helpers
+
+---
+
+## Practical Example
+
+### Scenario: Add authentication to the project
+
+1. **Claude**: Analyze project and create implementation plan
+   ```
+   Based on .ai-context/project-status.md, create a detailed
+   plan to add JWT authentication to the project.
+   Save to .ai-context/auth-implementation-plan.md
+   ```
+
+2. **Gemini**: Research best practices
+   ```
+   Read .ai-context/auth-implementation-plan.md
+   Research the best JWT libraries for Node.js and
+   compare passport.js vs jsonwebtoken
+   ```
+
+3. **Codex**: Implement the code
+   ```
+   Read .ai-context/auth-implementation-plan.md
+   Implement the authentication middleware according to the plan
+   ```
+
+4. **Claude**: Review the result
+   ```
+   Review the authentication code created by Codex.
+   Check security and best practices.
+   ```
+
+---
+
+## Tips
+
+### Do
+- Keep `.ai-context/` updated with important decisions
+- Use each AI for its specialty
+- Request short executive summaries (not long texts)
+- Version `.ai-context/` in Git if useful for the team
+
+### Don't
+- Ask the same question to all 3 AIs (waste)
+- Leave context outdated
+- Ask for complex code from Gemini (use Claude/Codex)
+- Ask for research from Codex (use Gemini)
+
+---
+
+## Useful Commands
+
+```bash
+# Check workspace status
+ai status
+
+# Create progress snapshot
+echo "# $(date)" >> .ai-context/daily-log.md
+echo "Today we implemented: ..." >> .ai-context/daily-log.md
+
+# Close workspace with summary
+ai stop
+```
+
+---
+
+## Common Scenarios
+
+### Scenario 1: Node.js/React Project with Outdated Docs
+
+**Situation:** Old project, documentation doesn't reflect current code
 
 **Workflow:**
-1. **Claude (Análise):**
+1. **Claude (Analysis):**
    ```
-   Liste todos os arquivos em src/ e docs/
-   Compare README.md com o código atual em src/
-   O que mudou? O que está desatualizado?
-   Crie .ai-context/docs-vs-code-diff.md com as diferenças
-   ```
-
-2. **Claude (Atualização):**
-   ```
-   Com base na análise, atualize README.md para refletir:
-   - Estrutura atual de src/
-   - Scripts package.json atuais
-   - Novas dependências
-   - Mudanças na API
+   List all files in src/ and docs/
+   Compare README.md with current code in src/
+   What changed? What's outdated?
+   Create .ai-context/docs-vs-code-diff.md with differences
    ```
 
-3. **Gemini (Documentação):**
+2. **Claude (Update):**
    ```
-   Leia .ai-context/docs-vs-code-diff.md
-   Crie exemplos de uso atualizados para docs/examples/
+   Based on the analysis, update README.md to reflect:
+   - Current src/ structure
+   - Current package.json scripts
+   - New dependencies
+   - API changes
    ```
 
-### 🐛 Cenário 2: Projeto com Bugs Pendentes
+3. **Gemini (Documentation):**
+   ```
+   Read .ai-context/docs-vs-code-diff.md
+   Create updated usage examples for docs/examples/
+   ```
 
-**Situação:** Vários bugs relatados, precisa priorizar
+### Scenario 2: Project with Pending Bugs
+
+**Situation:** Various bugs reported, need to prioritize
 
 **Workflow:**
-1. **Claude (Análise):**
+1. **Claude (Analysis):**
    ```
-   Liste todos os TODOs, FIXMEs no código
-   Leia issues.md ou TODO.md
-   Analise logs de erro se houver
-   Crie .ai-context/bugs-prioritized.md classificando por:
-   - Crítico (quebra funcionalidade)
-   - Alto (impacta usuários)
-   - Médio (inconveniências)
-   - Baixo (cosméticos)
-   ```
-
-2. **Claude (Fix Crítico):**
-   ```
-   Começe pelo bug #1 da lista crítica
-   Analise o código relacionado
-   Implemente a correção
+   List all TODOs, FIXMEs in the code
+   Read issues.md or TODO.md
+   Analyze error logs if any
+   Create .ai-context/bugs-prioritized.md classifying by:
+   - Critical (breaks functionality)
+   - High (impacts users)
+   - Medium (inconveniences)
+   - Low (cosmetic)
    ```
 
-3. **Codex (Testes):**
+2. **Claude (Critical Fix):**
    ```
-   Leia .ai-context/bugs-prioritized.md
-   Crie testes unitários para prevenir regressão do bug #1
+   Start with bug #1 from the critical list
+   Analyze related code
+   Implement the fix
    ```
 
-### 🏗️ Cenário 3: Projeto Sem Documentação
+3. **Codex (Tests):**
+   ```
+   Read .ai-context/bugs-prioritized.md
+   Create unit tests to prevent regression of bug #1
+   ```
 
-**Situação:** Código funcional mas zero docs
+### Scenario 3: Project Without Documentation
+
+**Situation:** Working code but zero docs
 
 **Workflow:**
 1. **Claude (Reverse Engineering):**
    ```
-   Analise toda a estrutura do projeto
-   Identifique:
-   - Ponto de entrada (main.py, index.js, etc)
-   - Módulos principais e suas responsabilidades
-   - Fluxo de dados
-   - APIs expostas
-   - Dependências externas
+   Analyze the entire project structure
+   Identify:
+   - Entry point (main.py, index.js, etc)
+   - Main modules and their responsibilities
+   - Data flow
+   - Exposed APIs
+   - External dependencies
 
-   Crie .ai-context/architecture-discovered.md com diagrama textual
+   Create .ai-context/architecture-discovered.md with text diagram
    ```
 
 2. **Claude (README):**
    ```
-   Com base em .ai-context/architecture-discovered.md
-   Crie README.md completo com:
-   - O que o projeto faz
-   - Como instalar
-   - Como usar (exemplos)
-   - Estrutura de pastas
+   Based on .ai-context/architecture-discovered.md
+   Create complete README.md with:
+   - What the project does
+   - How to install
+   - How to use (examples)
+   - Folder structure
    ```
 
-3. **Gemini (Docs Detalhadas):**
+3. **Gemini (Detailed Docs):**
    ```
-   Leia .ai-context/architecture-discovered.md
-   Crie docs/API.md documentando todos os endpoints/funções públicas
+   Read .ai-context/architecture-discovered.md
+   Create docs/API.md documenting all public endpoints/functions
    ```
 
-### 🔄 Cenário 4: Migração de Tecnologia
+### Scenario 4: Technology Migration
 
-**Situação:** Migrar de JavaScript para TypeScript
+**Situation:** Migrate from JavaScript to TypeScript
 
 **Workflow:**
-1. **Claude (Planejamento):**
+1. **Claude (Planning):**
    ```
-   Analise todos os arquivos .js
-   Crie plano de migração em .ai-context/ts-migration-plan.md:
-   - Ordem de migração (dependências primeiro)
-   - Arquivos mais complexos
-   - Tipos customizados necessários
-   - Breaking changes esperados
+   Analyze all .js files
+   Create migration plan in .ai-context/ts-migration-plan.md:
+   - Migration order (dependencies first)
+   - Most complex files
+   - Custom types needed
+   - Expected breaking changes
    ```
 
-2. **Claude (Tipos Globais):**
+2. **Claude (Global Types):**
    ```
-   Crie types.d.ts com interfaces principais
+   Create types.d.ts with main interfaces
    Configure tsconfig.json
    ```
 
-3. **Codex (Migração Arquivo por Arquivo):**
+3. **Codex (File-by-File Migration):**
    ```
-   Leia .ai-context/ts-migration-plan.md
-   Converta src/utils/helpers.js para helpers.ts
-   Adicione type annotations
-   ```
-
-4. **Claude (Validação):**
-   ```
-   Revise os tipos criados pelo Codex
-   Verifique type safety
-   Execute tsc --noEmit
+   Read .ai-context/ts-migration-plan.md
+   Convert src/utils/helpers.js to helpers.ts
+   Add type annotations
    ```
 
-### 🚀 Cenário 5: Preparar Deploy/Produção
+4. **Claude (Validation):**
+   ```
+   Review types created by Codex
+   Check type safety
+   Run tsc --noEmit
+   ```
 
-**Situação:** Projeto está "pronto" mas nunca foi deployado
+### Scenario 5: Prepare for Deploy/Production
+
+**Situation:** Project is "ready" but never deployed
 
 **Workflow:**
 1. **Claude (Checklist):**
    ```
-   Crie .ai-context/production-checklist.md verificando:
-   - [ ] Variáveis de ambiente configuráveis
-   - [ ] Secrets não commitados
-   - [ ] Logs apropriados
+   Create .ai-context/production-checklist.md checking:
+   - [ ] Environment variables configurable
+   - [ ] Secrets not committed
+   - [ ] Appropriate logs
    - [ ] Error handling
-   - [ ] Testes passando
-   - [ ] Build otimizado
-   - [ ] Documentação de deploy
+   - [ ] Tests passing
+   - [ ] Optimized build
+   - [ ] Deploy documentation
    ```
 
-2. **Gemini (Pesquisa de Deploy):**
+2. **Gemini (Deploy Research):**
    ```
-   Pesquise melhores práticas para deploy de [seu stack]
+   Research best practices for deploying [your stack]
    Compare: Heroku vs Vercel vs Railway vs AWS
-   Crie docs/deployment.md com recomendação
+   Create docs/deployment.md with recommendation
    ```
 
-3. **Claude (Implementação):**
+3. **Claude (Implementation):**
    ```
-   Implemente os itens pendentes do checklist
-   Crie Dockerfile se necessário
-   Configure CI/CD básico
+   Implement pending items from checklist
+   Create Dockerfile if needed
+   Configure basic CI/CD
    ```
 
 4. **Codex (Scripts):**
    ```
-   Crie scripts/deploy.sh para automatizar deploy
-   Adicione health check endpoint
+   Create scripts/deploy.sh to automate deployment
+   Add health check endpoint
    ```
 
-### 📊 Cenário 6: Performance Audit
+### Scenario 6: Performance Audit
 
-**Situação:** Aplicação está lenta, precisa otimizar
+**Situation:** Application is slow, needs optimization
 
 **Workflow:**
 1. **Claude (Profiling):**
    ```
-   Analise o código procurando por:
-   - Loops O(n²) ou pior
-   - Queries N+1 em banco de dados
-   - Carregamento síncrono desnecessário
-   - Falta de cache
-   - Bibliotecas pesadas não tree-shaked
+   Analyze code looking for:
+   - O(n^2) or worse loops
+   - N+1 queries in database
+   - Unnecessary synchronous loading
+   - Lack of cache
+   - Heavy libraries not tree-shaken
 
-   Crie .ai-context/performance-bottlenecks.md
+   Create .ai-context/performance-bottlenecks.md
    ```
 
-2. **Gemini (Pesquisa de Alternativas):**
+2. **Gemini (Research Alternatives):**
    ```
-   Leia .ai-context/performance-bottlenecks.md
-   Pesquise bibliotecas mais leves para substituir [lib pesada]
+   Read .ai-context/performance-bottlenecks.md
+   Research lighter libraries to replace [heavy lib]
    Compare benchmarks
    ```
 
-3. **Claude (Refatoração):**
+3. **Claude (Refactoring):**
    ```
-   Implemente otimizações do bottleneck #1
-   Adicione memoização onde apropriado
-   Implemente lazy loading
-   ```
-
-4. **Codex (Testes de Performance):**
-   ```
-   Crie benchmarks para medir melhorias
-   Adicione performance tests em tests/
+   Implement optimizations for bottleneck #1
+   Add memoization where appropriate
+   Implement lazy loading
    ```
 
-### 🔐 Cenário 7: Security Audit
+4. **Codex (Performance Tests):**
+   ```
+   Create benchmarks to measure improvements
+   Add performance tests in tests/
+   ```
 
-**Situação:** Precisa verificar segurança antes de release
+### Scenario 7: Security Audit
+
+**Situation:** Need to verify security before release
 
 **Workflow:**
-1. **Claude (Análise de Segurança):**
+1. **Claude (Security Analysis):**
    ```
-   Procure por:
+   Look for:
    - [ ] SQL injection vulnerabilities
    - [ ] XSS vulnerabilities
    - [ ] CSRF protection
-   - [ ] Sensitive data em logs
-   - [ ] Secrets hardcoded
-   - [ ] Dependências com CVEs
+   - [ ] Sensitive data in logs
+   - [ ] Hardcoded secrets
+   - [ ] Dependencies with CVEs
 
-   Crie .ai-context/security-audit.md
-   ```
-
-2. **Gemini (Pesquisa OWASP):**
-   ```
-   Pesquise OWASP Top 10 para [seu tipo de app]
-   Verifique se as vulnerabilidades se aplicam
-   Documente mitigações
+   Create .ai-context/security-audit.md
    ```
 
-3. **Claude (Correções):**
+2. **Gemini (OWASP Research):**
    ```
-   Implemente correções prioritárias do audit
-   Adicione input validation
+   Research OWASP Top 10 for [your app type]
+   Check if vulnerabilities apply
+   Document mitigations
+   ```
+
+3. **Claude (Fixes):**
+   ```
+   Implement priority fixes from audit
+   Add input validation
    Sanitize outputs
    ```
 
 ---
 
-## Templates de Prompt por Tipo de Projeto
+## Prompt Templates by Project Type
 
-### Para Web Apps (React/Vue/Angular)
+### For Web Apps (React/Vue/Angular)
 
 ```
-Analise este web app:
+Analyze this web app:
 
-1. Componentes principais (src/components/)
+1. Main components (src/components/)
 2. State management (Redux/Context/etc)
-3. API integration (como faz requests?)
+3. API integration (how does it make requests?)
 4. Routing (React Router/etc)
 5. Styling approach (CSS/SCSS/Styled/Tailwind?)
 
-Crie .ai-context/webapp-status.md com:
-- Componentes completos vs incompletos
-- Features funcionais
-- UX issues conhecidos
+Create .ai-context/webapp-status.md with:
+- Complete vs incomplete components
+- Working features
+- Known UX issues
 - Performance concerns
 ```
 
-### Para APIs/Backend
+### For APIs/Backend
 
 ```
-Analise esta API:
+Analyze this API:
 
 1. Framework (Express/FastAPI/etc)
-2. Endpoints disponíveis (liste todos)
-3. Autenticação/Autorização
-4. Database schema e ORM
-5. Validação de input
+2. Available endpoints (list all)
+3. Authentication/Authorization
+4. Database schema and ORM
+5. Input validation
 6. Error handling
-7. Testes (coverage?)
+7. Tests (coverage?)
 
-Crie .ai-context/api-status.md com:
-- Endpoints documentados vs não documentados
-- Segurança implementada
+Create .ai-context/api-status.md with:
+- Documented vs undocumented endpoints
+- Security implemented
 - Performance (indexes, caching)
-- Próximos endpoints a implementar
+- Next endpoints to implement
 ```
 
-### Para CLI Tools
+### For CLI Tools
 
 ```
-Analise esta CLI tool:
+Analyze this CLI tool:
 
-1. Comandos disponíveis
-2. Argumentos e flags
+1. Available commands
+2. Arguments and flags
 3. Output formatting
 4. Error messages
 5. Help text
 6. Config files
 
-Crie .ai-context/cli-status.md com:
-- Comandos funcionais
+Create .ai-context/cli-status.md with:
+- Working commands
 - UX issues
 - Missing commands
 - Documentation needed
 ```
 
-### Para Libraries/SDKs
+### For Libraries/SDKs
 
 ```
-Analise esta biblioteca:
+Analyze this library:
 
-1. API pública (funções/classes exportadas)
-2. Documentação (README, JSDoc, etc)
-3. Exemplos de uso
-4. Testes e coverage
+1. Public API (exported functions/classes)
+2. Documentation (README, JSDoc, etc)
+3. Usage examples
+4. Tests and coverage
 5. TypeScript types
 6. Build output (CJS/ESM/UMD?)
 
-Crie .ai-context/library-status.md com:
-- API estável vs experimental
-- Breaking changes desde última versão
-- Docs missing
+Create .ai-context/library-status.md with:
+- Stable vs experimental API
+- Breaking changes since last version
+- Missing docs
 - Examples needed
 ```
 
 ---
 
-## Dicas de Comunicação Entre AIs
+## Communication Tips Between AIs
 
-### ✅ Boas Práticas
+### Best Practices
 
-**1. Contexto Conciso:**
+**1. Concise Context:**
 ```markdown
 <!-- .ai-context/current-task.md -->
-# Tarefa Atual: Implementar Auth
+# Current Task: Implement Auth
 
-**Abordagem decidida:** JWT com refresh tokens
+**Decided approach:** JWT with refresh tokens
 **Stack:** passport.js + jsonwebtoken
-**Arquivos afetados:**
-- src/middleware/auth.js (criar)
-- src/routes/auth.js (criar)
-- src/models/User.js (modificar)
+**Affected files:**
+- src/middleware/auth.js (create)
+- src/routes/auth.js (create)
+- src/models/User.js (modify)
 
-**Status:** Claude já criou o plano em auth-plan.md
-**Próximo:** Codex implementar middleware
+**Status:** Claude already created plan in auth-plan.md
+**Next:** Codex implement middleware
 ```
 
-**2. Decisões Técnicas:**
+**2. Technical Decisions:**
 ```markdown
 <!-- .ai-context/decisions.md -->
-# Decisões Técnicas
+# Technical Decisions
 
-## 2025-11-01: Autenticação
-**Decisão:** Usar JWT (não sessions)
-**Motivo:** API stateless, mobile app precisa
-**Alternativas consideradas:** Sessions, OAuth
-**Quem decidiu:** Claude
+## 2026-01-08: Authentication
+**Decision:** Use JWT (not sessions)
+**Reason:** Stateless API, mobile app needs it
+**Alternatives considered:** Sessions, OAuth
+**Decided by:** Claude
 
-## 2025-11-01: Database
-**Decisão:** PostgreSQL (não MongoDB)
-**Motivo:** Dados relacionais, ACID importante
-**Quem decidiu:** Time + Gemini research
+## 2026-01-08: Database
+**Decision:** PostgreSQL (not MongoDB)
+**Reason:** Relational data, ACID important
+**Decided by:** Team + Gemini research
 ```
 
-**3. Problemas Conhecidos:**
+**3. Known Issues:**
 ```markdown
 <!-- .ai-context/known-issues.md -->
-# Problemas Conhecidos
+# Known Issues
 
-## 🐛 Bug #1: Login timeout
-- **Sintoma:** Login leva 10+ segundos
-- **Causa:** Query sem index em users.email
-- **Fix:** Claude vai adicionar index
-- **Status:** Pendente
+## Bug #1: Login timeout
+- **Symptom:** Login takes 10+ seconds
+- **Cause:** Query without index on users.email
+- **Fix:** Claude will add index
+- **Status:** Pending
 
-## ⚠️ Limitação: File Upload
-- **Situação:** Apenas aceita < 5MB
-- **Motivo:** Cloudflare limit
-- **Workaround:** Usar direct S3 upload
-- **Status:** Documentado
+## Limitation: File Upload
+- **Situation:** Only accepts < 5MB
+- **Reason:** Cloudflare limit
+- **Workaround:** Use direct S3 upload
+- **Status:** Documented
 ```
 
-### ❌ Evite
+### Avoid
 
-**Contexto Verboso:**
+**Verbose Context:**
 ```markdown
-<!-- NÃO faça assim -->
-# Análise Completa do Sistema
+<!-- DON'T do this -->
+# Complete System Analysis
 
-Este documento contém uma análise extremamente detalhada
-de todos os aspectos do projeto, incluindo histórico completo
-de decisões desde o início...
+This document contains an extremely detailed analysis
+of all aspects of the project, including complete history
+of decisions since the beginning...
 
-[50 páginas de texto]
+[50 pages of text]
 
-<!-- Gemini/Codex não vão ler isso tudo -->
+<!-- Gemini/Codex won't read all this -->
 ```
 
-**Informação Desatualizada:**
+**Outdated Information:**
 ```markdown
-<!-- Remova informação obsoleta -->
-# Status ~~(2025-10-15)~~ (2025-11-01)
+<!-- Remove obsolete information -->
+# Status (2026-01-08)
 
-~~- [ ] Implementar auth~~ ✅ Completo
-- [ ] Adicionar testes
+- [x] Implement auth - Completed
+- [ ] Add tests
 ```
 
 ---
 
-**Lembre-se:**
-- `.ai-context/` é a "memória compartilhada" dos AIs
-- Mantenha arquivos curtos e acionáveis
-- Atualize quando houver mudanças significativas
-- Use cada AI para sua especialidade
+## Remember
+
+- `.ai-context/` is the "shared memory" of the AIs
+- Keep files short and actionable
+- Update when there are significant changes
+- Use each AI for its specialty

@@ -1,0 +1,175 @@
+#!/bin/bash
+# ai - Unified CLI for AI Terminal Agent
+# Version: 2.0.0
+#
+# Usage: ai <command> [subcommand] [options]
+#
+# This is the main entry point that routes to specialized modules.
+
+set -e
+
+# Resolve script location (handle symlinks)
+SCRIPT_SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SCRIPT_SOURCE" ]]; do
+  SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+  SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
+  [[ "$SCRIPT_SOURCE" != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+
+# Source common library
+LIB_DIR="$(dirname "$SCRIPT_DIR")/lib"
+source "$LIB_DIR/common.sh"
+
+# =============================================================================
+# HELP
+# =============================================================================
+
+show_help() {
+  cat << 'EOF'
+ai - AI Terminal Agent CLI v2.0.0
+
+USAGE
+    ai <command> [options]
+
+QUICK COMMANDS (aliases)
+    ai start [path]          Start AI workspace (alias for: ai workspace start)
+    ai stop                  Stop workspace (alias for: ai workspace stop)
+    ai status                Show status (alias for: ai workspace status)
+
+COMMANDS
+    workspace                Manage AI workspaces
+        start [path]         Launch AI workspace with iTerm2 splits
+        stop [--no-summary]  Close workspace and generate summary
+        status               Show active workspaces and tokens
+        recent               List recent workspaces
+        recover              Recover from crashes
+        console              Show control console
+
+    agents                   Manage AI agents
+        list [category]      List available agents
+        active               Show active agents in project
+        enable <name>        Enable an agent
+        disable <name>       Disable an agent
+        profile <name>       Activate a profile (or 'list' to show profiles)
+        stats                Show token usage statistics
+        suggest              Suggest profile for current project
+        doctor               Run diagnostics
+        search <query>       Search agents by keyword
+        info <name>          Show agent details
+
+    context                  Manage shared AI context
+        init [--force]       Initialize .ai-context/ structure
+        check                Check context integrity
+        sync                 Sync context between AIs
+        diff                 Show context differences
+
+    config                   Configuration management
+        doctor               Run health check diagnostics
+        git [--setup]        Configure git to ignore AI files
+        export [file]        Export configuration to file
+        import <file>        Import configuration from file
+        update               Update AI Terminal Agent from git
+
+    help [topic]             Show help for a topic
+        topics: start, agents, context, workflow, division
+
+OPTIONS
+    --version                Show version
+    --help                   Show this help
+
+EXAMPLES
+    ai start                 # Start workspace in current directory
+    ai start ~/projects/app  # Start workspace in specific directory
+    ai agents profile list   # List available agent profiles
+    ai agents enable security-auditor
+    ai context init          # Initialize shared context
+    ai config doctor         # Run diagnostics
+
+DOCUMENTATION
+    Full docs: https://github.com/your-repo/ai-terminal-agent
+    Quick ref: ai help quick
+
+EOF
+}
+
+show_version() {
+  echo "ai-terminal-agent version $(get_version)"
+}
+
+# =============================================================================
+# COMMAND ROUTING
+# =============================================================================
+
+main() {
+  local command="${1:-help}"
+  shift || true
+
+  case "$command" in
+    # Quick shortcuts (most common operations)
+    start)
+      source "$SCRIPT_DIR/ai-workspace.sh"
+      cmd_start "$@"
+      ;;
+    stop)
+      source "$SCRIPT_DIR/ai-workspace.sh"
+      cmd_stop "$@"
+      ;;
+    status)
+      source "$SCRIPT_DIR/ai-workspace.sh"
+      cmd_status "$@"
+      ;;
+
+    # Category commands
+    workspace|ws)
+      source "$SCRIPT_DIR/ai-workspace.sh"
+      workspace_main "$@"
+      ;;
+    agents|agent|a)
+      exec "$SCRIPT_DIR/ai-agents.sh" "$@"
+      ;;
+    context|ctx|c)
+      source "$SCRIPT_DIR/ai-context.sh"
+      context_main "$@"
+      ;;
+    config|cfg)
+      source "$SCRIPT_DIR/ai-config.sh"
+      config_main "$@"
+      ;;
+    help|h)
+      source "$SCRIPT_DIR/ai-help-unified.sh"
+      help_main "$@"
+      ;;
+
+    # Backward compatibility aliases
+    agents-activate)
+      exec "$SCRIPT_DIR/ai-agents.sh" activate "$@"
+      ;;
+    context-init)
+      source "$SCRIPT_DIR/ai-context.sh"
+      cmd_init "$@"
+      ;;
+    context-check)
+      source "$SCRIPT_DIR/ai-context.sh"
+      cmd_check "$@"
+      ;;
+
+    # Version and help flags
+    --version|-v)
+      show_version
+      ;;
+    --help|-h)
+      show_help
+      ;;
+
+    # Unknown command
+    *)
+      print_error "Unknown command: $command"
+      echo ""
+      echo "Run 'ai help' for usage information"
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

@@ -1,10 +1,12 @@
 # Troubleshooting Guide
 
-Common issues and their solutions.
+Common issues and their solutions for AI Terminal Agent.
+
+---
 
 ## Installation Issues
 
-### "ai-start: command not found"
+### "ai: command not found"
 
 **Cause**: `~/bin` is not in your PATH
 
@@ -13,13 +15,12 @@ Common issues and their solutions.
 # Add to PATH
 echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
-
-# Or restart terminal
 ```
 
 **Verify**:
 ```bash
 echo $PATH | grep "$HOME/bin"
+which ai
 ```
 
 ### "Permission denied" when running scripts
@@ -28,8 +29,8 @@ echo $PATH | grep "$HOME/bin"
 
 **Solution**:
 ```bash
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-chmod +x install.sh bin/*.sh
+cd ~/workspace/ai-terminal-agent
+chmod +x install.sh bin/*.sh bin/ai lib/*.sh
 ```
 
 ### Git global ignore not working
@@ -39,21 +40,32 @@ chmod +x install.sh bin/*.sh
 **Solution**:
 ```bash
 # Check status
-ai-git-config --check
+ai config git --check
 
 # Reconfigure
-ai-git-config --setup
+ai config git --setup
 
 # Verify
 git config --global core.excludesfile
 ```
+
+### jq not found
+
+**Cause**: jq JSON processor not installed
+
+**Solution**:
+```bash
+brew install jq
+```
+
+---
 
 ## AI CLI Issues
 
 ### Claude not authenticated
 
 **Symptoms**:
-- `ai-health-check` shows Claude not authenticated
+- `ai config doctor` shows Claude not authenticated
 - Claude commands fail
 
 **Solution**:
@@ -77,10 +89,17 @@ gemini auth login
 
 ### Codex not found
 
-**Solution**:
+**Note**: Codex is optional. If you need it:
+
 ```bash
-npm install -g @openai/codex
+# Install OpenAI CLI
+npm install -g openai
+
+# Or use alternative
+# Codex functionality works through OpenAI API
 ```
+
+---
 
 ## iTerm2 Issues
 
@@ -95,8 +114,8 @@ npm install -g @openai/codex
 
 **Solution 2** (Manual):
 1. Open iTerm2
-2. Preferences → Keys → Key Bindings
-3. Click "+" to add
+2. **Preferences** > **Keys** > **Key Bindings**
+3. Click **+** to add
 4. Keyboard Shortcut: Press `Shift+Enter`
 5. Action: "Send Text"
 6. Value: `\n`
@@ -113,6 +132,17 @@ brew install --cask iterm2
 # Or download from https://iterm2.com/
 ```
 
+### Splits not opening correctly
+
+**Cause**: AppleScript permissions
+
+**Solution**:
+1. Open **System Preferences** > **Security & Privacy** > **Privacy**
+2. Select **Automation**
+3. Enable access for Terminal/iTerm2
+
+---
+
 ## Workspace Issues
 
 ### "Workspace already active" error
@@ -121,7 +151,7 @@ brew install --cask iterm2
 
 **Solution 1** (Recommended):
 ```bash
-ai-recover
+ai workspace recover
 ```
 
 **Solution 2** (Manual):
@@ -131,7 +161,7 @@ cd ~/your-project
 rm .ai-workspace-active
 
 # Restart
-ai-start
+ai start
 ```
 
 ### Context files disappeared
@@ -141,24 +171,94 @@ ai-start
 **Solution**:
 ```bash
 # Check backups
-ls ~/.ai-workspace/backups/your-project/
+ls ~/.ai-workspace/backups/
+
+# Find project backups
+find ~/.ai-workspace/backups -name "*.bak"
 
 # Restore from backup
-cp ~/.ai-workspace/backups/your-project/claude.md.TIMESTAMP.bak claude.md
+cp ~/.ai-workspace/backups/project-name/file.md.TIMESTAMP.bak .ai-context/file.md
 ```
 
-### ai-status shows no workspaces but one is active
+### ai status shows no workspaces but one is active
 
 **Cause**: Tracking file corrupted
 
 **Solution**:
 ```bash
 # Rebuild tracking
-ai-recover
+ai workspace recover
 
 # Or manually check
-find ~/workspace ~/projects -name ".ai-workspace-active"
+find ~ -name ".ai-workspace-active" 2>/dev/null
 ```
+
+---
+
+## Agent Issues
+
+### Agents not appearing in Claude Code
+
+**Cause**: Agents not copied to project directory
+
+**Solution**:
+```bash
+# Check if agents exist
+ls -la .claude/agents/
+
+# If empty, reactivate profile
+ai agents profile <name>
+
+# Restart Claude Code
+```
+
+### Token usage too high
+
+**Cause**: Too many agents active
+
+**Solution**:
+```bash
+# Check current usage
+ai agents stats
+
+# Switch to lighter profile
+ai agents profile minimal
+
+# Or disable specific agents
+ai agents disable <name>
+```
+
+### Agent library not found
+
+**Cause**: Library not installed
+
+**Solution**:
+```bash
+# Update library
+ai agents update
+
+# Or re-run installation
+cd ~/workspace/ai-terminal-agent
+./install.sh
+```
+
+### Profile not saving
+
+**Cause**: jq not installed or .ai-config corrupted
+
+**Solution**:
+```bash
+# Install jq
+brew install jq
+
+# Check .ai-config syntax
+cat .ai-config | jq .
+
+# Recreate if needed
+ai agents profile <name>
+```
+
+---
 
 ## Summary Generation Issues
 
@@ -183,6 +283,21 @@ npm install -g @google/generative-ai
 }
 ```
 
+### Summary is empty
+
+**Cause**: No context files to summarize
+
+**Solution**:
+```bash
+# Check context files exist
+ls -la .ai-context/
+
+# Initialize if needed
+ai context init
+```
+
+---
+
 ## Git Integration Issues
 
 ### Context files being committed accidentally
@@ -192,13 +307,13 @@ npm install -g @google/generative-ai
 **Solution**:
 ```bash
 # Verify global ignore
-ai-git-config --check
+ai config git --check
 
 # Check if locally overridden
 cat .git/info/exclude
 
 # Re-setup if needed
-ai-git-config --setup
+ai config git --setup
 ```
 
 ### Want to commit contexts but they're ignored
@@ -207,7 +322,7 @@ ai-git-config --setup
 
 **Solution** (Opt-in per project):
 ```bash
-# Create or edit .ai-config in project
+# Edit .ai-config
 cat > .ai-config << 'EOF'
 {
   "git": {
@@ -216,20 +331,22 @@ cat > .ai-config << 'EOF'
 }
 EOF
 
-# Now you can commit
-git add claude.md gemini.md agents.md
-git commit -m "docs: add AI context files"
+# Add files manually
+git add -f .ai-context/
+git commit -m "Add AI context files"
 ```
+
+---
 
 ## Update Issues
 
-### ai-update fails with merge conflicts
+### ai config update fails with merge conflicts
 
 **Cause**: Local changes conflict with remote
 
 **Solution**:
 ```bash
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
+cd ~/workspace/ai-terminal-agent
 
 # Stash changes
 git stash
@@ -245,27 +362,26 @@ git stash show
 git stash pop
 ```
 
-### ai-update says "Not a git repository"
+### "Not a git repository" error
 
 **Cause**: Repository not initialized with Git
 
 **Solution**:
 ```bash
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
+cd ~/workspace/ai-terminal-agent
 
 # Initialize Git
 git init
 
 # Add remote (if you have one)
-git remote add origin https://github.com/seu-usuario/ai-terminal-agent.git
-
-# Or use without Git
-# (manual updates only)
+git remote add origin https://github.com/your-user/ai-terminal-agent.git
 ```
+
+---
 
 ## Performance Issues
 
-### ai-start is slow
+### ai start is slow
 
 **Causes**:
 - Large backups directory
@@ -273,7 +389,7 @@ git remote add origin https://github.com/seu-usuario/ai-terminal-agent.git
 
 **Solution**:
 ```bash
-# Clean old backups (keeps last 3 days by default)
+# Clean old backups (keeps last 3 days)
 find ~/.ai-workspace/backups -type f -mtime +3 -delete
 
 # Clean old sessions
@@ -287,9 +403,12 @@ find ~/.ai-workspace/sessions -type d -mtime +30 -delete
 **Solution**:
 - Archive old sections
 - Start fresh periodically
-- Use separate context files for different phases
+- Use separate files for different phases
+- Consider splitting large files
 
-## System-Wide Issues
+---
+
+## System Issues
 
 ### macOS says scripts are from "unidentified developer"
 
@@ -298,76 +417,84 @@ find ~/.ai-workspace/sessions -type d -mtime +30 -delete
 **Solution**:
 ```bash
 # Remove quarantine attribute
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
+cd ~/workspace/ai-terminal-agent
 xattr -dr com.apple.quarantine bin/
+xattr -dr com.apple.quarantine lib/
 ```
 
-### jq not found
+### Scripts hang or timeout
 
-**Symptoms**:
-- Some commands show basic output only
-- JSON parsing fails
+**Cause**: Network issues or API rate limits
 
 **Solution**:
+- Check internet connection
+- Wait and retry
+- Check AI provider status pages
+
+---
+
+## Diagnostic Commands
+
+### Run Health Check
+
 ```bash
-brew install jq
+ai config doctor
 ```
 
-## Getting Help
+Shows:
+- System status
+- AI CLI status
+- Configuration status
+- Agent library status
 
-If none of these solutions work:
+### Check Agent Status
 
-### 1. Run Health Check
 ```bash
-ai-health-check
+ai agents doctor
 ```
 
-### 2. Check Logs
-```bash
-# Check for error messages in recent commands
-# Most scripts output to stderr
+Shows:
+- Agent library health
+- Profile configuration
+- Token usage
 
-# Check system logs if needed
-log show --predicate 'process == "iTerm2"' --last 1h
+### Check Context Status
+
+```bash
+ai context check
 ```
 
-### 3. Verify Installation
+Shows:
+- Context file existence
+- File contents summary
+- Sync status
+
+### View Active Workspaces
+
 ```bash
-# Re-run installation
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-./install.sh
+ai status
 ```
 
-### 4. Check Repository
-```bash
-# Verify all files are present
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-ls -la bin/
-ls -la templates/
-ls -la config/
-```
+Shows:
+- Active workspaces
+- Project paths
+- Start times
 
-### 5. File an Issue
-If problem persists, create an issue with:
-- Output of `ai-health-check`
-- Error messages
-- Steps to reproduce
-- Your macOS version
-- AI CLI versions
+---
 
 ## Common Error Messages
 
-### "No context files found"
-**Fix**: Run `ai-start` first to create context files
+| Error | Fix |
+|-------|-----|
+| "No context files found" | Run `ai context init` |
+| "File not found: config.json" | Run `./install.sh` again |
+| "Repository not found" | Check `~/.ai-workspace/config.json` |
+| "Tracking file corrupted" | Run `ai workspace recover` |
+| "Agent library empty" | Run `ai agents update` |
+| "Profile not found" | Run `ai agents profile list` |
+| "jq: command not found" | Run `brew install jq` |
 
-### "File not found: config.json"
-**Fix**: Run `install.sh` again
-
-### "Repository not found"
-**Fix**: Check `~/.ai-workspace/config.json` has correct repo path
-
-### "Tracking file corrupted"
-**Fix**: Delete and rebuild: `rm ~/.ai-workspace/tracking.json && ai-recover`
+---
 
 ## Prevention
 
@@ -375,8 +502,8 @@ If problem persists, create an issue with:
 
 ```bash
 # Weekly
-ai-health-check
-ai-update
+ai config doctor
+ai config update
 
 # Monthly
 # Clean old backups
@@ -388,15 +515,56 @@ du -sh ~/.ai-workspace/
 
 ### Best Practices
 
-1. Always use `ai-stop` to close workspaces
-2. Run `ai-recover` after system crashes
-3. Keep AI CLIs updated: `npm update -g`
-4. Backup important context files: `ai-export`
-5. Test after updates: `ai-health-check`
+1. **Always use `ai stop`** to close workspaces properly
+2. **Run `ai workspace recover`** after system crashes
+3. **Keep AI CLIs updated**: `npm update -g`
+4. **Backup important contexts**: `ai config export`
+5. **Test after updates**: `ai config doctor`
 
-## Still Having Issues?
+---
 
-- Check [Usage Guide](usage.md) for correct usage
-- Review [Installation Guide](installation.md)
-- See [Configuration](configuration.md) for options
-- Check GitHub issues for similar problems
+## Getting More Help
+
+If none of these solutions work:
+
+### 1. Run Full Diagnostics
+
+```bash
+ai config doctor
+ai agents doctor
+ai context check
+```
+
+### 2. Check Repository
+
+```bash
+cd ~/workspace/ai-terminal-agent
+ls -la bin/
+ls -la lib/
+ls -la templates/
+```
+
+### 3. Re-run Installation
+
+```bash
+cd ~/workspace/ai-terminal-agent
+./install.sh
+```
+
+### 4. File an Issue
+
+If problem persists, create an issue with:
+- Output of `ai config doctor`
+- Error messages
+- Steps to reproduce
+- Your macOS version
+- AI CLI versions
+
+---
+
+## Additional Resources
+
+- [Installation Guide](installation.md) - Setup issues
+- [Usage Guide](usage.md) - How to use commands
+- [Agent Management](agent-management.md) - Agent issues
+- [Quick Reference](quick-reference.md) - Command reference

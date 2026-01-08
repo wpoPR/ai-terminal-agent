@@ -1,6 +1,6 @@
 #!/bin/bash
 # AI Terminal Agent - Installation Script
-# Version: 1.0.0
+# Version: 2.0.0
 
 set -e  # Exit on error
 
@@ -181,48 +181,40 @@ pre_install_check() {
 create_symlinks() {
   echo "🔗 Creating symlinks in ~/bin/..."
 
-  # List of scripts to symlink
+  # Main unified CLI entry point
+  rm -f "$BIN_DIR/ai"
+  ln -sf "$REPO_DIR/bin/ai" "$BIN_DIR/ai"
+  chmod +x "$REPO_DIR/bin/ai"
+  print_success "ai (unified CLI)"
+
+  # Consolidated modules
   local scripts=(
-    "ai-workspace-launcher.sh:ai-start"
-    "ai-stop.sh:ai-stop"
-    "ai-status.sh:ai-status"
-    "ai-recent.sh:ai-recent"
-    "ai-recover.sh:ai-recover"
-    "ai-diff.sh:ai-diff"
-    "ai-update.sh:ai-update"
-    "ai-help.sh:ai-help"
-    "ai-health-check.sh:ai-health-check"
-    "ai-git-config.sh:ai-git-config"
-    "ai-export.sh:ai-export"
-    "ai-import.sh:ai-import"
-    "ai-tips.sh:ai-tips"
+    "ai-workspace.sh:ai-workspace"
+    "ai-context.sh:ai-context"
+    "ai-config.sh:ai-config"
+    "ai-help-unified.sh:ai-help"
     "ai-agents.sh:ai-agents"
+    "generate-project.sh:generate-project"
     "ai-agents-setup-interactive.sh:ai-agents-setup-interactive"
     "ai-agents-activate.sh:ai-agents-activate"
-    "ai-context-init.sh:ai-context-init"
-    "ai-context-check.sh:ai-context-check"
-    "ai-quick.sh:ai-quick"
-    "generate-project-claude.sh:generate-project-claude"
-    "generate-project-gemini.sh:generate-project-gemini"
-    "generate-project-codex.sh:generate-project-codex"
+    "generate-agent-index.sh:generate-agent-index"
     "generate-daily-summary.sh:generate-daily-summary"
   )
 
   for script_pair in "${scripts[@]}"; do
     local source="${script_pair%%:*}"
     local target="${script_pair##*:}"
-
-    # Remove existing symlink or file
     rm -f "$BIN_DIR/$target"
-
-    # Create symlink
     ln -sf "$REPO_DIR/bin/$source" "$BIN_DIR/$target"
   done
+  print_success "All modules linked"
 
   # Make all scripts executable
   chmod +x "$REPO_DIR"/bin/*.sh 2>/dev/null || true
+  chmod +x "$REPO_DIR"/bin/ai 2>/dev/null || true
+  chmod +x "$REPO_DIR"/lib/*.sh 2>/dev/null || true
 
-  print_success "Symlinks created"
+  print_success "All symlinks created"
   echo ""
 }
 
@@ -336,7 +328,7 @@ save_repo_location() {
   echo "💾 Saving repository location..."
 
   local config_file="$WORKSPACE_DIR/config.json"
-  echo "{\"repo_path\": \"$REPO_DIR\", \"version\": \"1.0.0\", \"installed_at\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > "$config_file"
+  echo "{\"repo_path\": \"$REPO_DIR\", \"version\": \"2.0.0\", \"installed_at\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > "$config_file"
 
   print_success "Repository location saved"
   echo ""
@@ -347,11 +339,11 @@ run_health_check() {
   echo "🏥 Running health check..."
   echo ""
 
-  # Only run if ai-health-check exists
-  if [[ -x "$REPO_DIR/bin/ai-health-check.sh" ]]; then
-    "$BIN_DIR/ai-health-check" || true
+  # Run health check via unified CLI
+  if [[ -x "$REPO_DIR/bin/ai-config.sh" ]]; then
+    "$REPO_DIR/bin/ai-config.sh" doctor || true
   else
-    print_warning "ai-health-check.sh not found yet (will be available after creating all scripts)"
+    print_info "Health check will be available after installation"
   fi
 }
 
@@ -363,21 +355,25 @@ show_quickstart() {
   echo ""
   echo "📚 Quick Start:"
   echo "   cd ~/your-project"
-  echo "   ai-start"
+  echo "   ai start                    # Start workspace"
+  echo "   ai status                   # Check status"
+  echo "   ai stop                     # Close workspace"
+  echo ""
+  echo "📖 Commands:"
+  echo "   ai workspace ...            # Workspace management"
+  echo "   ai agents ...               # Agent management"
+  echo "   ai context ...              # Context management"
+  echo "   ai config ...               # Configuration"
+  echo "   ai help [topic]             # Help"
   echo ""
   echo "📖 Full documentation:"
-  echo "   ai-help"
+  echo "   ai help"
   echo ""
-  echo "🔧 Repository location:"
+  echo "🔧 Repository:"
   echo "   $REPO_DIR"
   echo ""
-  echo "💡 To edit scripts:"
-  echo "   cd $REPO_DIR"
-  echo "   # Edit files in bin/"
-  echo "   # Changes take effect immediately (symlinks)"
-  echo ""
   echo "🔄 To update:"
-  echo "   ai-update"
+  echo "   ai config update"
   echo ""
 
   # Check if PATH includes ~/bin

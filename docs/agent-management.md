@@ -1,424 +1,460 @@
 # Agent Management Guide
 
-Guia completo do sistema de gerenciamento de agentes do AI Terminal Agent.
+Complete guide to the dynamic agent management system in AI Terminal Agent.
 
-## Visão Geral
+## Overview
 
-O sistema de agentes permite que você ative apenas os agentes especializados que precisa para cada projeto, reduzindo drasticamente o uso de tokens:
+The agent system lets you activate only the specialized agents you need for each project, dramatically reducing token usage:
 
-- **Sem gerenciamento**: ~34.3k tokens (45 agentes ativos)
-- **Com gerenciamento**: ~8-12k tokens (3-5 agentes por perfil)
-- **Benefício**: 60-70% de redução, melhor performance
+| Configuration | Agents | Tokens |
+|---------------|--------|--------|
+| Without management | 47 agents | ~34k tokens |
+| With management | 3-5 agents | ~8-12k tokens |
+| **Savings** | | **60-70%** |
 
-## Conceitos
+---
 
-### Biblioteca Global
+## Concepts
 
-Todos os agentes disponíveis ficam em `~/.ai-workspace/agents/`:
-- 45 agentes especializados
-- Mantidos sincronizados com o repositório
-- Atualizados via `ai-agents update`
+### Global Agent Library
 
-### Agentes Ativos
+All available agents live in `~/.ai-workspace/agents/`:
+- 47 specialized agents
+- Synced with the repository
+- Updated via `ai agents update`
 
-Agentes copiados para `.claude/agents/` do projeto atual:
-- Apenas os agentes necessários para o projeto
-- Claude Code lê automaticamente
-- Gerenciados via comandos `ai-agents`
+### Active Agents
 
-### Perfis
+Agents copied to `.claude/agents/` in your project:
+- Only agents needed for the project
+- Claude Code reads them automatically
+- Managed via `ai agents` commands
 
-Combinações pré-definidas de agentes:
-- 11 perfis disponíveis
-- Baseados em tipos de projeto
-- Customizáveis via comandos
+### Profiles
+
+Pre-defined combinations of agents:
+- 11 profiles available
+- Based on project types
+- Customizable via commands
 
 ### Token Tracking
 
-Monitoramento automático de uso:
-- Cálculo aproximado (1 token ≈ 4 caracteres)
-- Limite recomendado: 15,000 tokens
-- Alertas quando ultrapassa 80%
+Automatic usage monitoring:
+- Approximate calculation (1 token ≈ 4 characters)
+- Recommended limit: 15,000 tokens
+- Warnings when exceeding 80%
 
-## Perfis Disponíveis
+---
 
-### frontend (4 agentes, ~10.4k tokens)
+## Available Profiles
+
+| Profile | Agents | Tokens | Best For |
+|---------|--------|--------|----------|
+| `minimal` | 2 | ~5k | Code review only, simple projects |
+| `frontend` | 4 | ~10k | React, Next.js, Vue, Angular, design systems |
+| `backend` | 4 | ~11k | APIs REST/GraphQL, microservices, Node.js, Python |
+| `fullstack` | 4 | ~11k | Full web apps, MVPs, startups |
+| `mobile` | 3 | ~10k | iOS/Android, React Native, Flutter |
+| `devops` | 5 | ~14k | Infrastructure, CI/CD, deployment, monitoring |
+| `data` | 4 | ~12k | Data pipelines, analytics, query optimization |
+| `ai-ml` | 4 | ~12k | LLMs, RAG, ML models, AI deployment |
+| `security` | 4 | ~13k | Security audits, pen testing, compliance |
+| `docs` | 4 | ~10k | Technical docs, APIs, tutorials, diagrams |
+| `research` | 3 | ~10k | Research, investigation, performance analysis |
+
+### Profile Details
+
+#### minimal (2 agents, ~5k tokens)
+```
+- code-reviewer
+- architect-review
+```
+
+#### frontend (4 agents, ~10k tokens)
+```
 - frontend-developer
 - frontend-security-coder
 - ui-ux-designer
 - code-reviewer
+```
 
-**Ideal para**: React, Next.js, Vue, Angular, design systems
-
-### backend (4 agentes, ~11.2k tokens)
+#### backend (4 agents, ~11k tokens)
+```
 - backend-architect
 - backend-security-coder
 - api-documenter
 - code-reviewer
+```
 
-**Ideal para**: APIs REST/GraphQL, microserviços, Node.js, Python backends
-
-### fullstack (4 agentes, ~10.6k tokens)
+#### fullstack (4 agents, ~11k tokens)
+```
 - frontend-developer
 - backend-architect
 - database-architect
 - code-reviewer
+```
 
-**Ideal para**: Aplicações web completas, MVPs, startups
-
-### mobile (3 agentes, ~9.8k tokens)
+#### mobile (3 agents, ~10k tokens)
+```
 - mobile-developer
 - backend-architect
 - mobile-security-coder
+```
 
-**Ideal para**: Apps iOS/Android, React Native, Flutter
-
-### devops (5 agentes, ~14.2k tokens)
+#### devops (5 agents, ~14k tokens)
+```
 - kubernetes-architect
 - terraform-specialist
 - deployment-engineer
 - observability-engineer
 - devops-troubleshooter
+```
 
-**Ideal para**: Infraestrutura, CI/CD, deployment, monitoring
-
-### data (4 agentes, ~11.8k tokens)
+#### data (4 agents, ~12k tokens)
+```
 - data-engineer
 - database-architect
 - database-optimizer
 - data-scientist
+```
 
-**Ideal para**: Pipelines de dados, analytics, otimização de queries
-
-### ai-ml (4 agentes, ~12.4k tokens)
+#### ai-ml (4 agents, ~12k tokens)
+```
 - ai-engineer
 - ml-production-engineer
 - mlops-engineer
 - prompt-engineer
+```
 
-**Ideal para**: LLMs, RAG, modelos ML, deployment de AI
-
-### security (4 agentes, ~11.6k tokens)
+#### security (4 agents, ~13k tokens)
+```
 - security-auditor
 - frontend-security-coder
 - backend-security-coder
 - code-reviewer
+```
 
-**Ideal para**: Auditorias de segurança, pen testing, compliance
-
-### docs (4 agentes, ~10.8k tokens)
+#### docs (4 agents, ~11k tokens)
+```
 - docs-architect
 - api-documenter
 - tutorial-engineer
 - mermaid-diagram-expert
+```
 
-**Ideal para**: Documentação técnica, APIs, tutoriais, diagramas
-
-### research (3 agentes, ~8.6k tokens)
+#### research (3 agents, ~9k tokens)
+```
 - gemini-research-assistant
 - search-specialist
 - performance-engineer
-
-**Ideal para**: Pesquisa, investigação, análise de performance
-
-### minimal (2 agentes, ~5.2k tokens)
-- code-reviewer
-- architect-review
-
-**Ideal para**: Code review apenas, projetos simples
-
-## Comandos
-
-### Visualização
-
-```bash
-# Listar todos os agentes disponíveis
-ai-agents list
-
-# Listar agentes de uma categoria
-ai-agents list --category web
-
-# Ver agentes ativos no projeto atual
-ai-agents active
-
-# Ver informações de um agente
-ai-agents info frontend-developer
-
-# Buscar agentes por palavra-chave
-ai-agents search react
 ```
 
-### Perfis
+---
+
+## Commands
+
+### View Agents
 
 ```bash
-# Listar perfis disponíveis
-ai-agents profile list
+# List all available agents
+ai agents list
 
-# Ver perfil atual
-ai-agents profile
+# List agents by category
+ai agents list --category web
 
-# Ativar um perfil
-ai-agents profile fullstack
+# Show active agents in project
+ai agents active
 
-# Combinar múltiplos perfis
-ai-agents profile frontend+security
+# Show agent details
+ai agents info frontend-developer
 
-# Voltar ao perfil minimal
-ai-agents reset
+# Search agents by keyword
+ai agents search react
 ```
 
-### Gerenciamento Individual
+### Profile Management
 
 ```bash
-# Ativar um agente específico
-ai-agents enable test-automator
+# List available profiles
+ai agents profile list
 
-# Desativar um agente
-ai-agents disable frontend-security-coder
+# Show current profile
+ai agents profile
+
+# Activate a profile
+ai agents profile fullstack
+
+# Combine multiple profiles
+ai agents profile frontend+security
+
+# Reset to minimal
+ai agents reset
 ```
 
-### Estatísticas e Diagnóstico
+### Individual Agent Management
 
 ```bash
-# Ver estatísticas detalhadas de tokens
-ai-agents stats
+# Enable a specific agent
+ai agents enable test-automator
 
-# Sugerir perfil baseado no projeto
-ai-agents suggest
-
-# Diagnóstico completo do sistema
-ai-agents doctor
-
-# Atualizar biblioteca de agentes
-ai-agents update
+# Disable an agent
+ai agents disable frontend-security-coder
 ```
+
+### Statistics & Diagnostics
+
+```bash
+# Show detailed token statistics
+ai agents stats
+
+# Get profile suggestion for project
+ai agents suggest
+
+# Run full diagnostics
+ai agents doctor
+
+# Update agent library
+ai agents update
+```
+
+---
 
 ## Workflows
 
-### Novo Projeto
+### New Project
 
 ```bash
-cd ~/meu-novo-projeto
-ai-start
+cd ~/my-new-project
+ai start
 
-# Menu interativo aparece
-# Escolha perfil baseado no tipo de projeto
-# Agentes são configurados automaticamente
+# Interactive menu appears
+# Choose profile based on project type
+# Agents are configured automatically
 ```
 
-### Projeto Existente
+### Existing Project
 
 ```bash
-cd ~/projeto-existente
-ai-start
+cd ~/existing-project
+ai start
 
-# Se já tem .ai-config, carrega perfil salvo
-# Senão, menu interativo aparece
+# If .ai-config exists, loads saved profile
+# Otherwise, interactive menu appears
 ```
 
-### Trocar de Perfil
+### Changing Profiles
 
 ```bash
-# Você está trabalhando com frontend, mas agora precisa de DevOps
-ai-agents profile devops
+# You're working on frontend, now need DevOps
+ai agents profile devops
 
-# Restart Claude Code para carregar novos agentes
+# Restart Claude Code to load new agents
 ```
 
-### Adicionar Agente Temporário
+### Adding Agent Temporarily
 
 ```bash
-# Precisa de testes apenas agora
-ai-agents enable test-automator
+# Need tests only now
+ai agents enable test-automator
 
 # Restart Claude Code
 
-# Quando terminar
-ai-agents disable test-automator
+# When done
+ai agents disable test-automator
 ```
 
-### Combinar Perfis
+### Combining Profiles
 
 ```bash
-# Projeto full stack com foco em segurança
-ai-agents profile fullstack+security
+# Full stack project with security focus
+ai agents profile fullstack+security
 
-# Resultado: união dos agentes dos dois perfis (sem duplicatas)
+# Result: union of agents from both profiles (no duplicates)
 ```
 
-## Integração com ai-status
+---
 
-O `ai-status` mostra automaticamente informações sobre agentes:
+## Smart Suggestion
+
+The `ai agents suggest` command analyzes your project and suggests the best profile:
 
 ```bash
-ai-status
+ai agents suggest
+
+# Output:
+# Analyzing project...
+#
+# Detected: React/Next.js → frontend profile
+# Detected: Node.js backend → backend profile
+#
+# Recommendation: fullstack profile
+#
+# To activate: ai agents profile fullstack
+```
+
+### Auto-Detection
+
+The system detects:
+- **Frontend**: `package.json` with react, next, vue, angular
+- **Backend**: `package.json` with express, fastify, koa
+- **Python Backend**: `requirements.txt` with fastapi, flask, django
+- **Mobile**: `ios/Podfile`, `android/build.gradle`
+- **DevOps**: `Dockerfile`, `k8s/`, `*.tf`
+- **Data**: `requirements.txt` with pandas, numpy
+- **AI/ML**: `requirements.txt` with tensorflow, pytorch
+
+---
+
+## Integration with Status
+
+The `ai status` command shows agent information automatically:
+
+```bash
+ai status
 
 # Output includes:
+#
 # Agent Management
-# ════════════════
+# ────────────────
 # Profile: fullstack
 # Active Agents: 4
 # Tokens: ~10,600 / 15,000 (70%)
 #
 # Commands:
-#   ai-agents stats     - Detailed agent statistics
-#   ai-agents active    - List active agents
+#   ai agents stats     - Detailed statistics
+#   ai agents active    - List active agents
 ```
 
-## Sugestão Inteligente
+---
 
-O comando `ai-agents suggest` analisa o projeto e sugere o perfil mais adequado:
+## Best Practices
+
+### 1. Use Appropriate Profiles
+
+- **Don't use devops** for simple frontend projects
+- **Don't use fullstack** if you only need backend
+- **Use minimal** for quick code review
+
+### 2. Monitor Tokens
 
 ```bash
-ai-agents suggest
+# Always check after activating agents
+ai agents stats
 
-# Analyzing project...
-# 
-# ✓ Detected: React/Next.js → frontend profile
-# ✓ Detected: Node.js backend → backend profile
-# 
-# Recommendation: fullstack profile
-# 
-# Confidence: 40%
-# 
-# To activate: ai-agents profile fullstack
+# If > 80%, consider switching profiles
 ```
 
-### Detecção Automática
+### 3. Combine Profiles When Needed
 
-O sistema detecta:
-- **Frontend**: `package.json` com react, next, vue, angular
-- **Backend**: `package.json` com express, fastify, koa
-- **Python Backend**: `requirements.txt` com fastapi, flask, django
-- **Mobile**: `ios/Podfile`, `android/build.gradle`
-- **DevOps**: `Dockerfile`, `k8s/`, `*.tf`
-- **Data**: `requirements.txt` com pandas, numpy
-- **AI/ML**: `requirements.txt` com tensorflow, pytorch
+```bash
+# Instead of adding individual agents
+ai agents profile frontend+security
+
+# More organized and easier to manage
+```
+
+### 4. Use Automatic Suggestion
+
+```bash
+# In new projects, always run
+ai agents suggest
+
+# May reveal non-obvious needs
+```
+
+### 5. Update Regularly
+
+```bash
+# After each repository update
+ai agents update
+
+# Keeps agents synced
+```
+
+---
 
 ## Troubleshooting
 
-### Agentes não aparecem no Claude Code
+### Agents not appearing in Claude Code
 
-**Problema**: Ativei agentes mas Claude não os reconhece
+**Problem**: Activated agents but Claude doesn't recognize them
 
-**Solução**:
+**Solution**:
 ```bash
-# Verificar se agentes estão em .claude/agents/
+# Check if agents are in .claude/agents/
 ls -la .claude/agents/
 
-# Se não existir, ativar perfil novamente
-ai-agents profile <nome>
+# If missing, reactivate profile
+ai agents profile <name>
 
 # Restart Claude Code/Cursor
 ```
 
-### Token usage muito alto
+### Token usage too high
 
-**Problema**: Mesmo com perfil, tokens estão altos
+**Problem**: Even with profile, tokens are high
 
-**Solução**:
+**Solution**:
 ```bash
-# Ver detalhes
-ai-agents stats
+# See details
+ai agents stats
 
-# Trocar para perfil mais leve
-ai-agents profile minimal
+# Switch to lighter profile
+ai agents profile minimal
 
-# Ou desativar agentes específicos
-ai-agents disable <nome>
+# Or disable specific agents
+ai agents disable <name>
 ```
 
 ### Agent library not found
 
-**Problema**: `ai-agents list` retorna erro
+**Problem**: `ai agents list` returns error
 
-**Solução**:
+**Solution**:
 ```bash
-# Atualizar biblioteca
-ai-agents update
+# Update library
+ai agents update
 
-# Ou re-executar instalação
-cd ~/workspace/primavera/ai-terminal-agent
+# Or re-run installation
+cd ~/workspace/ai-terminal-agent
 ./install.sh
 ```
 
-### Perfil não salva no .ai-config
+### Profile not saving to .ai-config
 
-**Problema**: Toda vez que rodo `ai-start`, pergunta perfil
+**Problem**: Every time `ai start` runs, asks for profile
 
-**Solução**:
+**Solution**:
 ```bash
-# Verificar se jq está instalado
+# Check if jq is installed
 brew install jq
 
-# Verificar .ai-config
+# Check .ai-config
 cat .ai-config
 
-# Re-aplicar perfil
-ai-agents profile <nome>
+# Re-apply profile
+ai agents profile <name>
 ```
 
-## Best Practices
+---
 
-### 1. Use Perfis Apropriados
-
-- **Não use devops** para projetos frontend simples
-- **Não use fullstack** se só precisa de backend
-- **Use minimal** para code review rápido
-
-### 2. Monitore Tokens
-
-```bash
-# Sempre verifique após ativar agentes
-ai-agents stats
-
-# Se > 80%, considere trocar perfil
-```
-
-### 3. Combine Perfis Quando Necessário
-
-```bash
-# Em vez de adicionar agentes individuais
-ai-agents profile frontend+security
-
-# Mais organizado e fácil de gerenciar
-```
-
-### 4. Use Sugestão Automática
-
-```bash
-# Em novos projetos, sempre rode
-ai-agents suggest
-
-# Pode revelar necessidades não óbvias
-```
-
-### 5. Atualize Regularmente
-
-```bash
-# A cada update do repositório
-ai-agents update
-
-# Mantém agentes sincronizados
-```
-
-## Configuração Avançada
+## Advanced Configuration
 
 ### Custom Token Limit
 
-No `.ai-config`:
+In `.ai-config`:
 
 ```json
 {
   "agents": {
     "profile": "fullstack",
-    "enabled": [...],
+    "enabled": [],
     "token_limit": 12000
   }
 }
 ```
 
-### Desativar Auto-update
+### Disable Auto-update
 
 ```json
 {
@@ -428,9 +464,9 @@ No `.ai-config`:
 }
 ```
 
-### Pre-configurar Perfil
+### Pre-configure Profile
 
-Ao criar projeto, adicione `.ai-config` com perfil:
+When creating a project, add `.ai-config` with profile:
 
 ```json
 {
@@ -440,40 +476,98 @@ Ao criar projeto, adicione `.ai-config` com perfil:
 }
 ```
 
-Quando rodar `ai-start`, carrega automaticamente.
+When running `ai start`, loads automatically.
+
+---
+
+## Custom Agents
+
+### Creating Your Own Agent
+
+1. Create a markdown file in `~/.ai-workspace/agents/`:
+
+```bash
+cat > ~/.ai-workspace/agents/my-custom-agent.md << 'EOF'
+# My Custom Agent
+
+## Role
+Description of what this agent does.
+
+## Expertise
+- Skill 1
+- Skill 2
+
+## Guidelines
+- Guideline 1
+- Guideline 2
+EOF
+```
+
+2. Update the agent index:
+
+```bash
+ai agents update
+```
+
+3. Enable in your project:
+
+```bash
+ai agents enable my-custom-agent
+```
+
+### Custom Profile
+
+1. Create a profile in `~/.ai-workspace/agent-profiles/`:
+
+```bash
+cat > ~/.ai-workspace/agent-profiles/my-profile.json << 'EOF'
+{
+  "name": "my-profile",
+  "description": "My custom profile",
+  "agents": [
+    "code-reviewer",
+    "my-custom-agent"
+  ]
+}
+EOF
+```
+
+2. Activate:
+
+```bash
+ai agents profile my-profile
+```
+
+---
 
 ## FAQ
 
-**P: Posso ter agentes diferentes em cada projeto?**  
-R: Sim! Cada projeto tem seu próprio `.claude/agents/` e `.ai-config`.
+**Q: Can I have different agents in each project?**
+A: Yes! Each project has its own `.claude/agents/` and `.ai-config`.
 
-**P: Preciso reiniciar Claude toda vez que mudo agentes?**  
-R: Sim, Claude lê agentes apenas no startup.
+**Q: Do I need to restart Claude every time I change agents?**
+A: Yes, Claude reads agents only at startup.
 
-**P: Posso customizar os perfis?**  
-R: Sim, edite os arquivos JSON em `~/.ai-workspace/agent-profiles/`.
+**Q: Can I customize profiles?**
+A: Yes, edit the JSON files in `~/.ai-workspace/agent-profiles/`.
 
-**P: Os agentes afetam performance do Claude?**  
-R: Sim, mais agentes = mais tokens = performance levemente impactada.
+**Q: Do agents affect Claude performance?**
+A: Yes, more agents = more tokens = slightly impacted performance.
 
-**P: Posso adicionar meus próprios agentes?**  
-R: Sim, adicione arquivos `.md` em `~/.ai-workspace/agents/` e rode `ai-agents update`.
+**Q: Can I add my own agents?**
+A: Yes, add `.md` files in `~/.ai-workspace/agents/` and run `ai agents update`.
 
-**P: O que acontece se deletar `.claude/agents/`?**  
-R: Agentes são desativados. Rode `ai-agents profile <nome>` para reativar.
+**Q: What happens if I delete `.claude/agents/`?**
+A: Agents are deactivated. Run `ai agents profile <name>` to reactivate.
 
-## Recursos Adicionais
+**Q: How do I know which agents are available?**
+A: Run `ai agents list` or `ai agents search <keyword>`.
 
-- [Quick Reference](quick-reference.md) - Comandos rápidos
-- [Installation Guide](installation.md) - Instalação detalhada
-- [Troubleshooting](troubleshooting.md) - Problemas comuns
-- [README](../README.md) - Visão geral do projeto
+---
 
-## Suporte
+## Additional Resources
 
-Se encontrar problemas:
-
-1. Rode `ai-agents doctor` para diagnóstico
-2. Verifique [Troubleshooting](troubleshooting.md)
-3. Abra issue no GitHub com output do `doctor`
-
+- [Quick Reference](quick-reference.md) - Quick commands
+- [Installation Guide](installation.md) - Detailed installation
+- [Usage Guide](usage.md) - How to use the system
+- [Troubleshooting](troubleshooting.md) - Common issues

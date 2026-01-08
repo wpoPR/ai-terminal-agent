@@ -1,193 +1,281 @@
 # Installation Guide
 
+Complete guide to installing AI Terminal Agent.
+
 ## Prerequisites
 
-Before installing AI Terminal Agent, ensure you have:
-
 ### Required
+
 - **macOS** 14.0 or later
 - **iTerm2** - Download from [iterm2.com](https://iterm2.com/)
 - **Git** - Install via `xcode-select --install`
 - **At least one AI CLI**:
   - Claude: `npm install -g @anthropic-ai/claude-code`
-  - Gemini: `npm install -g @google/generative-ai`
-  - Codex: `npm install -g @openai/codex`
+  - Gemini: `npm install -g @google/generative-ai` (optional)
+  - Codex: OpenAI CLI (optional)
 
 ### Recommended
+
 - **jq** - JSON processor: `brew install jq`
 - **Homebrew** - Package manager for macOS
 
-## Installation Methods
+---
 
-### Method 1: Fresh Installation
-
-If this is your first time installing:
+## Quick Installation
 
 ```bash
-# 1. Create directory
-mkdir -p ~/workspace/primavera
-cd ~/workspace/primavera
-
-# 2. Clone repository (or create from scratch)
-git clone https://github.com/seu-usuario/ai-terminal-agent.git
+# Clone repository
+cd ~/workspace
+git clone https://github.com/your-user/ai-terminal-agent.git
 cd ai-terminal-agent
 
-# 3. Run installation
+# Run installation
 ./install.sh
+
+# Restart shell
+source ~/.zshrc
 ```
 
-### Method 2: Manual Setup
-
-If you're setting up without Git initially:
-
-```bash
-# 1. Create directory structure
-mkdir -p /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-
-# 2. Download files or copy the repository contents here
-
-# 3. Initialize Git (optional but recommended)
-git init
-git add .
-git commit -m "Initial setup"
-
-# 4. Run installation
-./install.sh
-```
+---
 
 ## What install.sh Does
 
-The installation script performs the following steps:
+The installation script performs:
 
-1. **Dependency Check** - Verifies macOS, iTerm2, Git, jq
-2. **iTerm2 Configuration** - Sets up Shift+Enter key binding
-3. **AI CLI Check** - Verifies Claude, Gemini, Codex installation
-4. **Directory Creation** - Creates `~/.ai-workspace/`, `~/templates/`
-5. **Symlink Creation** - Links `~/bin/ai-*` to repository scripts
-6. **Template Installation** - Copies templates to `~/templates/ai-contexts/`
-7. **Git Configuration** - Sets up `~/.gitignore_global`
-8. **Shell Configuration** - Updates `~/.zshrc`
-9. **Repository Registration** - Saves repo path in config
-10. **Health Check** - Verifies installation
+| Step | Description |
+|------|-------------|
+| 1 | Checks dependencies (macOS, iTerm2, Git, jq) |
+| 2 | Configures iTerm2 Shift+Enter key binding |
+| 3 | Verifies AI CLIs (Claude, Gemini, Codex) |
+| 4 | Creates directories (`~/.ai-workspace/`, `~/templates/`) |
+| 5 | Creates symlinks in `~/bin/` |
+| 6 | Installs templates |
+| 7 | Sets up agent management system (47 agents, 11 profiles) |
+| 8 | Configures Git global ignore |
+| 9 | Updates `~/.zshrc` |
+| 10 | Runs health check |
+
+---
 
 ## Post-Installation
 
-After installation:
-
 ### 1. Restart Shell
+
 ```bash
 source ~/.zshrc
-# or restart your terminal
+# or restart terminal
 ```
 
 ### 2. Verify Installation
+
 ```bash
-ai-health-check
+ai config doctor
 ```
 
 ### 3. Configure iTerm2 (if needed)
-If `/terminal-setup` wasn't available:
+
+If automatic setup didn't work:
 
 1. Open iTerm2
-2. Go to Preferences → Keys → Key Bindings
-3. Click "+" to add new binding
-4. Set: Keyboard Shortcut: `Shift+Enter`
+2. Go to **Preferences** > **Keys** > **Key Bindings**
+3. Click **+** to add new binding
+4. Set Keyboard Shortcut: `Shift+Enter`
 5. Action: "Send Text"
 6. Value: `\n`
 
 ### 4. Authenticate AI CLIs
 
 ```bash
-# Claude
+# Claude (required)
 claude auth login
 
-# Gemini (if required)
+# Gemini (optional)
 gemini auth login
 
-# Codex (if required)
+# Codex (optional)
 codex auth login
 ```
 
-## Troubleshooting Installation
+---
 
-### Issue: "ai-start: command not found"
-**Solution**: Add `~/bin` to PATH or restart shell
-```bash
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+## Directory Structure Created
+
+```
+~/.ai-workspace/
+├── agents/           # 47 agent definitions
+├── agent-profiles/   # 11 profile configs
+├── sessions/         # Active session tracking
+├── backups/          # Context file backups
+├── summaries/
+│   ├── daily/        # Daily work summaries
+│   └── weekly/       # Weekly summaries
+└── config.json       # Installation config
+
+~/bin/
+├── ai                # Main unified CLI
+├── ai-workspace      # Workspace management
+├── ai-context        # Context management
+├── ai-config         # Configuration
+├── ai-agents         # Agent management
+└── ...               # Legacy commands
+
+~/templates/ai-contexts/
+├── project-status.md
+├── current-task.md
+└── ...
 ```
 
-### Issue: "Permission denied" when running scripts
-**Solution**: Make scripts executable
-```bash
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
-chmod +x bin/*.sh
-chmod +x install.sh
-```
+---
 
-### Issue: Git global ignore not working
-**Solution**: Reconfigure
-```bash
-ai-git-config --setup
-```
+## Multi-Machine Setup
 
-### Issue: AI CLIs not installed
-**Solution**: Install via npm
-```bash
-# Install all three
-npm install -g @anthropic-ai/claude-code
-npm install -g @google/generative-ai
-npm install -g @openai/codex
-```
+### First Machine
 
-## Multi-Machine Installation
-
-### First Machine (Setup)
 ```bash
-cd /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
+cd ~/workspace
+git clone https://github.com/your-user/ai-terminal-agent.git
+cd ai-terminal-agent
 ./install.sh
 
-# Push to remote repository
-git remote add origin https://github.com/seu-usuario/ai-terminal-agent.git
+# Push to your remote
+git remote add origin https://github.com/your-user/ai-terminal-agent.git
 git push -u origin main
 ```
 
 ### Additional Machines
+
 ```bash
-cd ~/workspace/primavera
-git clone https://github.com/seu-usuario/ai-terminal-agent.git
+cd ~/workspace
+git clone https://github.com/your-user/ai-terminal-agent.git
 cd ai-terminal-agent
 ./install.sh
 ```
 
-## Uninstallation
+### Keep Synced
 
-To remove AI Terminal Agent:
+```bash
+ai config update    # Pull latest changes
+```
+
+---
+
+## Troubleshooting Installation
+
+### "ai: command not found"
+
+```bash
+# Add ~/bin to PATH
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### "Permission denied"
+
+```bash
+cd ~/workspace/ai-terminal-agent
+chmod +x install.sh bin/*.sh bin/ai
+```
+
+### Git global ignore not working
+
+```bash
+ai config git --setup
+```
+
+### AI CLIs not installed
+
+```bash
+# Claude (main AI)
+npm install -g @anthropic-ai/claude-code
+
+# Gemini (research, summaries)
+npm install -g @google/generative-ai
+
+# OpenAI (optional)
+npm install -g openai
+```
+
+---
+
+## Uninstallation
 
 ```bash
 # 1. Remove symlinks
-rm ~/bin/ai-*
+rm ~/bin/ai ~/bin/ai-*
 
 # 2. Remove templates (optional)
 rm -rf ~/templates/ai-contexts
 
-# 3. Remove tracking data (optional)
+# 3. Remove workspace data (optional)
 rm -rf ~/.ai-workspace
 
-# 4. Remove Git global ignore entry (optional)
-# Edit ~/.gitignore_global and remove AI Workspace lines
+# 4. Remove global CLAUDE.md (optional)
+rm ~/.claude/CLAUDE.md
 
-# 5. Remove zshrc entries (optional)
-# Edit ~/.zshrc and remove AI Terminal Agent section
+# 5. Edit ~/.zshrc - remove AI Terminal Agent section
 
-# 6. Remove repository
-rm -rf /Users/wesleyoliveira/workspace/primavera/ai-terminal-agent
+# 6. Edit ~/.gitignore_global - remove AI Workspace entries
+
+# 7. Remove repository
+rm -rf ~/workspace/ai-terminal-agent
 ```
+
+---
+
+## Verify Installation
+
+After installation, run:
+
+```bash
+ai config doctor
+```
+
+Expected output:
+```
+AI Terminal Agent - Health Check
+================================
+
+System
+------
+[OK] macOS detected
+[OK] iTerm2 installed
+[OK] Git installed
+[OK] jq installed
+
+AI CLIs
+-------
+[OK] Claude CLI installed
+[OK] Gemini CLI installed
+[WARN] Codex CLI not found (optional)
+
+Configuration
+-------------
+[OK] ~/bin in PATH
+[OK] Git global ignore configured
+[OK] Agent library present (47 agents)
+[OK] Profiles configured (11 profiles)
+
+Status: All systems operational
+```
+
+---
 
 ## Next Steps
 
-After installation:
-- Read [Usage Guide](usage.md) to learn how to use the system
-- Check [Configuration](configuration.md) for customization options
-- See [Troubleshooting](troubleshooting.md) for common issues
+After successful installation:
+
+1. **Start your first workspace**:
+   ```bash
+   cd ~/your-project
+   ai start
+   ```
+
+2. **Learn the commands**:
+   ```bash
+   ai help
+   ```
+
+3. **Read documentation**:
+   - [Usage Guide](usage.md)
+   - [Agent Management](agent-management.md)
+   - [Quick Reference](quick-reference.md)

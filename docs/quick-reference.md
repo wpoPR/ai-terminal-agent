@@ -1,328 +1,358 @@
 # Quick Reference: AI Terminal Agent
 
-## 🚀 Início Rápido
+## Quick Start
 
 ```bash
-cd ~/seu-projeto
-ai-start
+cd ~/your-project
+ai start
 ```
 
-iTerm2 abrirá com:
-- **Tab 1 "AIs":** Claude (esq) | Gemini (dir-top) | Codex (dir-bottom)
-- **Tab 2 "Control":** Console de comandos
+iTerm2 will open with:
+- **Tab 1 "AIs":** Claude (left) | Gemini (top-right) | Codex (bottom-right)
+- **Tab 2 "Control":** Command console
 
 ---
 
-## 📋 Comandos Essenciais
+## Essential Commands
 
-| Comando | Descrição |
-|---------|-----------|
-| `ai-start` | Inicia workspace no projeto atual |
-| `ai-stop` | Fecha workspace e gera resumo |
-| `ai-status` | Mostra workspaces ativos |
-| `ai-tips` | Quick tips: divisão de trabalho, exemplos, dicas |
-| `ai-help` | Ajuda completa |
+| Command | Description |
+|---------|-------------|
+| `ai start` | Start workspace in current project |
+| `ai stop` | Close workspace and generate summary |
+| `ai status` | Show active workspaces |
+| `ai help` | Full documentation |
+| `ai help tips` | Quick tips and examples |
+
+### Workspace Management
+
+```bash
+ai workspace start [path]    # Start workspace
+ai workspace stop            # Close with summary
+ai workspace status          # Show active workspaces
+ai workspace recent          # List recent workspaces
+ai workspace recover         # Recover from crashes
+```
+
+### Agent Management
+
+```bash
+ai agents list               # List all available agents
+ai agents active             # Show active agents
+ai agents profile list       # List profiles
+ai agents profile <name>     # Activate profile
+ai agents enable <name>      # Enable agent
+ai agents disable <name>     # Disable agent
+ai agents stats              # Token statistics
+ai agents suggest            # Get profile suggestion
+```
+
+### Context Management
+
+```bash
+ai context init              # Initialize .ai-context/
+ai context init --with-prompts  # Include AI prompts
+ai context check             # Diagnose context state
+ai context sync              # Sync AI configurations
+```
+
+### Configuration
+
+```bash
+ai config doctor             # Health check
+ai config git --setup        # Configure git ignore
+ai config update             # Update from git
+ai config export             # Export configuration
+ai config import <file>      # Import configuration
+```
 
 ---
 
-## 🤖 Quando Usar Cada AI
+## When to Use Each AI
 
-### Claude 🧠 (Análise & Arquitetura)
+### Claude (Analysis & Architecture)
 ```
-✅ Análise de código complexo
-✅ Planejamento de features
-✅ Refatoração
-✅ Debug difícil
+✅ Complex code analysis
+✅ Feature planning
+✅ Refactoring
+✅ Difficult debugging
 ✅ Code review
 
-❌ Pesquisa web
-❌ Código repetitivo simples
+❌ Web research
+❌ Simple repetitive code
 ```
 
-**Exemplo:**
+**Example:**
 ```
-Analise este projeto e crie .ai-context/project-status.md
-com: objetivo, progresso, próximos passos
-```
-
-### Gemini 🔍 (Pesquisa & Docs)
-```
-✅ Pesquisar bibliotecas
-✅ Comparar tecnologias
-✅ Escrever documentação
-✅ Gerar exemplos
-✅ Consultar APIs
-
-❌ Implementar código
-❌ Debug complexo
+Analyze this project and create .ai-context/project-status.md
+with: objective, progress, next steps
 ```
 
-**Exemplo:**
+### Gemini (Research & Docs)
 ```
-Pesquise as melhores bibliotecas JWT para Node.js
+✅ Research libraries
+✅ Compare technologies
+✅ Write documentation
+✅ Generate examples
+✅ Query APIs
+
+❌ Implement code
+❌ Complex debugging
+```
+
+**Example:**
+```
+Research the best JWT libraries for Node.js
 Compare jsonwebtoken vs jose vs paseto
 ```
 
-### Codex 💻 (Implementação)
+### Codex (Implementation)
 ```
-✅ Código repetitivo
-✅ Testes unitários
-✅ Componentes simples
+✅ Repetitive code
+✅ Unit tests
+✅ Simple components
 ✅ Snippets
-✅ Completar código
+✅ Code completion
 
-❌ Decisões arquiteturais
-❌ Análise profunda
+❌ Architectural decisions
+❌ Deep analysis
 ```
 
-**Exemplo:**
+**Example:**
 ```
-/init
-
-[após iniciar]
-Crie testes unitários para src/auth/jwt.js
+Create unit tests for src/auth/jwt.js
 ```
 
 ---
 
-## 📁 Sistema de Contexto Compartilhado
+## Shared Context System
 
-### Estrutura Recomendada
+### Recommended Structure
 
 ```
-seu-projeto/
-├── .ai-context/              # "Memória" compartilhada dos AIs
-│   ├── project-status.md     # Status geral do projeto
-│   ├── current-task.md       # Tarefa atual
-│   ├── decisions.md          # Decisões técnicas
-│   ├── known-issues.md       # Bugs e limitações
-│   └── roadmap.md            # Próximos passos
-├── docs/                     # Documentação pública
-└── [seu código]
-```
-
-### Como Compartilhar Conhecimento
-
-**1. Claude analisa e cria contexto:**
-```
-Analise o projeto e crie .ai-context/project-status.md
+your-project/
+├── .ai-context/              # Shared AI "memory"
+│   ├── project-status.md     # Project overview
+│   ├── current-task.md       # Active task
+│   ├── decisions.md          # Technical decisions
+│   ├── known-issues.md       # Bugs and limitations
+│   └── roadmap.md            # Future plans
+├── docs/                     # Public documentation
+└── [your code]
 ```
 
-**2. Outros AIs leem o contexto:**
-```
-# No Gemini ou Codex:
-Leia .ai-context/project-status.md
+### How to Share Knowledge
 
-[sua tarefa específica]
+**1. Claude analyzes and creates context:**
 ```
-
-**3. Mantenha atualizado:**
-```
-# No Claude (após mudanças):
-Atualize .ai-context/project-status.md com o que fizemos hoje
+Analyze the project and create .ai-context/project-status.md
 ```
 
----
-
-## 🎯 Workflows Comuns
-
-### 1️⃣ Novo Projeto
+**2. Other AIs read the context:**
 ```
-1. ai-start
-2. Claude: "Crie estrutura inicial do projeto [tipo]"
-3. Claude: "Crie .ai-context/project-status.md"
-4. Gemini: "Pesquise melhores práticas para [stack]"
-5. Codex: "Implemente boilerplate básico"
+# In Gemini or Codex:
+Read .ai-context/project-status.md
+
+[your specific task]
 ```
 
-### 2️⃣ Projeto Existente (Primeira Vez)
+**3. Keep it updated:**
 ```
-1. ai-start
-2. Claude: "Analise este projeto e crie .ai-context/project-status.md"
-3. Claude: "Liste próximos passos em .ai-context/roadmap.md"
-4. [Trabalhe normalmente]
-5. ai-stop (gera resumo)
-```
-
-### 3️⃣ Adicionar Feature
-```
-1. ai-start
-2. Claude: "Leia .ai-context/project-status.md
-           Crie plano para feature X em .ai-context/feature-x-plan.md"
-3. Gemini: "Pesquise melhores libs para [aspecto da feature]"
-4. Codex: "Implemente feature X conforme plano"
-5. Claude: "Revise código e atualize documentação"
-6. ai-stop
-```
-
-### 4️⃣ Fix Bug
-```
-1. ai-start
-2. Claude: "Analise o bug: [descrição]
-           Reproduza o problema
-           Identifique a causa"
-3. Claude: "Implemente fix"
-4. Codex: "Crie teste para prevenir regressão"
-5. ai-stop
-```
-
-### 5️⃣ Refatoração
-```
-1. ai-start
-2. Claude: "Analise [módulo/arquivo]
-           Identifique code smells
-           Crie plano de refatoração"
-3. Claude: "Execute refatoração step by step"
-4. Claude: "Verifique testes ainda passam"
-5. ai-stop
+# In Claude (after changes):
+Update .ai-context/project-status.md with what we did today
 ```
 
 ---
 
-## 💡 Dicas Práticas
+## Common Workflows
 
-### ✅ Faça
+### 1. New Project
+```
+1. ai start
+2. Claude: "Create initial project structure for [type]"
+3. Claude: "Create .ai-context/project-status.md"
+4. Gemini: "Research best practices for [stack]"
+5. Codex: "Implement basic boilerplate"
+```
 
-1. **Use apenas 1 AI para análise inicial**
-   - Evita duplicação de trabalho
-   - Claude é melhor para análise profunda
+### 2. Existing Project (First Time)
+```
+1. ai start
+2. Claude: "Analyze this project and create .ai-context/project-status.md"
+3. Claude: "List next steps in .ai-context/roadmap.md"
+4. [Work normally]
+5. ai stop (generates summary)
+```
 
-2. **Mantenha .ai-context/ atualizado**
-   - É a "memória" compartilhada
-   - Atualizar após mudanças importantes
+### 3. Add Feature
+```
+1. ai start
+2. Claude: "Read .ai-context/project-status.md
+           Create plan for feature X in .ai-context/feature-x-plan.md"
+3. Gemini: "Research best libs for [aspect of feature]"
+4. Codex: "Implement feature X according to plan"
+5. Claude: "Review code and update documentation"
+6. ai stop
+```
 
-3. **Seja específico nos prompts**
+### 4. Fix Bug
+```
+1. ai start
+2. Claude: "Analyze the bug: [description]
+           Reproduce the problem
+           Identify the cause"
+3. Claude: "Implement fix"
+4. Codex: "Create test to prevent regression"
+5. ai stop
+```
+
+### 5. Refactoring
+```
+1. ai start
+2. Claude: "Analyze [module/file]
+           Identify code smells
+           Create refactoring plan"
+3. Claude: "Execute refactoring step by step"
+4. Claude: "Verify tests still pass"
+5. ai stop
+```
+
+---
+
+## Practical Tips
+
+### Do
+
+1. **Use only 1 AI for initial analysis**
+   - Avoids duplicated work
+   - Claude is best for deep analysis
+
+2. **Keep .ai-context/ updated**
+   - It's the shared "memory"
+   - Update after important changes
+
+3. **Be specific in prompts**
    ```
-   ✅ "Crie testes para src/auth/jwt.js"
-   ❌ "Faça testes"
+   ✅ "Create tests for src/auth/jwt.js"
+   ❌ "Make tests"
    ```
 
-4. **Use Tab 2 (Control) para verificar status**
+4. **Use Tab 2 (Control) to check status**
    ```bash
-   ai-status      # Ver workspaces ativos
-   ai-recent      # Ver histórico
+   ai status      # See active workspaces
+   ai workspace recent  # See history
    ```
 
-5. **Feche com ai-stop**
-   - Gera resumo automático do dia
-   - Mantém histórico organizado
+5. **Close with ai stop**
+   - Generates automatic daily summary
+   - Keeps history organized
 
-### ❌ Evite
+### Don't
 
-1. **Não faça a mesma pergunta para os 3 AIs**
-   - Desperdício de tempo/recursos
+1. **Don't ask the same question to all 3 AIs**
+   - Waste of time/resources
 
-2. **Não deixe contexto desatualizado**
-   - AIs vão trabalhar com info errada
+2. **Don't leave context outdated**
+   - AIs will work with wrong info
 
-3. **Não misture especialidades**
-   - Use cada AI para o que faz melhor
+3. **Don't mix specialties**
+   - Use each AI for what it does best
 
-4. **Não crie contextos gigantes**
-   - AIs podem não ler tudo
-   - Prefira arquivos focados e concisos
-
----
-
-## 📖 Prompt Templates
-
-### Análise Inicial de Projeto
-```
-Analise este projeto e me dê:
-
-1. **Objetivo:** O que o projeto faz?
-2. **Stack:** Tecnologias usadas
-3. **Estrutura:** Organização de pastas/arquivos
-4. **Status:** O que está pronto? O que falta?
-5. **Próximos Passos:** Prioridade 1, 2, 3
-
-Crie .ai-context/project-status.md com estas informações.
-```
-
-### Planejamento de Feature
-```
-Quero adicionar: [descreva a feature]
-
-Com base em .ai-context/project-status.md:
-
-1. Crie plano de implementação
-2. Liste arquivos que serão criados/modificados
-3. Identifique dependências necessárias
-4. Estime complexidade (simples/médio/complexo)
-
-Salve em .ai-context/feature-[nome]-plan.md
-```
-
-### Pesquisa de Solução
-```
-Preciso: [descreva o problema/necessidade]
-
-Pesquise e compare:
-- Opção A vs B vs C
-- Prós e contras
-- Recomendação com justificativa
-
-Foco em: [critérios importantes: performance, tamanho, community, etc]
-```
-
-### Debug de Problema
-```
-Bug: [descreva o sintoma]
-
-Passos para reproduzir:
-1. [passo 1]
-2. [passo 2]
-3. [erro aparece]
-
-Por favor:
-1. Localize o código relacionado
-2. Identifique a causa raiz
-3. Proponha fix
-4. Implemente se aprovado
-```
+4. **Don't create giant contexts**
+   - AIs may not read everything
+   - Prefer focused, concise files
 
 ---
 
-## 🔗 Links Úteis
+## Prompt Templates
 
-- **Docs Completas:** `~/workspace/primavera/ai-terminal-agent/docs/`
-- **Workflows:** `docs/workflows/analyzing-existing-project.md`
-- **Templates:** `~/templates/ai-contexts/`
+### Initial Project Analysis
+```
+Analyze this project and give me:
+
+1. **Objective:** What does the project do?
+2. **Stack:** Technologies used
+3. **Structure:** Folder/file organization
+4. **Status:** What's done? What's missing?
+5. **Next Steps:** Priority 1, 2, 3
+
+Create .ai-context/project-status.md with this information.
+```
+
+### Feature Planning
+```
+I want to add: [describe the feature]
+
+Based on .ai-context/project-status.md:
+
+1. Create implementation plan
+2. List files to be created/modified
+3. Identify necessary dependencies
+4. Estimate complexity (simple/medium/complex)
+
+Save in .ai-context/feature-[name]-plan.md
+```
+
+### Solution Research
+```
+I need: [describe the problem/need]
+
+Research and compare:
+- Option A vs B vs C
+- Pros and cons
+- Recommendation with justification
+
+Focus on: [important criteria: performance, size, community, etc]
+```
+
+### Bug Debugging
+```
+Bug: [describe the symptom]
+
+Steps to reproduce:
+1. [step 1]
+2. [step 2]
+3. [error appears]
+
+Please:
+1. Locate related code
+2. Identify root cause
+3. Propose fix
+4. Implement if approved
+```
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
-### iTerm2 não abre splits automaticamente
+### iTerm2 doesn't open splits automatically
 ```bash
-# Teste manual:
+# Manual test:
 osascript ~/workspace/primavera/ai-terminal-agent/bin/iterm-layout.applescript "$(pwd)"
 
-# Se falhar, configure manualmente:
-# Tab 1: ⌘+D (split vertical), depois ⌘+Shift+D (split horizontal)
+# If it fails, configure manually:
+# Tab 1: Cmd+D (vertical split), then Cmd+Shift+D (horizontal split)
 ```
 
-### Comandos ai-* não encontrados
+### ai commands not found
 ```bash
-# Adicione ao PATH:
+# Add to PATH:
 echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### Contexto não está sendo compartilhado
+### Context not being shared
 ```bash
-# Verifique se .ai-context/ existe:
+# Check if .ai-context/ exists:
 ls -la .ai-context/
 
-# Se não existir:
-mkdir .ai-context
+# If not:
+ai context init
 ```
 
 ---
 
-**Pro Tip:** Crie alias personalizados em `.zshrc`:
-```bash
-alias ai='ai-start'
-alias ais='ai-status'
-alias aix='ai-stop'
-```
+## Useful Links
+
+- **Full Docs:** `ai help`
+- **Workflows:** `docs/workflows/analyzing-existing-project.md`
+- **Templates:** `~/templates/ai-contexts/`

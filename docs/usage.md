@@ -1,333 +1,471 @@
 # Usage Guide
 
+How to use AI Terminal Agent for multi-AI development workflows.
+
 ## Basic Workflow
 
-The typical workflow with AI Terminal Agent:
-
-1. Navigate to your project
-2. Run `ai-start` to launch workspace
-3. Work with your AI assistants
-4. Run `ai-stop` when done
-
-## Commands Reference
-
-### ai-start - Launch Workspace
-
-Start an AI workspace in the current directory.
-
-```bash
-# Basic usage
-cd ~/my-project
-ai-start
-
-# Options
-ai-start --check      # Health check only
-ai-start --dry-run    # Show what would happen
-ai-start --debug      # Verbose output
+```
+1. Navigate to project    →  cd ~/my-project
+2. Launch workspace       →  ai start
+3. Work with AIs          →  Claude, Gemini, Codex in iTerm2 splits
+4. Close workspace        →  ai stop
 ```
 
-**What it does:**
-- Checks for existing workspace
-- Creates/uses context files (claude.md, gemini.md, agents.md)
-- Creates backup of context files
-- Marks workspace as active
-- (Future) Opens iTerm2 with split layout
+---
+
+## Command Reference
+
+### Quick Commands
+
+| Command | Description |
+|---------|-------------|
+| `ai start [path]` | Launch AI workspace |
+| `ai stop` | Close workspace with summary |
+| `ai status` | Show active workspaces |
+
+### All Commands
+
+```bash
+# Workspace Management
+ai workspace start [path]     # Launch workspace
+ai workspace stop             # Close workspace
+ai workspace status           # Show active workspaces
+ai workspace recent           # List recent workspaces
+ai workspace recover          # Recover from crashes
+ai workspace console          # Show control console
+
+# Agent Management
+ai agents list                # List all agents
+ai agents active              # Show active agents
+ai agents enable <name>       # Enable agent
+ai agents disable <name>      # Disable agent
+ai agents profile <name>      # Activate profile
+ai agents profile list        # List profiles
+ai agents stats               # Token usage
+ai agents suggest             # Suggest profile
+ai agents doctor              # Diagnostics
+
+# Context Management
+ai context init               # Initialize .ai-context/
+ai context init --with-prompts
+ai context check              # Diagnose context
+ai context sync               # Sync AI configs
+ai context diff               # Compare files
+
+# Configuration
+ai config doctor              # Health check
+ai config git --setup         # Setup git ignore
+ai config git --check         # Check git config
+ai config export [file]       # Export config
+ai config import <file>       # Import config
+ai config update              # Update from git
+
+# Help
+ai help                       # Main help
+ai help agents                # Agent help
+ai help context               # Context help
+ai help workflow              # Workflow guide
+ai help division              # AI division guide
+ai help tips                  # Quick tips
+```
+
+---
+
+## Workspace Management
+
+### Starting a Workspace
+
+```bash
+cd ~/my-project
+ai start
+```
+
+**What happens:**
+1. Checks for existing workspace
+2. Opens iTerm2 with split layout:
+   - Left (60%): Claude
+   - Top right: Gemini
+   - Bottom right: Codex
+3. Creates `.ai-context/` if needed
+4. Loads agent profile
+5. Creates context backup
 
 **First time in a project:**
-You'll be offered templates to choose from:
-- `coding-project.md` - For software development
-- `writing-project.md` - For content creation
-- `research-project.md` - For research work
-- `homelab-project.md` - For infrastructure projects
+- Interactive agent profile selection appears
+- Choose based on project type (frontend, backend, fullstack, etc.)
+- Profile is saved to `.ai-config`
 
-### ai-stop - Close Workspace
-
-Close the active workspace and generate summary.
+### Closing a Workspace
 
 ```bash
-# Basic usage
-ai-stop
-
-# Options
-ai-stop --no-summary     # Skip summary generation
+ai stop
 ```
 
-**What it does:**
-- Generates daily work summary (if not skipped)
-- Removes active workspace marker
-- Preserves context files
+**What happens:**
+1. Generates daily work summary (via Gemini)
+2. Saves summary to `~/.ai-workspace/summaries/daily/`
+3. Removes active workspace marker
+4. Preserves context files
 
-### ai-status - Check Active Workspaces
+**Skip summary:**
+```bash
+ai stop --no-summary
+```
 
-View currently active workspaces.
+### Check Status
 
 ```bash
-ai-status
+ai status
 ```
 
-Shows:
-- Number of active workspaces
+**Shows:**
+- Active workspaces
 - Project paths
-- Process IDs
+- Active agents
+- Token usage
 - Start times
 
-### ai-health-check - Verify Installation
-
-Check that everything is configured correctly.
+### Recover from Crashes
 
 ```bash
-ai-health-check
+ai workspace recover
 ```
 
-Verifies:
-- macOS and iTerm2
-- Shift+Enter key binding
-- AI CLIs (Claude, Gemini, Codex)
-- Git global ignore configuration
-- Directory structure
-- Script symlinks
-
-### ai-recent - List Recent Workspaces
-
-Show recently used workspaces.
-
-```bash
-ai-recent
-```
-
-### ai-recover - Recover from Crashes
-
-Find and clean up orphaned workspace files.
-
-```bash
-ai-recover
-```
-
-Useful when:
+**Useful when:**
 - iTerm2 crashed
-- System rebooted unexpectedly
-- Workspaces weren't closed properly
+- System rebooted
+- Workspaces left orphaned
 
-### ai-git-config - Manage Git Integration
+---
 
-Manage Git global ignore configuration.
+## Working with Multiple AIs
 
-```bash
-# Show current status
-ai-git-config
+### Layout
 
-# Show ignore file contents
-ai-git-config --show
-
-# Verify configuration
-ai-git-config --check
-
-# Setup/reconfigure
-ai-git-config --setup
+```
+┌──────────────────────────┬─────────────────┐
+│                          │     GEMINI      │
+│                          │   (Research)    │
+│         CLAUDE           ├─────────────────┤
+│    (Analysis/Arch)       │     CODEX       │
+│                          │ (Implementation)│
+└──────────────────────────┴─────────────────┘
 ```
 
-### ai-diff - Compare Context Files
+### When to Use Each AI
 
-Compare differences between AI context files.
+| Task | Claude | Gemini | Codex |
+|------|:------:|:------:|:-----:|
+| Code analysis | X | | |
+| Architecture decisions | X | | |
+| Complex debugging | X | | |
+| Feature planning | X | | |
+| Library research | | X | |
+| Documentation | | X | |
+| Compare approaches | | X | |
+| Fast code generation | | | X |
+| Unit tests | | | X |
+| Simple components | | | X |
 
-```bash
-ai-diff
+### Best Practice Workflow
+
+1. **Claude** analyzes and creates plan
+2. **Gemini** researches libraries/approaches
+3. **Codex** implements the code
+4. **Claude** reviews the result
+
+---
+
+## Context System
+
+### Structure
+
+```
+.ai-context/
+├── project-status.md     # Project overview
+├── current-task.md       # Active task
+├── decisions.md          # Technical decisions
+├── known-issues.md       # Bugs and limitations
+├── roadmap.md            # Future plans
+└── agents-reference.md   # Available agents
 ```
 
-### ai-update - Update System
-
-Update AI Terminal Agent from Git.
+### Initialize Context
 
 ```bash
-ai-update
+# Basic initialization
+ai context init
+
+# With AI prompts for getting started
+ai context init --with-prompts
 ```
 
-Automatically:
-- Checks for uncommitted changes
-- Pulls latest changes
-- Updates permissions
-- Shows recent commits
+### How AIs Share Context
 
-### ai-export - Export Configuration
-
-Export entire configuration for backup or transfer.
-
-```bash
-ai-export ~/backup.tar.gz
+**Claude creates context:**
+```
+In Claude: "Analyze this project and fill .ai-context/project-status.md"
 ```
 
-Includes:
-- Repository
-- Templates
-- Git ignore configuration
-
-### ai-import - Import Configuration
-
-Import configuration on a new machine.
-
-```bash
-ai-import ~/backup.tar.gz
+**Other AIs read context:**
+```
+In Gemini: "Read .ai-context/project-status.md and suggest improvements"
+In Codex: "Read .ai-context/current-task.md and implement"
 ```
 
-### ai-help - Show Help
-
-Display help information.
-
-```bash
-# General help
-ai-help
-
-# Command-specific help
-ai-help start
-ai-help stop
+**Update after changes:**
+```
+In Claude: "Update .ai-context/project-status.md with today's progress"
 ```
 
-## Working with Context Files
-
-Context files store project information for AI assistants:
-- `claude.md` - Context for Claude
-- `gemini.md` - Context for Gemini
-- `agents.md` - Shared context
-- `codex.md` - Context for Codex (if used)
-
-### Context File Structure
-
-Based on your chosen template, context files include:
-- Project description
-- Tech stack / tools
-- Current phase
-- Key files
-- Decisions made
-- Next steps
-
-### Editing Context Files
-
-Edit directly in your text editor:
-```bash
-vim claude.md
-code gemini.md
-```
-
-Changes are automatically backed up when you run `ai-start`.
+---
 
 ## Project Configuration
 
-Create `.ai-config` in your project root for custom settings:
+Create `.ai-config` in your project root:
 
 ```json
 {
-  "primary_ai": "claude",
-  "auto_sync": true,
-  "auto_backup": true,
-  "template": "coding-project",
+  "agents": {
+    "profile": "fullstack",
+    "enabled": ["test-automator"],
+    "token_limit": 15000
+  },
   "summary": {
     "mode": "auto",
     "generator": "gemini"
+  },
+  "backup": {
+    "enabled": true,
+    "retention_days": 3
   }
 }
 ```
 
-See [Configuration](configuration.md) for all options.
+### Configuration Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `agents.profile` | `minimal` | Active agent profile |
+| `agents.enabled` | `[]` | Additional agents |
+| `agents.token_limit` | `15000` | Max tokens warning |
+| `summary.mode` | `auto` | `auto`, `manual`, `disabled` |
+| `summary.generator` | `gemini` | `gemini` or `basic` |
+| `backup.enabled` | `true` | Auto-backup contexts |
+| `backup.retention_days` | `3` | Days to keep backups |
+
+---
+
+## Common Workflows
+
+### New Project
+
+```bash
+cd ~/my-new-project
+ai start
+
+# Select profile (e.g., fullstack)
+# iTerm2 opens with 3 AIs
+
+# In Claude:
+"Create initial project structure and fill .ai-context/"
+
+# In Gemini:
+"Research best practices for [stack]"
+
+# In Codex:
+"Implement boilerplate"
+
+ai stop
+```
+
+### Existing Project (First Time)
+
+```bash
+cd ~/existing-project
+ai start
+
+# In Claude:
+"Analyze this project and create:
+- .ai-context/project-status.md
+- .ai-context/current-task.md
+- .ai-context/known-issues.md"
+
+# Work normally...
+
+ai stop
+```
+
+### Add Feature
+
+```bash
+ai start
+
+# In Claude:
+"Read .ai-context/project-status.md
+Create plan for feature X in .ai-context/feature-x-plan.md"
+
+# In Gemini:
+"Research best libraries for [aspect]"
+
+# In Codex:
+"Implement feature X according to plan"
+
+# In Claude:
+"Review code and update documentation"
+
+ai stop
+```
+
+### Fix Bug
+
+```bash
+ai start
+
+# In Claude:
+"Analyze bug: [description]
+Find root cause
+Propose fix"
+
+# In Claude (after approval):
+"Implement fix"
+
+# In Codex:
+"Create regression test"
+
+ai stop
+```
+
+### Code Review
+
+```bash
+ai start
+
+# In Claude:
+"Review code in [file/directory]
+Focus on: security, performance, best practices
+Create report in .ai-context/review-report.md"
+
+ai stop
+```
+
+---
 
 ## Tips & Best Practices
 
-### 1. Keep Context Files Updated
-Regularly update your context files with:
-- New decisions
-- Architecture changes
-- Problems encountered
-- Solutions found
+### Do
 
-### 2. Use Templates
-Start new projects with appropriate templates:
-- Saves time
-- Ensures consistency
-- Captures important information
+1. **Initialize context first**
+   ```bash
+   ai context init --with-prompts
+   ```
 
-### 3. Commit Strategically
-By default, context files are NOT committed to Git.
+2. **Use appropriate profile**
+   ```bash
+   ai agents suggest    # Get recommendation
+   ai agents profile <name>
+   ```
 
-To commit in a specific project:
-```json
-// .ai-config
-{
-  "git": {
-    "commit_contexts": true
-  }
-}
-```
+3. **Keep context updated**
+   - Update `.ai-context/` after significant changes
+   - Each AI should read before starting
 
-### 4. Regular Summaries
-Run `ai-stop` at end of day to get work summary.
+4. **Monitor token usage**
+   ```bash
+   ai agents stats
+   ```
 
-### 5. Backup Important Work
-Context files are backed up automatically, but for critical projects:
-```bash
-ai-export ~/backups/project-$(date +%Y%m%d).tar.gz
-```
+5. **Close workspaces properly**
+   ```bash
+   ai stop    # Generates summary
+   ```
+
+### Don't
+
+1. **Don't ask the same question to all 3 AIs**
+   - Waste of time and resources
+
+2. **Don't mix specialties**
+   - Let Claude analyze, Gemini research, Codex implement
+
+3. **Don't ignore token limits**
+   - Keep under 15k for best performance
+
+4. **Don't create huge context files**
+   - AIs may not process everything
+   - Keep files focused and concise
+
+---
 
 ## Examples
 
-### Example 1: Starting a New Coding Project
+### Example: Starting a React Project
 
 ```bash
-cd ~/projects/my-new-app
-ai-start
+cd ~/projects/my-react-app
+ai start
 
-# Choose "coding-project" template
-# Fill in project details in claude.md
+# Choose "frontend" profile
 
-# Work with Claude, Gemini, Codex...
+# In Claude:
+"Analyze package.json and suggest improvements to project structure"
 
-ai-stop
-# Daily summary generated
+# In Gemini:
+"Research the best state management for this React app:
+- Redux vs Zustand vs Jotai
+- Pros and cons for our use case"
+
+# In Codex:
+"Create a Header component with navigation"
+
+ai stop
 ```
 
-### Example 2: Resuming Existing Project
+### Example: API Development
 
 ```bash
-cd ~/projects/my-app
-ai-start
+cd ~/projects/my-api
+ai start
 
-# Context files already exist
-# Continue where you left off
+# Choose "backend" profile
 
-ai-stop --no-summary  # Skip summary if not needed
+# In Claude:
+"Design REST API structure for user management
+Include: authentication, CRUD, permissions"
+
+# In Gemini:
+"Compare JWT vs session-based auth for Node.js
+Consider: scalability, security, simplicity"
+
+# In Codex:
+"Implement POST /api/auth/login endpoint"
+
+ai stop
 ```
 
-### Example 3: Recovering from Crash
+### Example: Multiple Projects
 
 ```bash
-# iTerm crashed, workspaces left active
-ai-recover
+# Terminal 1
+cd ~/projects/frontend
+ai start
 
-# Select orphaned workspaces to clean up
-# Resume work normally
-cd ~/projects/my-app
-ai-start
-```
+# Terminal 2
+cd ~/projects/backend
+ai start
 
-### Example 4: Working on Multiple Projects
-
-```bash
-# Start first project
-cd ~/projects/app1
-ai-start
-
-# In another terminal, start second project
-cd ~/projects/app2
-ai-start
-
-# Check all active workspaces
-ai-status
+# Check all active
+ai status
 
 # Close one
-cd ~/projects/app1
-ai-stop
+cd ~/projects/frontend
+ai stop
 ```
+
+---
 
 ## Next Steps
 
-- Learn about [Configuration Options](configuration.md)
-- Understand [Architecture](architecture.md)
-- See [Troubleshooting](troubleshooting.md) for common issues
+- [Agent Management](agent-management.md) - Learn about the agent system
+- [Quick Reference](quick-reference.md) - Cheatsheet
+- [Troubleshooting](troubleshooting.md) - Common issues

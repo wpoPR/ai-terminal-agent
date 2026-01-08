@@ -5,6 +5,48 @@ All notable changes to AI Terminal Agent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-01-08
+
+### Added
+- **Unified CLI**: New `ai` command as single entry point with intuitive subcommands
+  - `ai start`, `ai stop`, `ai status` as quick shortcuts
+  - `ai workspace ...` for workspace management
+  - `ai agents ...` for agent management (delegates to existing ai-agents.sh)
+  - `ai context ...` for context management
+  - `ai config ...` for configuration
+  - `ai help [topic]` for contextual help
+- **Shared Library** (`lib/common.sh`): Extracted common functions used across all scripts
+  - Color/output helpers
+  - JSON helpers with jq fallback
+  - Configuration helpers
+  - Token calculation
+  - File and session helpers
+- **Consolidated Scripts**:
+  - `ai-workspace.sh`: Consolidates 6 workspace scripts (start, stop, status, recent, recover, console)
+  - `ai-context.sh`: Consolidates 4 context scripts (init, check, sync, diff)
+  - `ai-config.sh`: Consolidates 5 config scripts (doctor, git, export, import, update)
+  - `generate-project.sh`: Unifies 3 generator scripts (claude, gemini, codex)
+  - `ai-help-unified.sh`: Unified help system with topics
+
+### Changed
+- **Documentation**: README.md rewritten in English with new command structure
+- **install.sh**: Updated to create symlinks for new unified CLI while maintaining backward compatibility
+
+### Backward Compatibility
+- All legacy commands (`ai-start`, `ai-stop`, `ai-agents`, etc.) still work
+- No breaking changes for existing users
+- Legacy scripts remain functional via symlinks
+
+### Migration Guide
+Old commands map to new commands:
+- `ai-start` → `ai start` or `ai workspace start`
+- `ai-stop` → `ai stop` or `ai workspace stop`
+- `ai-status` → `ai status` or `ai workspace status`
+- `ai-context-init` → `ai context init`
+- `ai-health-check` → `ai config doctor`
+- `ai-update` → `ai config update`
+- `ai-git-config` → `ai config git`
+
 ## [1.3.1] - 2024-11-19
 
 ### Fixed
