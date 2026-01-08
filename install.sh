@@ -234,7 +234,21 @@ install_templates() {
   echo ""
 }
 
-# 7. Setup Agent Management System
+# 7. Install shell completion
+install_completion() {
+  echo "⌨️  Installing shell completion..."
+
+  if [[ -f "$REPO_DIR/config/ai-completion.zsh" ]]; then
+    cp "$REPO_DIR/config/ai-completion.zsh" "$WORKSPACE_DIR/ai-completion.zsh"
+    print_success "Shell completion installed"
+  else
+    print_warning "Completion file not found"
+  fi
+
+  echo ""
+}
+
+# 8. Setup Agent Management System
 setup_agents() {
   echo "🤖 Setting up Agent Management System..."
   
@@ -394,6 +408,7 @@ main() {
   create_directories
   create_symlinks
   install_templates
+  install_completion
   setup_agents
   setup_git_ignore
   update_zshrc
