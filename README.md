@@ -183,6 +183,8 @@ ai context init --with-prompts
 | **Gemini CLI** | `npm install -g @google/generative-ai` (optional) |
 | **jq** | `brew install jq` |
 
+> **Note:** This project currently supports macOS only due to iTerm2 and AppleScript dependencies. Contributions for Linux (tmux) or Windows Terminal support are welcome!
+
 ## Documentation
 
 - [Quick Reference](docs/quick-reference.md) - Command cheatsheet
