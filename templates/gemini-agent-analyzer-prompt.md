@@ -1,21 +1,21 @@
-# Prompt para Gemini - Análise e Ativação de Agentes
+# Gemini Prompt - Agent Analysis and Activation
 
-Use este prompt no console do Gemini para que ele analise a tarefa e ative os agentes ideais.
+Use this prompt in the Gemini console to analyze the task and activate ideal agents.
 
-**IMPORTANTE:** Gemini faz a análise inteligente, o script apenas copia arquivos!
+**IMPORTANT:** Gemini does the intelligent analysis, the script only copies files!
 
 ---
 
-## 📋 Prompt Completo (Recomendado)
+## 📋 Complete Prompt (Recommended)
 
 ```
-Por favor, atue como especialista em otimização de agentes do ai-terminal-agent.
+Please act as an ai-terminal-agent agent optimization specialist.
 
-Tarefa:
-1. Leia workspace-manager.md para conhecer TODOS os 45 agentes disponíveis
-2. Leia .ai-context/current-task.md para entender a tarefa atual
-3. Analise inteligentemente quais domínios técnicos estão envolvidos:
-   - Frontend? (React, Vue, UI, componentes)
+Task:
+1. Read .ai-context/agents-reference.md to know ALL 45 available agents
+2. Read .ai-context/current-task.md to understand the current task
+3. Intelligently analyze which technical domains are involved:
+   - Frontend? (React, Vue, UI, components)
    - Backend? (API, database, server)
    - Mobile? (iOS, Android, React Native)
    - DevOps? (Docker, K8s, CI/CD)
@@ -23,46 +23,44 @@ Tarefa:
    - Security? (Auth, encryption)
    - AI/ML? (models, training, LLMs)
 
-4. Consulte a tabela "Task → Profile Mapping" no workspace-manager.md
+4. Determine the specific agents needed (not just profile)
 
-5. Determine os agentes específicos necessários (não apenas perfil)
-
-6. Execute o comando com a lista de agentes:
+5. Execute the command with the agent list:
 
    ai-agents-activate <agent1> <agent2> <agent3> ...
 
-Exemplo:
+Example:
    ai-agents-activate frontend-developer backend-architect database-architect security-auditor
 
-O script irá:
-- Copiar APENAS os agentes especificados para .claude/agents/
-- Remover agentes antigos
-- Claude detectará automaticamente (sem restart!)
+The script will:
+- Copy ONLY the specified agents to .claude/agents/
+- Remove old agents
+- Claude will auto-detect (no restart needed!)
 
-Após executar, forneça um resumo:
-- Agentes ativados (lista completa)
-- Estimativa de tokens (~Xk/15k)
-- Justificativa de cada agente escolhido
-- Perfil equivalente (se houver)
+After executing, provide a summary:
+- Activated agents (complete list)
+- Token estimate (~Xk/15k)
+- Justification for each agent chosen
+- Equivalent profile (if any)
 
-Seja específico e inteligente na análise!
+Be specific and intelligent in your analysis!
 ```
 
 ---
 
-## 🎯 Prompt Alternativo (Com Explicação Detalhada)
+## 🎯 Alternative Prompt (With Detailed Explanation)
 
-Se você quiser que o Gemini explique antes de ativar:
+If you want Gemini to explain before activating:
 
 ```
-Por favor, analise a tarefa atual e sugira configuração de agentes:
+Please analyze the current task and suggest agent configuration:
 
-1. **Leitura:**
-   - Abra e leia .ai-context/current-task.md
-   - Identifique keywords e domínios técnicos
+1. **Reading:**
+   - Open and read .ai-context/current-task.md
+   - Identify keywords and technical domains
 
-2. **Análise:**
-   - Frontend? (React, Vue, UI, componentes)
+2. **Analysis:**
+   - Frontend? (React, Vue, UI, components)
    - Backend? (API, database, server)
    - Mobile? (iOS, Android, React Native)
    - DevOps? (Docker, K8s, CI/CD)
@@ -70,58 +68,52 @@ Por favor, analise a tarefa atual e sugira configuração de agentes:
    - Security? (Auth, encryption, vulnerabilities)
    - AI/ML? (models, training, LLMs)
 
-3. **Consulta:**
-   - Consulte workspace-manager.md
-   - Veja a tabela "Task → Profile Mapping"
-   - Identifique o perfil ideal
+3. **Recommendation:**
+   Provide:
+   - Recommended profile
+   - Specific agents
+   - Token estimate (~Xk/15k)
+   - Justification
 
-4. **Recomendação:**
-   Forneça:
-   - Perfil recomendado
-   - Agentes específicos
-   - Estimativa de tokens (~Xk/15k)
-   - Justificativa
+4. **Activation:**
+   After confirmation, execute:
+   ai-agents-activate <agent-list>
 
-5. **Ativação:**
-   Após confirmação, execute:
-   ai-agents-analyze --auto
-
-Seja conciso e técnico!
+Be concise and technical!
 ```
 
 ---
 
-## 🚀 Exemplo de Uso Real
+## 🚀 Real Usage Example
 
-### Cenário: Adicionar Dashboard de Analytics
+### Scenario: Add Analytics Dashboard
 
-**Tarefa em .ai-context/current-task.md:**
+**Task in .ai-context/current-task.md:**
 ```markdown
 # Current Task
 
-Adicionar dashboard de analytics ao app React com:
-- Gráficos interativos (Chart.js)
-- API REST para buscar métricas
-- Queries otimizadas no PostgreSQL
-- Cache com Redis
+Add analytics dashboard to React app with:
+- Interactive charts (Chart.js)
+- REST API for fetching metrics
+- Optimized PostgreSQL queries
+- Redis caching
 ```
 
-**Gemini Executa:**
+**Gemini Executes:**
 ```
-Analisando .ai-context/current-task.md...
+Analyzing .ai-context/current-task.md...
 
-Domínios detectados:
-✓ Frontend (React, gráficos, dashboard)
-✓ Backend (API REST, cache)
+Detected domains:
+✓ Frontend (React, charts, dashboard)
+✓ Backend (REST API, cache)
 ✓ Data (queries, PostgreSQL, analytics)
 
-Perfil recomendado: fullstack+data
+Recommended profile: fullstack+data
 
-Executando: ai-agents-analyze --auto
+Executing: ai-agents-activate frontend-developer ui-ux-designer backend-architect database-architect database-optimizer data-engineer
 
-Resultado:
-- Perfil ativado: fullstack+data
-- Agentes: 6
+Result:
+- Activated agents: 6
   • frontend-developer (Dashboard UI)
   • ui-ux-designer (Charts design)
   • backend-architect (API endpoints)
@@ -130,124 +122,123 @@ Resultado:
   • data-engineer (Analytics logic)
 - Tokens: ~12k/15k (80%)
 
-Claude está pronto com os agentes ideais! 🎯
+Claude is ready with ideal agents! 🎯
 ```
 
 ---
 
-## ⚡ Modo Super Rápido (One-Liner)
+## ⚡ Super Quick Mode (One-Liner)
 
-Para ativação rápida (Gemini decide e executa):
-
-```
-Leia workspace-manager.md e .ai-context/current-task.md, determine os agentes necessários e execute: ai-agents-activate <lista-de-agentes>
-```
-
----
-
-## 🔍 Modo Análise Apenas (Sem Ativar)
-
-Para ver sugestões sem ativar ainda:
+For quick activation (Gemini decides and executes):
 
 ```
-Leia workspace-manager.md e .ai-context/current-task.md, analise os domínios técnicos e sugira quais agentes devem ser ativados. NÃO execute nenhum comando ainda, apenas explique sua análise e recomendação.
+Read .ai-context/agents-reference.md and .ai-context/current-task.md, determine the necessary agents and execute: ai-agents-activate <agent-list>
 ```
 
 ---
 
-## 📊 Comparação de Custos
+## 🔍 Analysis Only Mode (Without Activating)
 
-| Abordagem | Tokens Usados | Custo |
-|-----------|---------------|-------|
-| Claude analisa manualmente | ~2-3k tokens | $$$ |
-| Gemini analisa + ai-agents-activate | ~500-1k tokens | $ |
-| **Economia:** | **70-80%** | **70-80%** |
+To see suggestions without activating yet:
 
-**Por que é mais barato?**
-- Gemini lê workspace-manager.md (tem todos os agentes)
-- Gemini faz análise inteligente
-- Script apenas copia arquivos (mecânico)
-- Claude recebe agentes prontos (não precisa analisar)
+```
+Read .ai-context/agents-reference.md and .ai-context/current-task.md, analyze the technical domains and suggest which agents should be activated. DO NOT execute any command yet, just explain your analysis and recommendation.
+```
 
 ---
 
-## 💡 Dicas para Gemini
+## 📊 Cost Comparison
 
-**Boas Práticas:**
-- ✅ Leia o workspace-manager.md para entender os perfis
-- ✅ Considere combinações (ex: frontend+security)
-- ✅ Verifique se tokens ficam < 15k
-- ✅ Justifique a escolha baseado na tarefa
+| Approach | Tokens Used | Cost |
+|----------|-------------|------|
+| Claude analyzes manually | ~2-3k tokens | $$$ |
+| Gemini analyzes + ai-agents-activate | ~500-1k tokens | $ |
+| **Savings:** | **70-80%** | **70-80%** |
 
-**Evite:**
-- ❌ Ativar muitos agentes desnecessariamente
-- ❌ Ignorar o tipo de tarefa
-- ❌ Esquecer de verificar tokens
-- ❌ Não explicar a recomendação
+**Why is it cheaper?**
+- Gemini reads agents-reference.md (has all agents)
+- Gemini does intelligent analysis
+- Script only copies files (mechanical)
+- Claude receives ready agents (no need to analyze)
 
 ---
 
-## 🎓 Template de Resposta Ideal
+## 💡 Tips for Gemini
 
-Quando o Gemini ativar agentes, ele deve responder assim:
+**Best Practices:**
+- ✅ Read agents-reference.md to understand available agents
+- ✅ Consider combinations (e.g.: frontend+security)
+- ✅ Verify tokens stay < 15k
+- ✅ Justify the choice based on the task
+
+**Avoid:**
+- ❌ Activating too many agents unnecessarily
+- ❌ Ignoring the task type
+- ❌ Forgetting to verify tokens
+- ❌ Not explaining the recommendation
+
+---
+
+## 🎓 Ideal Response Template
+
+When Gemini activates agents, it should respond like this:
 
 ```markdown
-## ✅ Agentes Ativados
+## ✅ Agents Activated
 
-**Tarefa Analisada:**
-[Breve resumo da tarefa]
+**Analyzed Task:**
+[Brief task summary]
 
-**Domínios Identificados:**
+**Identified Domains:**
 - Frontend (keywords: React, UI, components)
 - Backend (keywords: API, database)
 
-**Perfil Ativado:** fullstack
+**Activated Profile:** fullstack
 
-**Agentes Incluídos (4):**
-1. frontend-developer - Componentes React
+**Included Agents (4):**
+1. frontend-developer - React components
 2. backend-architect - API design
-3. database-architect - Schema e queries
+3. database-architect - Schema and queries
 4. code-reviewer - Quality assurance
 
 **Token Usage:** ~10k / 15k (67%)
 Status: ✅ Optimal
 
-**Justificativa:**
-Tarefa envolve frontend e backend. Fullstack profile
-fornece expertise necessária sem exceder token budget.
+**Justification:**
+Task involves frontend and backend. Fullstack profile
+provides necessary expertise without exceeding token budget.
 
 **Claude Code:**
-Agentes detectados automaticamente. Pronto para trabalhar! 🚀
+Agents auto-detected. Ready to work! 🚀
 ```
 
 ---
 
-## 🔄 Workflow Completo
+## 🔄 Complete Workflow
 
 ```bash
-# 1. Usuário descreve tarefa
-echo "Adicionar login com OAuth" >> .ai-context/current-task.md
+# 1. User describes task
+echo "Add OAuth login" >> .ai-context/current-task.md
 
-# 2. No Gemini console (prompt completo):
-"Leia workspace-manager.md para conhecer os agentes,
- leia .ai-context/current-task.md para entender a tarefa,
- analise e execute: ai-agents-activate <lista-de-agentes>"
+# 2. In Gemini console (complete prompt):
+"Read .ai-context/agents-reference.md to know the agents,
+ read .ai-context/current-task.md to understand the task,
+ analyze and execute: ai-agents-activate <agent-list>"
 
 # 3. Gemini:
-   - Lê workspace-manager.md (conhece os 45 agentes)
-   - Lê current-task.md (entende: login + OAuth + security)
-   - Analisa: Preciso frontend + backend + security
-   - Decide: frontend-developer, backend-architect, frontend-security-coder, backend-security-coder
-   - Executa: ai-agents-activate frontend-developer backend-architect frontend-security-coder backend-security-coder
+   - Reads agents-reference.md (knows the 45 agents)
+   - Reads current-task.md (understands: login + OAuth + security)
+   - Analyzes: Needs frontend + backend + security
+   - Decides: frontend-developer, backend-architect, frontend-security-coder, backend-security-coder
+   - Executes: ai-agents-activate frontend-developer backend-architect frontend-security-coder backend-security-coder
 
-# 4. Script copia os 4 agentes para .claude/agents/
+# 4. Script copies the 4 agents to .claude/agents/
 
-# 5. Claude auto-detecta os agentes (sem restart!)
+# 5. Claude auto-detects agents (no restart needed!)
 
 # 6. Profit! 🎉
 ```
 
 ---
 
-**Lembre-se:** Claude NÃO precisa reiniciar! Ele detecta novos agentes automaticamente via file watcher em `.claude/agents/`.
-
+**Remember:** Claude does NOT need to restart! It auto-detects new agents via file watcher in `.claude/agents/`.

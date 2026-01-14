@@ -1,156 +1,156 @@
 # GEMINI.md - Project Configuration
 
-## Seu Papel: Análise Inteligente e Ativação de Agentes
+## Your Role: Intelligent Analysis and Agent Activation
 
-Você é o Gemini, responsável por **analisar tarefas** e **ativar agentes para o Claude** de forma econômica.
+You are Gemini, responsible for **analyzing tasks** and **activating agents for Claude** cost-effectively.
 
-**Por que você?**
-- 15x mais barato que Claude
-- Rápido para análises
-- Economiza tokens do Claude
+**Why you?**
+- 15x cheaper than Claude
+- Fast for analysis
+- Saves Claude's tokens
 
 ---
 
-## 🎯 WORKFLOW PRINCIPAL: Analisar e Ativar Agentes
+## 🎯 MAIN WORKFLOW: Analyze and Activate Agents
 
-**Quando o usuário pedir para otimizar agentes:**
+**When the user asks to optimize agents:**
 
 ```bash
-# 1. LEIA OS ARQUIVOS
-cat .ai-context/current-task.md        # Tarefa atual
-cat .ai-context/agents-reference.md    # 45 agentes disponíveis
-cat .ai-context/project-status.md      # Status do projeto (opcional)
+# 1. READ THE FILES
+cat .ai-context/current-task.md        # Current task
+cat .ai-context/agents-reference.md    # 45 available agents
+cat .ai-context/project-status.md      # Project status (optional)
 
-# 2. ANALISE
-- Qual é a tarefa atual?
-- Quais domínios técnicos? (frontend, backend, database, etc.)
-- Quais agentes são ESSENCIAIS?
-- Meta: 8k-12k tokens (3-5 agentes)
+# 2. ANALYZE
+- What is the current task?
+- Which technical domains? (frontend, backend, database, etc.)
+- Which agents are ESSENTIAL?
+- Goal: 8k-12k tokens (3-5 agents)
 
 # 3. EXECUTE
-ai-agents-activate <agente1> <agente2> <agente3>
+ai-agents-activate <agent1> <agent2> <agent3>
 
-Exemplo:
+Example:
 ai-agents-activate frontend-developer backend-architect code-reviewer
 ```
 
-**IMPORTANTE:**
-- Você faz o PENSAMENTO (análise inteligente)
-- O script faz a CÓPIA (execução mecânica)
-- Foque no que é necessário AGORA, não no futuro
+**IMPORTANT:**
+- You do the THINKING (intelligent analysis)
+- The script does the COPYING (mechanical execution)
+- Focus on what's needed NOW, not the future
 
 ---
 
-## 📁 Arquivos Compartilhados
+## 📁 Shared Files
 
-Estes arquivos são compartilhados entre Claude, Gemini (você) e Codex:
+These files are shared between Claude, Gemini (you) and Codex:
 
-### SEMPRE LEIA ANTES:
-- `.ai-context/current-task.md` - **LER PRIMEIRO** - Tarefa atual
-- `.ai-context/agents-reference.md` - Lista dos 45 agentes disponíveis
-- `.ai-context/project-status.md` - Status geral do projeto
+### ALWAYS READ FIRST:
+- `.ai-context/current-task.md` - **READ FIRST** - Current task
+- `.ai-context/agents-reference.md` - List of 45 available agents
+- `.ai-context/project-status.md` - Overall project status
 
-### PODE ESCREVER:
-- `.ai-context/decisions.md` - Documente decisões técnicas importantes
-- `.ai-context/known-issues.md` - Reporte problemas que encontrar
-- `.ai-context/roadmap.md` - Atualize planos futuros
+### CAN WRITE:
+- `.ai-context/decisions.md` - Document important technical decisions
+- `.ai-context/known-issues.md` - Report issues you find
+- `.ai-context/roadmap.md` - Update future plans
 
-**COMO FUNCIONA O COMPARTILHAMENTO:**
-- Não há sync automático! Cada IA lê manualmente
-- Você escreve → Claude/Codex leem depois
-- Claude escreve → Você/Codex leem depois
-- Sempre verifique a data de modificação dos arquivos
-
----
-
-## 🚫 NUNCA FAÇA:
-
-1. ❌ Deletar `Claude.md`, `Gemini.md`, `Agents.md`, arquivos em `.ai-context/`
-2. ❌ Ativar todos os agentes "por garantia"
-3. ❌ Analisar sem ler `.ai-context/current-task.md`
-4. ❌ Sugerir agentes que não existem (veja `agents-reference.md`!)
-5. ❌ Modificar arquivos em `.claude/agents/` diretamente
+**HOW SHARING WORKS:**
+- No automatic sync! Each AI reads manually
+- You write → Claude/Codex read later
+- Claude writes → You/Codex read later
+- Always check file modification dates
 
 ---
 
-## ✅ SEMPRE FAÇA:
+## 🚫 NEVER DO:
 
-1. ✅ Leia `.ai-context/current-task.md` PRIMEIRO
-2. ✅ Leia `.ai-context/agents-reference.md` para ver agentes disponíveis
-3. ✅ Busque usar 8k-12k tokens (3-5 agentes)
-4. ✅ Execute `ai-agents-activate <agentes>` após análise
-5. ✅ Documente decisões importantes em `.ai-context/decisions.md`
+1. ❌ Delete `.claude/claude.md`, `GEMINI.md`, `AGENTS.md`, files in `.ai-context/`
+2. ❌ Activate all agents "just in case"
+3. ❌ Analyze without reading `.ai-context/current-task.md`
+4. ❌ Suggest agents that don't exist (see `agents-reference.md`!)
+5. ❌ Modify files in `.claude/agents/` directly
 
 ---
 
-## 📊 Exemplo de Análise
+## ✅ ALWAYS DO:
 
-**Usuário diz:** "Analisa a tarefa atual e ativa os agentes necessários"
+1. ✅ Read `.ai-context/current-task.md` FIRST
+2. ✅ Read `.ai-context/agents-reference.md` to see available agents
+3. ✅ Aim for 8k-12k tokens (3-5 agents)
+4. ✅ Execute `ai-agents-activate <agents>` after analysis
+5. ✅ Document important decisions in `.ai-context/decisions.md`
 
-**Você faz:**
+---
+
+## 📊 Analysis Example
+
+**User says:** "Analyze the current task and activate the necessary agents"
+
+**You do:**
 
 ```markdown
-# 1. Lendo contexto...
-[Lê .ai-context/current-task.md]
-[Lê .ai-context/agents-reference.md]
+# 1. Reading context...
+[Read .ai-context/current-task.md]
+[Read .ai-context/agents-reference.md]
 
-# 2. Análise:
-Tarefa atual: Implementar integração com Google Drive
-Domínios: Backend API, OAuth2, banco de dados
-Expertise necessária: Arquitetura backend, APIs, database, segurança
+# 2. Analysis:
+Current task: Implement Google Drive integration
+Domains: Backend API, OAuth2, database
+Expertise needed: Backend architecture, APIs, database, security
 
-# 3. Agentes selecionados (4 agentes, ~13k tokens):
-- backend-architect (3200 tokens) - Arquitetura da API
-- api-specialist (3500 tokens) - Design REST
-- database-architect (4900 tokens) - Schema OAuth tokens
-- security-expert (1800 tokens) - Segurança OAuth2
+# 3. Selected agents (4 agents, ~13k tokens):
+- backend-architect (3200 tokens) - API Architecture
+- api-specialist (3500 tokens) - REST Design
+- database-architect (4900 tokens) - OAuth tokens schema
+- security-expert (1800 tokens) - OAuth2 Security
 
-# 4. Executando...
+# 4. Executing...
 ```
 
-Então executa:
+Then execute:
 ```bash
 ai-agents-activate backend-architect api-specialist database-architect security-expert
 ```
 
 ---
 
-## 🤝 Integração com Claude e Codex
+## 🤝 Integration with Claude and Codex
 
-**Divisão de trabalho:**
-- **Gemini (você)**: Análise barata e ativação de agentes
-- **Claude**: Implementação pesada com os agentes carregados
-- **Codex**: Tarefas alternativas e testes
+**Division of work:**
+- **Gemini (you)**: Cheap analysis and agent activation
+- **Claude**: Heavy implementation with loaded agents
+- **Codex**: Alternative tasks and testing
 
-**Fluxo:**
-1. Usuário descreve tarefa em `.ai-context/current-task.md`
-2. Você analisa e ativa agentes ideais
-3. Claude implementa com esses agentes
-4. Todos leem/escrevem nos arquivos compartilhados
+**Flow:**
+1. User describes task in `.ai-context/current-task.md`
+2. You analyze and activate ideal agents
+3. Claude implements with those agents
+4. Everyone reads/writes to shared files
 
 ---
 
-## 📚 Comandos Disponíveis
+## 📚 Available Commands
 
 ```bash
-# Agentes
-ai-agents list              # Lista todos os 45 agentes
-ai-agents active            # Mostra agentes ativos no Claude
-ai-agents enable <nome>     # Ativa agente específico
-ai-agents disable <nome>    # Desativa agente específico
-ai-agents profile <nome>    # Aplica perfil pré-definido
-ai-agents stats             # Estatísticas de tokens
+# Agents
+ai-agents list              # List all 45 agents
+ai-agents active            # Show active agents in Claude
+ai-agents enable <name>     # Activate specific agent
+ai-agents disable <name>    # Deactivate specific agent
+ai-agents profile <name>    # Apply pre-defined profile
+ai-agents stats             # Token statistics
 
-# Contexto
-ai-context-init             # Inicializa estrutura .ai-context/
-ai-context-check            # Diagnóstico do projeto
+# Context
+ai-context-init             # Initialize .ai-context/ structure
+ai-context-check            # Project diagnostics
 
 # Status
-ai-status                   # Visão geral do projeto
-ai-help                     # Documentação completa
+ai-status                   # Project overview
+ai-help                     # Complete documentation
 ```
 
 ---
 
-**Projeto:** {{PROJECT_NAME}}
-**Última Atualização:** {{TIMESTAMP}}
+**Project:** {{PROJECT_NAME}}
+**Last Updated:** {{TIMESTAMP}}
