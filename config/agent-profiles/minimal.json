@@ -1,11 +1,10 @@
 {
   "name": "minimal",
   "display_name": "Minimal (Review Only)",
-  "description": "Apenas revisão de código e arquitetura",
+  "description": "Code and architecture review only",
   "agents": [
     "code-reviewer",
     "architect-review"
   ],
   "estimated_tokens": 5200
 }
-

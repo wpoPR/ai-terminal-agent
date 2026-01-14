@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "display_name": "Mobile Development",
-  "description": "Desenvolvimento de aplicativos móveis",
+  "description": "Mobile application development",
   "agents": [
     "mobile-developer",
     "backend-architect",
@@ -9,4 +9,3 @@
   ],
   "estimated_tokens": 9800
 }
-

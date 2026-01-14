@@ -1,232 +1,232 @@
-# Instruções do Projeto Claude Code - Uso Automático de Agentes
+# Claude Code Project Instructions - Automatic Agent Usage
 
-## FLUXO OBRIGATÓRIO
+## MANDATORY FLOW
 
-### 1. SEMPRE começar com Sequential Thinking
-Para TODA tarefa, primeiro use Sequential Thinking para:
-- Decompor o problema em etapas
-- Identificar qual(is) agente(s) usar
-- Planejar a sequência de execução
-- Documentar a estratégia
+### 1. ALWAYS start with Sequential Thinking
+For EVERY task, first use Sequential Thinking to:
+- Break down the problem into steps
+- Identify which agent(s) to use
+- Plan execution sequence
+- Document the strategy
 
-### 2. Identificar e chamar o(s) agente(s) apropriado(s)
-### 3. Validar resultados com Sequential Thinking
+### 2. Identify and call appropriate agent(s)
+### 3. Validate results with Sequential Thinking
 
 ---
 
-## MAPEAMENTO DE TAREFAS → AGENTES
+## TASK → AGENT MAPPING
 
-### 📝 QUANDO RECEBER REQUISITOS DE CÓDIGO
+### 📝 WHEN RECEIVING CODE REQUIREMENTS
 
-**Análise inicial:**
-- Use `Plan` para explorar o codebase
-- Use `Explore` para entender estrutura existente
+**Initial analysis:**
+- Use `Plan` to explore the codebase
+- Use `Explore` to understand existing structure
 
-**Desenvolvimento:**
+**Development:**
 - Frontend (React/Next.js) → `frontend-developer`
-- Backend/API → `backend-architect` ou `python-pro`/`javascript-pro`
+- Backend/API → `backend-architect` or `python-pro`/`javascript-pro`
 - Mobile → `mobile-developer`
 - C#/.NET → `csharp-pro`
 - GraphQL → `graphql-architect`
 
 ---
 
-### 🔍 QUANDO PRECISAR PESQUISAR/INVESTIGAR
+### 🔍 WHEN RESEARCHING/INVESTIGATING
 
-**Pesquisa geral:**
-- Tópicos complexos → `general-purpose`
-- Busca web profunda → `search-specialist`
-- Pesquisa com Gemini AI → `gemini-research-assistant`
+**General research:**
+- Complex topics → `general-purpose`
+- Deep web search → `search-specialist`
+- Research with Gemini AI → `gemini-research-assistant`
 
-**Investigação técnica:**
-- Problemas de produção → `devops-troubleshooter`
+**Technical investigation:**
+- Production issues → `devops-troubleshooter`
 - Performance issues → `performance-engineer`
-- Problemas de rede → `network-engineer`
+- Network problems → `network-engineer`
 
 ---
 
-### 📚 QUANDO CRIAR DOCUMENTAÇÃO
+### 📚 WHEN CREATING DOCUMENTATION
 
-**Por tipo:**
-- Documentação técnica geral → `docs-architect`
-- Referência de API → `api-documenter` ou `reference-builder`
-- Tutoriais passo a passo → `tutorial-engineer`
-- Diagramas visuais → `mermaid-diagram-expert`
+**By type:**
+- General technical documentation → `docs-architect`
+- API reference → `api-documenter` or `reference-builder`
+- Step-by-step tutorials → `tutorial-engineer`
+- Visual diagrams → `mermaid-diagram-expert`
 
 ---
 
-### 🔒 QUANDO TRATAR SEGURANÇA
+### 🔒 WHEN HANDLING SECURITY
 
-**Por camada:**
+**By layer:**
 - Frontend security → `frontend-security-coder`
 - Backend security → `backend-security-coder`
 - Mobile security → `mobile-security-coder`
-- Auditoria completa → `security-auditor`
+- Complete audit → `security-auditor`
 
 ---
 
-### 🏗️ QUANDO TRABALHAR COM INFRAESTRUTURA
+### 🏗️ WHEN WORKING WITH INFRASTRUCTURE
 
-**Por tipo de infraestrutura:**
-- Cloud geral → `cloud-architect`
-- Híbrido/multi-cloud → `hybrid-cloud-architect`
+**By infrastructure type:**
+- General cloud → `cloud-architect`
+- Hybrid/multi-cloud → `hybrid-cloud-architect`
 - Kubernetes → `kubernetes-architect`
 - Terraform/IaC → `terraform-specialist`
 
 **DevOps:**
 - CI/CD pipelines → `deployment-engineer`
-- Monitoramento → `observability-engineer`
+- Monitoring → `observability-engineer`
 - Troubleshooting → `devops-troubleshooter`
 
 ---
 
-### 💾 QUANDO TRABALHAR COM DADOS
+### 💾 WHEN WORKING WITH DATA
 
-**Por necessidade:**
-- Otimização de queries → `database-optimizer`
-- Pipelines de dados → `data-engineer`
-- Operações de DB → `database-admin`
-- Design de schema → `database-architect`
-- ML em produção → `ml-production-engineer`
+**By need:**
+- Query optimization → `database-optimizer`
+- Data pipelines → `data-engineer`
+- DB operations → `database-admin`
+- Schema design → `database-architect`
+- ML in production → `ml-production-engineer`
 - MLOps → `mlops-engineer`
 - Data science → `data-scientist`
 
 ---
 
-### 🤖 QUANDO TRABALHAR COM AI/ML
+### 🤖 WHEN WORKING WITH AI/ML
 
-**Por tipo:**
-- LLMs/RAG/Agentes → `ai-engineer`
-- ML em produção → `ml-production-engineer`
-- Infraestrutura ML → `mlops-engineer`
-- Análise estatística → `data-scientist`
-- Design de prompts → `prompt-engineer`
-
----
-
-### ✅ QUANDO REVISAR/VALIDAR CÓDIGO
-
-**Por foco:**
-- Revisão completa → `code-reviewer`
-- Decisões arquiteturais → `architect-review`
-- Testes automatizados → `test-automator`
+**By type:**
+- LLMs/RAG/Agents → `ai-engineer`
+- ML in production → `ml-production-engineer`
+- ML infrastructure → `mlops-engineer`
+- Statistical analysis → `data-scientist`
+- Prompt design → `prompt-engineer`
 
 ---
 
-### 💼 QUANDO TRATAR ASPECTOS DE NEGÓCIO
+### ✅ WHEN REVIEWING/VALIDATING CODE
 
-- Análise de negócios → `business-analyst`
-- Trading/Finanças → `quant-analyst`
-- Gestão de risco → `risk-manager`
+**By focus:**
+- Complete review → `code-reviewer`
+- Architectural decisions → `architect-review`
+- Automated tests → `test-automator`
+
+---
+
+### 💼 WHEN HANDLING BUSINESS ASPECTS
+
+- Business analysis → `business-analyst`
+- Trading/Finance → `quant-analyst`
+- Risk management → `risk-manager`
 - Content marketing → `content-marketer`
 
 ---
 
-### 🛠️ QUANDO MELHORAR EXPERIÊNCIA DO DEV
+### 🛠️ WHEN IMPROVING DEV EXPERIENCE
 
-- Setup de projeto → `dx-optimizer`
-- Configuração de statusline → `statusline-setup`
-
----
-
-## EXEMPLOS DE FLUXO COMPLETO
-
-### Exemplo 1: "Criar API REST com autenticação"
-```
-1. Sequential Thinking: Planejar arquitetura
-2. Plan: Explorar estrutura existente do projeto
-3. backend-architect: Definir design da API
-4. python-pro/javascript-pro: Implementar endpoints
-5. backend-security-coder: Implementar autenticação segura
-6. test-automator: Criar testes
-7. api-documenter: Documentar API
-8. code-reviewer: Revisar código final
-```
-
-### Exemplo 2: "Otimizar performance do frontend"
-```
-1. Sequential Thinking: Identificar gargalos
-2. Explore: Analisar componentes atuais
-3. performance-engineer: Diagnosticar problemas
-4. frontend-developer: Implementar otimizações
-5. code-reviewer: Validar mudanças
-```
-
-### Exemplo 3: "Deploy de modelo ML em produção"
-```
-1. Sequential Thinking: Planejar pipeline
-2. ml-production-engineer: Preparar modelo
-3. mlops-engineer: Setup de infraestrutura
-4. kubernetes-architect: Deploy em K8s
-5. observability-engineer: Configurar monitoramento
-```
-
-### Exemplo 4: "Auditoria de segurança completa"
-```
-1. Sequential Thinking: Definir escopo
-2. security-auditor: Análise geral
-3. frontend-security-coder: Revisar frontend
-4. backend-security-coder: Revisar backend
-5. code-reviewer: Validar correções
-6. docs-architect: Documentar findings
-```
+- Project setup → `dx-optimizer`
+- Statusline configuration → `statusline-setup`
 
 ---
 
-## REGRAS DE EXECUÇÃO
+## COMPLETE FLOW EXAMPLES
 
-### ✅ SEMPRE FAÇA:
-1. Declare explicitamente qual agente vai usar e por quê
-2. Use Sequential Thinking para coordenar múltiplos agentes
-3. Chame agentes usando a ferramenta Task com subagent_type correto
-4. Relate os resultados de cada agente
+### Example 1: "Create REST API with authentication"
+```
+1. Sequential Thinking: Plan architecture
+2. Plan: Explore existing project structure
+3. backend-architect: Define API design
+4. python-pro/javascript-pro: Implement endpoints
+5. backend-security-coder: Implement secure authentication
+6. test-automator: Create tests
+7. api-documenter: Document API
+8. code-reviewer: Review final code
+```
 
-### ❌ NUNCA FAÇA:
-1. Tentar fazer tudo sozinho sem chamar agentes
-2. Chamar agentes sem explicar o motivo
-3. Ignorar agentes especializados quando disponíveis
-4. Pular o Sequential Thinking em tarefas complexas
+### Example 2: "Optimize frontend performance"
+```
+1. Sequential Thinking: Identify bottlenecks
+2. Explore: Analyze current components
+3. performance-engineer: Diagnose issues
+4. frontend-developer: Implement optimizations
+5. code-reviewer: Validate changes
+```
+
+### Example 3: "Deploy ML model to production"
+```
+1. Sequential Thinking: Plan pipeline
+2. ml-production-engineer: Prepare model
+3. mlops-engineer: Setup infrastructure
+4. kubernetes-architect: Deploy to K8s
+5. observability-engineer: Configure monitoring
+```
+
+### Example 4: "Complete security audit"
+```
+1. Sequential Thinking: Define scope
+2. security-auditor: General analysis
+3. frontend-security-coder: Review frontend
+4. backend-security-coder: Review backend
+5. code-reviewer: Validate fixes
+6. docs-architect: Document findings
+```
 
 ---
 
-## PRIORIZAÇÃO
+## EXECUTION RULES
 
-**Alta prioridade (sempre usar quando aplicável):**
-- Sequential Thinking (planejamento)
-- Plan/Explore (compreensão de codebase)
-- code-reviewer (validação)
+### ✅ ALWAYS DO:
+1. Explicitly declare which agent you'll use and why
+2. Use Sequential Thinking to coordinate multiple agents
+3. Call agents using Task tool with correct subagent_type
+4. Report results from each agent
 
-**Média prioridade (usar conforme necessidade):**
-- Agentes especializados de desenvolvimento
-- Agentes de documentação
-- Agentes de segurança
-
-**Baixa prioridade (usar em casos específicos):**
-- Agentes de negócio/marketing
-- Utilitários específicos
+### ❌ NEVER DO:
+1. Try to do everything yourself without calling agents
+2. Call agents without explaining the reason
+3. Ignore specialized agents when available
+4. Skip Sequential Thinking on complex tasks
 
 ---
 
-## TEMPLATE DE RESPOSTA
+## PRIORITIZATION
 
-Quando receber uma solicitação, estruture assim:
+**High priority (always use when applicable):**
+- Sequential Thinking (planning)
+- Plan/Explore (codebase understanding)
+- code-reviewer (validation)
+
+**Medium priority (use as needed):**
+- Specialized development agents
+- Documentation agents
+- Security agents
+
+**Low priority (use in specific cases):**
+- Business/marketing agents
+- Specific utilities
+
+---
+
+## RESPONSE TEMPLATE
+
+When receiving a request, structure like this:
 ```
 🤔 [Sequential Thinking]
-- Análise do problema
-- Agentes necessários: [lista]
-- Sequência de execução
+- Problem analysis
+- Required agents: [list]
+- Execution sequence
 
-🔧 [Agente 1 - nome]
-- Por que uso: [razão]
-- [executar tarefa]
-- Resultado: [resumo]
+🔧 [Agent 1 - name]
+- Why I'm using it: [reason]
+- [execute task]
+- Result: [summary]
 
-🔧 [Agente 2 - nome]
-- Por que uso: [razão]
-- [executar tarefa]
-- Resultado: [resumo]
+🔧 [Agent 2 - name]
+- Why I'm using it: [reason]
+- [execute task]
+- Result: [summary]
 
-✅ [Validação Final]
-- Revisão com Sequential Thinking
-- Próximos passos (se houver)
+✅ [Final Validation]
+- Review with Sequential Thinking
+- Next steps (if any)
 ```

@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "display_name": "Backend Development",
-  "description": "Desenvolvimento backend com APIs e arquitetura de serviços",
+  "description": "Backend development with APIs and service architecture",
   "agents": [
     "backend-architect",
     "backend-security-coder",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 11200
 }
-

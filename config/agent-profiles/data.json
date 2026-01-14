@@ -1,7 +1,7 @@
 {
   "name": "data",
   "display_name": "Data & Analytics",
-  "description": "Engenharia de dados, analytics e otimização de databases",
+  "description": "Data engineering, analytics and database optimization",
   "agents": [
     "data-engineer",
     "database-architect",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 11800
 }
-

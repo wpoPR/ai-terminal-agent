@@ -1,7 +1,7 @@
 {
   "name": "ai-ml",
   "display_name": "AI & Machine Learning",
-  "description": "Desenvolvimento e deployment de modelos AI/ML",
+  "description": "AI/ML model development and deployment",
   "agents": [
     "ai-engineer",
     "ml-production-engineer",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 12400
 }
-

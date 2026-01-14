@@ -1,7 +1,7 @@
 {
   "name": "docs",
   "display_name": "Documentation",
-  "description": "Documentação técnica, APIs e tutoriais",
+  "description": "Technical documentation, APIs and tutorials",
   "agents": [
     "docs-architect",
     "api-documenter",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 10800
 }
-

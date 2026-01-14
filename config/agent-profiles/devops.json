@@ -1,7 +1,7 @@
 {
   "name": "devops",
   "display_name": "DevOps & Infrastructure",
-  "description": "Infraestrutura, deployment e observabilidade",
+  "description": "Infrastructure, deployment and observability",
   "agents": [
     "kubernetes-architect",
     "terraform-specialist",
@@ -11,4 +11,3 @@
   ],
   "estimated_tokens": 14200
 }
-
