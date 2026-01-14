@@ -16,81 +16,80 @@
 
 ## Agent System
 
-Este projeto usa o **AI Terminal Agent** com gerenciamento dinâmico de agentes.
+This project uses **AI Terminal Agent** with dynamic agent management.
 
-### Verificar Agentes Ativos
+### Check Active Agents
 
 ```bash
-# Ver agentes ativos neste projeto
+# View active agents in this project
 ai-agents active
 
-# Ver estatísticas de tokens
+# View token statistics
 ai-agents stats
 
-# Listar todos os agentes disponíveis
+# List all available agents
 ai-agents list
 ```
 
-### Gerenciar Agentes
+### Manage Agents
 
 ```bash
-# Ativar um agente adicional
-ai-agents enable <nome>
+# Enable an additional agent
+ai-agents enable <name>
 
-# Desativar um agente
-ai-agents disable <nome>
+# Disable an agent
+ai-agents disable <name>
 
-# Trocar perfil
-ai-agents profile <nome>
+# Switch profile
+ai-agents profile <name>
 ```
 
-## Workflow com Agentes
+## Workflow with Agents
 
-### 1. Entender o Contexto
-- Use `Plan` para explorar o codebase
-- Use `Explore` para entender estrutura
+### 1. Understand the Context
+- Use `Plan` to explore the codebase
+- Use `Explore` to understand structure
 
-### 2. Trabalhar com Agentes Ativos
-Os agentes em `.claude/agents/` estão disponíveis para uso.
-Apenas agentes ativos aparecem no contexto.
+### 2. Work with Active Agents
+Agents in `.claude/agents/` are available for use.
+Only active agents appear in the context.
 
 ### 3. Sequential Thinking
-Para tarefas complexas:
-- Decomponha o problema
-- Identifique agentes necessários
-- Se um agente necessário não está ativo: `ai-agents enable <nome>`
-- Execute em sequência
-- Valide resultados
+For complex tasks:
+- Break down the problem
+- Identify required agents
+- If a needed agent is not active: `ai-agents enable <name>`
+- Execute in sequence
+- Validate results
 
 ## Best Practices
 
-### ✅ SEMPRE
-- Verifique agentes ativos antes de começar (`ai-agents active`)
-- Use Sequential Thinking para tarefas complexas
-- Declare qual agente está usando e por quê
-- Valide resultados
+### ✅ ALWAYS
+- Check active agents before starting (`ai-agents active`)
+- Use Sequential Thinking for complex tasks
+- Declare which agent you're using and why
+- Validate results
 
-### ❌ EVITE
-- Assumir que todos os agentes estão disponíveis
-- Pular validação de resultados
-- Usar agentes sem explicar o motivo
+### ❌ AVOID
+- Assuming all agents are available
+- Skipping result validation
+- Using agents without explaining the reason
 
-## Gerenciamento de Tokens
+## Token Management
 
 Current usage: Run `ai-agents stats`
-- Limite recomendado: 15,000 tokens
-- Seu perfil está otimizado para este projeto
+- Recommended limit: 15,000 tokens
+- Your profile is optimized for this project
 
-Se precisar de agentes adicionais temporariamente:
+If you need additional agents temporarily:
 ```bash
-ai-agents enable <nome>
-# Quando terminar
-ai-agents disable <nome>
+ai-agents enable <name>
+# When finished
+ai-agents disable <name>
 ```
 
-## Referências
+## References
 
-- Todos os agentes disponíveis: `ai-agents list`
-- Documentação completa: `~/workspace/primavera/ai-terminal-agent/definitions.md`
-- Sistema de agentes: `ai-agents help`
-
+- All available agents: `ai-agents list`
+- Complete documentation: `~/workspace/primavera/ai-terminal-agent/definitions.md`
+- Agent system: `ai-agents help`

@@ -17,34 +17,34 @@ AI_CONFIG=".ai-config"
 # Show menu
 show_agent_menu() {
   echo -e "${BOLD}${BLUE}┌─────────────────────────────────────────────┐${NC}"
-  echo -e "${BOLD}${BLUE}│  🤖 Configuração de Agentes                 │${NC}"
+  echo -e "${BOLD}${BLUE}│  🤖 Agent Configuration                     │${NC}"
   echo -e "${BOLD}${BLUE}└─────────────────────────────────────────────┘${NC}"
   echo ""
-  echo "Perfis Pré-definidos:"
+  echo "Pre-defined Profiles:"
   echo ""
-  echo -e "  ${CYAN}1.${NC} frontend      (4 agentes) - React, Next.js, Vue"
-  echo -e "  ${CYAN}2.${NC} backend       (4 agentes) - APIs, Node.js, databases"
-  echo -e "  ${CYAN}3.${NC} fullstack     (4 agentes) - Frontend + Backend completo"
-  echo -e "  ${CYAN}4.${NC} mobile        (3 agentes) - React Native, Flutter"
-  echo -e "  ${CYAN}5.${NC} devops        (5 agentes) - Kubernetes, Terraform, CI/CD"
-  echo -e "  ${CYAN}6.${NC} data          (4 agentes) - Data engineering, ETL, analytics"
-  echo -e "  ${CYAN}7.${NC} ai-ml         (4 agentes) - Machine Learning, AI"
-  echo -e "  ${CYAN}8.${NC} security      (4 agentes) - Security audit, vulnerabilities"
-  echo -e "  ${CYAN}9.${NC} docs          (4 agentes) - Documentação técnica"
-  echo -e " ${CYAN}10.${NC} research      (3 agentes) - Performance, research"
-  echo -e " ${CYAN}11.${NC} minimal       (2 agentes) - Apenas code review"
+  echo -e "  ${CYAN}1.${NC} frontend      (4 agents) - React, Next.js, Vue"
+  echo -e "  ${CYAN}2.${NC} backend       (4 agents) - APIs, Node.js, databases"
+  echo -e "  ${CYAN}3.${NC} fullstack     (4 agents) - Full Frontend + Backend"
+  echo -e "  ${CYAN}4.${NC} mobile        (3 agents) - React Native, Flutter"
+  echo -e "  ${CYAN}5.${NC} devops        (5 agents) - Kubernetes, Terraform, CI/CD"
+  echo -e "  ${CYAN}6.${NC} data          (4 agents) - Data engineering, ETL, analytics"
+  echo -e "  ${CYAN}7.${NC} ai-ml         (4 agents) - Machine Learning, AI"
+  echo -e "  ${CYAN}8.${NC} security      (4 agents) - Security audit, vulnerabilities"
+  echo -e "  ${CYAN}9.${NC} docs          (4 agents) - Technical documentation"
+  echo -e " ${CYAN}10.${NC} research      (3 agents) - Performance, research"
+  echo -e " ${CYAN}11.${NC} minimal       (2 agents) - Code review only"
   echo ""
-  echo -e "${YELLOW}Opções especiais:${NC}"
-  echo -e "  ${CYAN}s.${NC} Sugerir perfil baseado no projeto"
-  echo -e "  ${CYAN}c.${NC} Combinar perfis (ex: frontend+security)"
-  echo -e "  ${CYAN}n.${NC} Pular (configurar depois)"
+  echo -e "${YELLOW}Special options:${NC}"
+  echo -e "  ${CYAN}s.${NC} Suggest profile based on project"
+  echo -e "  ${CYAN}c.${NC} Combine profiles (e.g.: frontend+security)"
+  echo -e "  ${CYAN}n.${NC} Skip (configure later)"
   echo ""
 }
 
 # Get user choice (deprecated - now inline in main)
 get_user_choice() {
   local user_choice
-  read -p "Escolha [1-11/s/c/n]: " -r user_choice
+  read -p "Choose [1-11/s/c/n]: " -r user_choice
   echo "$user_choice"
 }
 
@@ -65,8 +65,8 @@ apply_profile() {
   
   local agents=($(jq -r '.agents[]' "$profile_file" 2>/dev/null))
   
-  echo "Ativando perfil: ${CYAN}$profile_name${NC}"
-  echo "Agentes: ${#agents[@]}"
+  echo "Activating profile: ${CYAN}$profile_name${NC}"
+  echo "Agents: ${#agents[@]}"
   echo ""
   
   # Create agents directory
@@ -111,10 +111,10 @@ apply_profile() {
       create_agent_config "$profile_name" "${agents[@]}"
     fi
     
-    echo -e "${GREEN}✓${NC} Perfil configurado: $profile_name"
+    echo -e "${GREEN}✓${NC} Profile configured: $profile_name"
     return 0
   else
-    echo -e "${YELLOW}⚠${NC}  Nenhum agente foi configurado"
+    echo -e "${YELLOW}⚠${NC}  No agents were configured"
     return 1
   fi
 }
@@ -174,7 +174,7 @@ main() {
   # Read with fallback for non-interactive mode
   local choice
   if [[ -t 0 ]]; then
-    read -p "Escolha [1-11/s/c/n]: " -r choice
+    read -p "Choose [1-11/s/c/n]: " -r choice
   else
     choice="11"  # Default to minimal in non-interactive mode
   fi
@@ -214,15 +214,15 @@ main() {
       apply_profile "minimal"
       ;;
     s|S)
-      echo "Analisando projeto..."
+      echo "Analyzing project..."
       echo ""
       if command -v ai-agents &> /dev/null; then
         ai-agents suggest
         echo ""
-        read -p "Deseja aplicar a sugestão? (y/n): " -r apply
+        read -p "Apply the suggestion? (y/n): " -r apply
         if [[ $apply =~ ^[Yy]$ ]]; then
           # Get suggested profile (simplified - would need parsing)
-          read -p "Digite o nome do perfil: " -r profile_name
+          read -p "Enter profile name: " -r profile_name
           apply_profile "$profile_name"
         fi
       else
@@ -231,29 +231,28 @@ main() {
       fi
       ;;
     c|C)
-      echo "Combinar perfis:"
+      echo "Combine profiles:"
       echo ""
-      read -p "Digite perfis separados por '+' (ex: frontend+security): " -r combined
+      read -p "Enter profiles separated by '+' (e.g.: frontend+security): " -r combined
       echo ""
       if command -v ai-agents &> /dev/null; then
         ai-agents profile "$combined"
       else
         echo -e "${YELLOW}⚠${NC}  ai-agents command not available"
-        echo -e "${BLUE}ℹ${NC}  Aplicando perfil minimal"
+        echo -e "${BLUE}ℹ${NC}  Applying minimal profile"
         apply_profile "minimal"
       fi
       ;;
     n|N)
-      echo -e "${BLUE}ℹ${NC}  Pulando configuração de agentes"
+      echo -e "${BLUE}ℹ${NC}  Skipping agent configuration"
       echo ""
       return 0
       ;;
     *)
-      echo -e "${YELLOW}⚠${NC}  Opção inválida, usando perfil minimal"
+      echo -e "${YELLOW}⚠${NC}  Invalid option, using minimal profile"
       apply_profile "minimal"
       ;;
   esac
 }
 
 main "$@"
-

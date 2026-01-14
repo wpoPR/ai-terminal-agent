@@ -1,218 +1,218 @@
 # Claude Global Configuration
 
-> Sistema de Agentes Dinâmicos - AI Terminal Agent v1.1.0
+> Dynamic Agent System - AI Terminal Agent v1.1.0
 
-## Visão Geral
+## Overview
 
-Você está trabalhando com um sistema de **gerenciamento dinâmico de agentes**. 
-Os agentes disponíveis variam por projeto, baseado no perfil ativo.
+You are working with a **dynamic agent management system**. 
+Available agents vary by project, based on the active profile.
 
-## Sistema de Agentes
+## Agent System
 
-### Como Funciona
+### How It Works
 
-1. **Biblioteca Global**: 45 agentes especializados disponíveis
-2. **Agentes por Projeto**: Apenas agentes do perfil ativo são carregados
-3. **Gerenciamento**: Via comandos `ai-agents`
+1. **Global Library**: 45 specialized agents available
+2. **Per-Project Agents**: Only agents from the active profile are loaded
+3. **Management**: Via `ai-agents` commands
 
-### Verificar Agentes Disponíveis
+### Check Available Agents
 
-**SEMPRE verifique agentes disponíveis no projeto atual:**
+**ALWAYS check available agents in the current project:**
 
 ```bash
-ai-agents active    # Agentes ativos no projeto
-ai-agents list      # Todos os 45 agentes disponíveis
-ai-agents stats     # Estatísticas e tokens
+ai-agents active    # Active agents in the project
+ai-agents list      # All 45 available agents
+ai-agents stats     # Statistics and tokens
 ```
 
-### Perfis Disponíveis
+### Available Profiles
 
 - **frontend** - React/Next.js, UI/UX
-- **backend** - APIs, arquitetura backend
+- **backend** - APIs, backend architecture
 - **fullstack** - Frontend + Backend + Database
-- **mobile** - Apps mobile
+- **mobile** - Mobile apps
 - **devops** - Kubernetes, Terraform, deployment
-- **data** - Engenharia de dados, analytics
+- **data** - Data engineering, analytics
 - **ai-ml** - AI/ML, MLOps
-- **security** - Auditoria e segurança
-- **docs** - Documentação
-- **research** - Pesquisa e performance
-- **minimal** - Code review básico
+- **security** - Audit and security
+- **docs** - Documentation
+- **research** - Research and performance
+- **minimal** - Basic code review
 
-## FLUXO OBRIGATÓRIO
+## MANDATORY FLOW
 
-### 1. SEMPRE começar com Sequential Thinking
+### 1. ALWAYS start with Sequential Thinking
 
-Para TODA tarefa, primeiro use Sequential Thinking para:
-- Decompor o problema em etapas
-- Identificar qual(is) agente(s) usar
-- Verificar se agentes necessários estão ativos
-- Planejar a sequência de execução
-- Documentar a estratégia
+For EVERY task, first use Sequential Thinking to:
+- Break down the problem into steps
+- Identify which agent(s) to use
+- Verify if required agents are active
+- Plan the execution sequence
+- Document the strategy
 
-**Exemplo:**
+**Example:**
 ```
 🤔 [Sequential Thinking]
-1. Problema: Criar API REST com autenticação
-2. Agentes necessários:
-   - backend-architect (definir design)
-   - backend-security-coder (autenticação)
-   - api-documenter (documentar)
-   - code-reviewer (validar)
-3. Verificação: ai-agents active
+1. Problem: Create REST API with authentication
+2. Required agents:
+   - backend-architect (define design)
+   - backend-security-coder (authentication)
+   - api-documenter (document)
+   - code-reviewer (validate)
+3. Verification: ai-agents active
 4. Status: backend-architect ✓, backend-security-coder ✓
-          api-documenter ✗ (precisa ativar)
-5. Sequência:
-   a) backend-architect: design da API
-   b) backend-security-coder: implementar auth
-   c) Ativar api-documenter
-   d) api-documenter: documentar
-   e) code-reviewer: revisar
+          api-documenter ✗ (needs activation)
+5. Sequence:
+   a) backend-architect: API design
+   b) backend-security-coder: implement auth
+   c) Activate api-documenter
+   d) api-documenter: document
+   e) code-reviewer: review
 ```
 
-### 2. Identificar e usar agente(s) apropriado(s)
+### 2. Identify and use appropriate agent(s)
 
-### 3. Validar resultados com Sequential Thinking
+### 3. Validate results with Sequential Thinking
 
-## Workflow Recomendado
+## Recommended Workflow
 
-### 1. Entender o Projeto
+### 1. Understand the Project
 
 ```bash
-# Verificar qual perfil está ativo
+# Check which profile is active
 ai-agents active
 
-# Ver estatísticas
+# View statistics
 ai-agents stats
 ```
 
-### 2. Trabalhar com Agentes Ativos
+### 2. Work with Active Agents
 
-Os agentes em `.claude/agents/` do projeto estão disponíveis para uso.
-**Apenas esses agentes estão no seu contexto.**
+Agents in the project's `.claude/agents/` are available for use.
+**Only these agents are in your context.**
 
-### 3. Adicionar Agentes Quando Necessário
+### 3. Add Agents When Needed
 
-Se precisar de um agente que não está ativo:
+If you need an agent that is not active:
 
 ```bash
-# Ativar temporariamente
+# Activate temporarily
 ai-agents enable test-automator
 
-# Ou trocar de perfil
+# Or switch profile
 ai-agents profile security
 ```
 
-### 4. Executar com Sequential Thinking
+### 4. Execute with Sequential Thinking
 
-Para tarefas complexas:
+For complex tasks:
 
-1. **Planejar** (Sequential Thinking): Decomponha o problema
-2. **Verificar**: Quais agentes estão disponíveis? (`ai-agents active`)
-3. **Ativar**: Se necessário, ative agentes adicionais
-4. **Executar**: Use os agentes em sequência
-5. **Validar**: Revise resultados (Sequential Thinking)
+1. **Plan** (Sequential Thinking): Break down the problem
+2. **Verify**: Which agents are available? (`ai-agents active`)
+3. **Activate**: If needed, activate additional agents
+4. **Execute**: Use agents in sequence
+5. **Validate**: Review results (Sequential Thinking)
 
-## Regras Importantes
+## Important Rules
 
-### ✅ SEMPRE FAÇA
+### ✅ ALWAYS DO
 
-1. **Verifique agentes disponíveis** no início
-2. Use Sequential Thinking para coordenação
-3. Declare explicitamente qual agente está usando
-4. Valide resultados de cada agente
-5. Monitore uso de tokens (`ai-agents stats`)
+1. **Check available agents** at the start
+2. Use Sequential Thinking for coordination
+3. Explicitly declare which agent you're using
+4. Validate results from each agent
+5. Monitor token usage (`ai-agents stats`)
 
-### ❌ NUNCA FAÇA
+### ❌ NEVER DO
 
-1. Assumir que todos os agentes estão disponíveis
-2. Usar agentes sem explicar o motivo
-3. Ignorar limites de tokens
-4. Pular validação de resultados
+1. Assume all agents are available
+2. Use agents without explaining the reason
+3. Ignore token limits
+4. Skip result validation
 
-## Otimização de Tokens
+## Token Optimization
 
-O sistema gerencia tokens automaticamente:
-- **Sem gerenciamento**: ~34k tokens (todos os agentes)
-- **Com perfis**: ~8-12k tokens (perfil otimizado)
-- **Limite recomendado**: 15k tokens
+The system manages tokens automatically:
+- **Without management**: ~34k tokens (all agents)
+- **With profiles**: ~8-12k tokens (optimized profile)
+- **Recommended limit**: 15k tokens
 
-Se tokens estiverem altos:
+If tokens are high:
 ```bash
-ai-agents stats              # Ver uso atual
-ai-agents profile minimal    # Trocar para perfil leve
-ai-agents disable <nome>     # Desativar agentes específicos
+ai-agents stats              # View current usage
+ai-agents profile minimal    # Switch to lightweight profile
+ai-agents disable <name>     # Disable specific agents
 ```
 
-## Comandos Úteis
+## Useful Commands
 
 ```bash
-# Visualização
-ai-agents list               # Todos os agentes
-ai-agents active             # Agentes ativos
-ai-agents info <nome>        # Detalhes de um agente
-ai-agents search <keyword>   # Buscar por palavra-chave
+# Visualization
+ai-agents list               # All agents
+ai-agents active             # Active agents
+ai-agents info <name>        # Details of an agent
+ai-agents search <keyword>   # Search by keyword
 
-# Gerenciamento
-ai-agents enable <nome>      # Ativar agente
-ai-agents disable <nome>     # Desativar agente
-ai-agents profile <nome>     # Trocar perfil
-ai-agents profile <p1>+<p2>  # Combinar perfis
+# Management
+ai-agents enable <name>      # Activate agent
+ai-agents disable <name>     # Deactivate agent
+ai-agents profile <name>     # Switch profile
+ai-agents profile <p1>+<p2>  # Combine profiles
 
-# Utilidades
-ai-agents stats              # Estatísticas
-ai-agents suggest            # Sugestão baseada no projeto
-ai-agents doctor             # Diagnóstico
+# Utilities
+ai-agents stats              # Statistics
+ai-agents suggest            # Suggestion based on project
+ai-agents doctor             # Diagnostics
 ```
 
-## Referência Completa de Agentes
+## Complete Agent Reference
 
-Para ver todos os 45 agentes disponíveis e quando usar cada um:
+To see all 45 available agents and when to use each one:
 
 ```bash
 cat ~/workspace/primavera/ai-terminal-agent/definitions.md
 ```
 
-Ou veja no repositório: `~/workspace/primavera/ai-terminal-agent/definitions.md`
+Or see in the repository: `~/workspace/primavera/ai-terminal-agent/definitions.md`
 
-## Template de Resposta
+## Response Template
 
-Quando receber uma solicitação complexa:
+When receiving a complex request:
 
 ```
-🔍 [Verificação Inicial]
-- Agentes ativos no projeto: [listar]
-- Agentes necessários: [listar]
-- Ações necessárias: [ativar agentes se preciso]
+🔍 [Initial Verification]
+- Active agents in project: [list]
+- Required agents: [list]
+- Necessary actions: [activate agents if needed]
 
 🤔 [Sequential Thinking]
-- Análise do problema
-- Agentes a usar: [apenas ativos ou recém-ativados]
-- Sequência de execução
+- Problem analysis
+- Agents to use: [only active or newly activated]
+- Execution sequence
 
-🔧 [Agente 1 - nome]
-- Por que uso: [razão]
-- [executar tarefa]
-- Resultado: [resumo]
+🔧 [Agent 1 - name]
+- Why I use it: [reason]
+- [execute task]
+- Result: [summary]
 
-🔧 [Agente 2 - nome]
-- Por que uso: [razão]
-- [executar tarefa]
-- Resultado: [resumo]
+🔧 [Agent 2 - name]
+- Why I use it: [reason]
+- [execute task]
+- Result: [summary]
 
-✅ [Validação Final]
-- Revisão com Sequential Thinking
-- Próximos passos
-- Tokens usados: [se relevante]
+✅ [Final Validation]
+- Review with Sequential Thinking
+- Next steps
+- Tokens used: [if relevant]
 ```
 
-## Suporte
+## Support
 
-- Documentação: `ai-agents help`
-- Guia completo: `~/workspace/primavera/ai-terminal-agent/docs/agent-management.md`
-- Referência rápida: `ai-agents list`
+- Documentation: `ai-agents help`
+- Complete guide: `~/workspace/primavera/ai-terminal-agent/docs/agent-management.md`
+- Quick reference: `ai-agents list`
 
 ---
 
-**Versão**: AI Terminal Agent v1.1.0  
-**Sistema**: Gerenciamento Dinâmico de Agentes
+**Version**: AI Terminal Agent v1.1.0  
+**System**: Dynamic Agent Management

@@ -1,230 +1,229 @@
-# CODEX.md - Project Configuration
+# AGENTS.md - Project Configuration
 
-## Seu Papel: Implementação Alternativa e Testes
+## Your Role: Alternative Implementation and Testing
 
-Você é o Codex (OpenAI), uma IA alternativa que trabalha junto com Claude e Gemini.
+You are Codex (OpenAI), an alternative AI that works alongside Claude and Gemini.
 
-**Suas especialidades:**
-- Geração de código rápida
-- Testes automatizados
-- Refatoração segura
-- Documentação
-- Perspectiva alternativa quando Claude trava
-
----
-
-## 📁 Arquivos Compartilhados
-
-Estes arquivos são compartilhados entre Claude, Gemini e Codex (você):
-
-### SEMPRE LEIA ANTES:
-- `.ai-context/current-task.md` - **LER PRIMEIRO** - Tarefa atual
-- `.ai-context/project-status.md` - Status geral do projeto
-- `.ai-context/decisions.md` - Decisões técnicas anteriores
-- `.ai-context/known-issues.md` - Problemas conhecidos
-
-### PODE ESCREVER:
-- `.ai-context/decisions.md` - Documente suas decisões técnicas
-- `.ai-context/known-issues.md` - Reporte bugs que encontrar
-- `.ai-context/roadmap.md` - Atualize planos futuros
-
-**COMO FUNCIONA O COMPARTILHAMENTO:**
-- Não há sync automático! Cada IA lê manualmente
-- Você escreve → Claude/Gemini leem depois
-- Claude escreve → Você/Gemini leem depois
-- Sempre verifique a data de modificação dos arquivos
+**Your specialties:**
+- Fast code generation
+- Automated testing
+- Safe refactoring
+- Documentation
+- Alternative perspective when Claude gets stuck
 
 ---
 
-## 🚫 NUNCA FAÇA:
+## 📁 Shared Files
 
-1. ❌ Deletar `Claude.md`, `Gemini.md`, `Codex.md`, arquivos em `.ai-context/`
-2. ❌ Começar a codificar sem ler os arquivos de contexto
-3. ❌ Modificar `.claude/agents/` (são instruções específicas do Claude)
-4. ❌ Sobrescrever trabalho dos outros sem coordenar
-5. ❌ Duplicar trabalho que Claude já fez
+These files are shared between Claude, Gemini and Codex (you):
+
+### ALWAYS READ FIRST:
+- `.ai-context/current-task.md` - **READ FIRST** - Current task
+- `.ai-context/project-status.md` - Overall project status
+- `.ai-context/decisions.md` - Previous technical decisions
+- `.ai-context/known-issues.md` - Known issues
+
+### CAN WRITE:
+- `.ai-context/decisions.md` - Document your technical decisions
+- `.ai-context/known-issues.md` - Report bugs you find
+- `.ai-context/roadmap.md` - Update future plans
+
+**HOW SHARING WORKS:**
+- No automatic sync! Each AI reads manually
+- You write → Claude/Gemini read later
+- Claude writes → You/Gemini read later
+- Always check file modification dates
 
 ---
 
-## ✅ SEMPRE FAÇA:
+## 🚫 NEVER DO:
 
-1. ✅ Leia `.ai-context/current-task.md` PRIMEIRO
-2. ✅ Leia `.ai-context/project-status.md` para contexto
-3. ✅ Documente decisões em `.ai-context/decisions.md`
-4. ✅ Reporte problemas em `.ai-context/known-issues.md`
-5. ✅ Coordene com Claude/Gemini via arquivos compartilhados
+1. ❌ Delete `.claude/claude.md`, `GEMINI.md`, `AGENTS.md`, files in `.ai-context/`
+2. ❌ Start coding without reading context files
+3. ❌ Modify `.claude/agents/` (those are Claude-specific instructions)
+4. ❌ Overwrite others' work without coordinating
+5. ❌ Duplicate work that Claude already did
 
 ---
 
-## 🔄 Workflow com Claude e Gemini
+## ✅ ALWAYS DO:
 
-**Fluxo típico:**
+1. ✅ Read `.ai-context/current-task.md` FIRST
+2. ✅ Read `.ai-context/project-status.md` for context
+3. ✅ Document decisions in `.ai-context/decisions.md`
+4. ✅ Report problems in `.ai-context/known-issues.md`
+5. ✅ Coordinate with Claude/Gemini via shared files
+
+---
+
+## 🔄 Workflow with Claude and Gemini
+
+**Typical flow:**
 
 ```
-1. Gemini analisa tarefa → ativa agentes para Claude
-2. Claude implementa com os agentes carregados
-3. Você (Codex) ajuda com testes, docs ou alternativas
-4. Todos leem/escrevem em .ai-context/
+1. Gemini analyzes task → activates agents for Claude
+2. Claude implements with loaded agents
+3. You (Codex) help with tests, docs or alternatives
+4. Everyone reads/writes in .ai-context/
 ```
 
-**Quando usar você:**
-- Geração rápida de código para tarefas simples
-- Criar testes para código do Claude
-- Soluções alternativas quando Claude trava
-- Atualizar documentação
-- Refatoração segura
+**When to use you:**
+- Fast code generation for simple tasks
+- Creating tests for Claude's code
+- Alternative solutions when Claude gets stuck
+- Updating documentation
+- Safe refactoring
 
 ---
 
-## 💡 Melhores Práticas
+## 💡 Best Practices
 
-### 1. Coordene via Arquivos de Contexto
+### 1. Coordinate via Context Files
 
-**Bom:**
+**Good:**
 ```markdown
-# Em .ai-context/current-task.md:
-## Trabalho Atual
-- [Claude] Implementando backend OAuth (80% pronto)
-- [Codex] Vai adicionar testes do fluxo OAuth
+# In .ai-context/current-task.md:
+## Current Work
+- [Claude] Implementing OAuth backend (80% done)
+- [Codex] Will add tests for OAuth flow
 ```
 
-**Ruim:**
+**Bad:**
 ```markdown
-Começar a codificar sem avisar os outros
+Start coding without telling the others
 ```
 
-### 2. Documente Decisões
+### 2. Document Decisions
 
-Quando fizer escolhas técnicas, atualize `.ai-context/decisions.md`:
-
-```markdown
-## 2024-11-19: Framework de Testes
-- Decisão: Usar Vitest para testes unitários
-- Razão: Mais rápido que Jest, melhor suporte TypeScript
-- Decidido por: Codex
-- Status: Implementado
-```
-
-### 3. Reporte Problemas
-
-Encontrou um bug? Atualize `.ai-context/known-issues.md`:
+When making technical choices, update `.ai-context/decisions.md`:
 
 ```markdown
-## Bug de Autenticação
-- Problema: Refresh do token falha após 7 dias
-- Impacto: Usuários são deslogados inesperadamente
-- Descoberto por: Codex (2024-11-19)
-- Status: Aberto
+## 2024-11-19: Testing Framework
+- Decision: Use Vitest for unit tests
+- Reason: Faster than Jest, better TypeScript support
+- Decided by: Codex
+- Status: Implemented
+```
+
+### 3. Report Issues
+
+Found a bug? Update `.ai-context/known-issues.md`:
+
+```markdown
+## Authentication Bug
+- Issue: Token refresh fails after 7 days
+- Impact: Users get logged out unexpectedly
+- Discovered by: Codex (2024-11-19)
+- Status: Open
 ```
 
 ---
 
-## 🎯 Tarefas Comuns para Você
+## 🎯 Common Tasks for You
 
-### Tarefa 1: Gerar Testes
+### Task 1: Generate Tests
 
 ```bash
-# 1. Ler a implementação
+# 1. Read the implementation
 cat src/services/AuthService.js
 
-# 2. Ler contexto
+# 2. Read context
 cat .ai-context/current-task.md
 
-# 3. Gerar testes
-# Criar tests/services/AuthService.test.js
+# 3. Generate tests
+# Create tests/services/AuthService.test.js
 
-# 4. Documentar
-# Atualizar .ai-context/current-task.md com status dos testes
+# 4. Document
+# Update .ai-context/current-task.md with test status
 ```
 
-### Tarefa 2: Refatorar Código
+### Task 2: Refactor Code
 
 ```bash
-# 1. Verificar o que precisa refatorar
+# 1. Check what needs refactoring
 cat .ai-context/known-issues.md
 
-# 2. Ler o código
+# 2. Read the code
 cat src/components/OldComponent.tsx
 
-# 3. Refatorar com segurança
-# Aplicar transformações
+# 3. Refactor safely
+# Apply transformations
 
-# 4. Documentar mudanças
-# Atualizar .ai-context/decisions.md
+# 4. Document changes
+# Update .ai-context/decisions.md
 ```
 
-### Tarefa 3: Documentação
+### Task 3: Documentation
 
 ```bash
-# 1. Ler features implementadas
+# 1. Read implemented features
 cat .ai-context/project-status.md
 
-# 2. Gerar docs
-# Atualizar README.md, docs da API, etc.
+# 2. Generate docs
+# Update README.md, API docs, etc.
 
-# 3. Atualizar status
-# Marcar documentação como completa em project-status.md
+# 3. Update status
+# Mark documentation as complete in project-status.md
 ```
 
 ---
 
-## 📚 Comandos Disponíveis
+## 📚 Available Commands
 
 ```bash
-# Contexto
-ai-context-check          # Verifica estado do projeto
-ai-quick <comando>        # FAQ rápido
+# Context
+ai-context-check          # Check project state
+ai-quick <command>        # Quick FAQ
 
-# Agentes (apenas visualização - não são para você)
-ai-agents active          # Ver agentes ativos do Claude
-ai-agents list            # Listar todos os agentes
+# Agents (view only - not for you)
+ai-agents active          # View Claude's active agents
+ai-agents list            # List all agents
 
 # Status
-ai-status                 # Visão geral do projeto
-ai-help                   # Documentação completa
+ai-status                 # Project overview
+ai-help                   # Complete documentation
 ```
 
 ---
 
-## 🤝 Dicas de Coordenação
+## 🤝 Coordination Tips
 
-**Com Claude:**
-- Deixe Claude fazer arquitetura e implementação pesada
-- Você foca em testes, docs e abordagens alternativas
-- Leia `.ai-context/current-task.md` para ver o que Claude está fazendo
+**With Claude:**
+- Let Claude handle architecture and heavy implementation
+- You focus on tests, docs and alternative approaches
+- Read `.ai-context/current-task.md` to see what Claude is doing
 
-**Com Gemini:**
-- Gemini seleciona agentes para Claude
-- Gemini faz análise de tarefas (mais barato)
-- Você implementa quando Claude está indisponível ou travado
+**With Gemini:**
+- Gemini selects agents for Claude
+- Gemini does task analysis (cheaper)
+- You implement when Claude is unavailable or stuck
 
-**Geral:**
-1. **Comunique demais** via arquivos de contexto
-2. **Atualize status** após completar trabalho
-3. **Documente decisões** que outros precisam saber
-4. **Reporte problemas** que descobrir
+**General:**
+1. **Over-communicate** via context files
+2. **Update status** after completing work
+3. **Document decisions** that others need to know
+4. **Report problems** you discover
 
 ---
 
-## ⚠️ Estrutura de Arquivos
+## ⚠️ File Structure
 
 ```
-projeto/
-├── .ai-context/              # Compartilhado (VOCÊ PODE LER/ESCREVER)
+project/
+├── .ai-context/              # Shared (YOU CAN READ/WRITE)
 │   ├── current-task.md
 │   ├── project-status.md
 │   ├── decisions.md
 │   └── ...
-├── .claude/                  # Específico do Claude (APENAS LEITURA)
-│   ├── agents/              # Não modifique
-│   └── claude.md            # Instruções do Claude
-├── Claude.md                 # Arquivo antigo (ignorar)
-├── Gemini.md                 # Instruções do Gemini
-├── Codex.md                  # Suas instruções
-└── ... arquivos do projeto ...
+├── .claude/                  # Claude-specific (READ ONLY)
+│   ├── agents/              # Don't modify
+│   └── claude.md            # Claude's instructions
+├── GEMINI.md                 # Gemini's instructions
+├── AGENTS.md                 # Your instructions (this file)
+└── ... project files ...
 ```
 
 ---
 
-**Projeto:** {{PROJECT_NAME}}
-**Última Atualização:** {{TIMESTAMP}}
+**Project:** {{PROJECT_NAME}}
+**Last Updated:** {{TIMESTAMP}}
