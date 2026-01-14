@@ -465,7 +465,7 @@ cmd_stats() {
   echo ""
   
   local profile=$(get_active_profile)
-  echo "Perfil Ativo: $profile"
+  echo "Active Profile: $profile"
   
   if [[ ! -d "$PROJECT_AGENTS_DIR" ]]; then
     print_warning "No agents directory found"
@@ -498,10 +498,10 @@ cmd_stats() {
   printf "%-30s %10s\n" "$(printf '─%.0s' {1..30})" "$(printf '─%.0s' {1..10})"
   echo ""
   
-  echo "Total de Agentes: $count"
+  echo "Total Agents: $count"
   
   local percent=$((total_tokens * 100 / limit))
-  echo "Tokens Estimados: $(format_number $total_tokens) / $(format_number $limit) ($percent%)"
+  echo "Estimated Tokens: $(format_number $total_tokens) / $(format_number $limit) ($percent%)"
   
   echo ""
   
@@ -511,7 +511,7 @@ cmd_stats() {
   elif [[ $total_tokens -gt $((limit * 80 / 100)) ]]; then
     print_warning "Token usage is high (>80%)"
   else
-    print_success "💡 Dica: Você está dentro do limite recomendado!"
+    print_success "💡 Tip: You are within the recommended limit!"
   fi
 }
 
@@ -640,37 +640,37 @@ cmd_doctor() {
   # Check global library
   if [[ -d "$AGENTS_LIB" ]]; then
     local agent_count=$(find "$AGENTS_LIB" -name "*.md" -type f | wc -l | tr -d ' ')
-    print_success "Biblioteca global existe (~/.ai-workspace/agents/)"
-    print_success "$agent_count agentes disponíveis"
+    print_success "Global library exists (~/.ai-workspace/agents/)"
+    print_success "$agent_count agents available"
   else
-    print_error "Biblioteca global não encontrada"
+    print_error "Global library not found"
     errors=$((errors + 1))
   fi
   
   # Check profiles
   if [[ -d "$PROFILES_DIR" ]]; then
     local profile_count=$(find "$PROFILES_DIR" -name "*.json" -type f | wc -l | tr -d ' ')
-    print_success "$profile_count perfis configurados"
+    print_success "$profile_count profiles configured"
   else
-    print_error "Diretório de perfis não encontrado"
+    print_error "Profiles directory not found"
     errors=$((errors + 1))
   fi
   
   # Check agent index
   if [[ -f "$AGENT_INDEX" ]]; then
-    print_success "agent-index.json válido"
+    print_success "agent-index.json valid"
   else
-    print_warning "agent-index.json não encontrado"
+    print_warning "agent-index.json not found"
   fi
   
   # Check project-specific
   if [[ -f "$AI_CONFIG" ]]; then
-    print_success ".ai-config válido"
+    print_success ".ai-config valid"
     
     if [[ -d "$PROJECT_AGENTS_DIR" ]]; then
       local active_count=$(find "$PROJECT_AGENTS_DIR" -name "*.md" -type f | wc -l | tr -d ' ')
-      print_success ".claude/agents/ existe"
-      print_success "$active_count agentes ativos"
+      print_success ".claude/agents/ exists"
+      print_success "$active_count active agents"
       
       # Check tokens
       local tokens=$(calculate_tokens)
@@ -686,27 +686,27 @@ cmd_doctor() {
         print_success "Tokens: $(format_number $tokens) / $(format_number $limit) (OK)"
       fi
     else
-      print_warning ".claude/agents/ não existe (nenhum agente ativo)"
+      print_warning ".claude/agents/ doesn't exist (no active agents)"
     fi
   else
-    print_info "Não em um projeto AI (sem .ai-config)"
+    print_info "Not in an AI project (no .ai-config)"
   fi
   
   # Check jq
   if command -v jq &> /dev/null; then
-    print_success "jq instalado"
+    print_success "jq installed"
   else
-    print_warning "jq não instalado (funcionalidade limitada)"
+    print_warning "jq not installed (limited functionality)"
     print_info "Install: brew install jq"
   fi
   
   echo ""
   
   if [[ $errors -eq 0 ]]; then
-    print_success "${BOLD}Tudo funcionando corretamente!${NC}"
+    print_success "${BOLD}Everything working correctly!${NC}"
   else
-    print_error "${BOLD}$errors problema(s) encontrado(s)${NC}"
-    print_info "Run 'ai-update' para corrigir problemas de instalação"
+    print_error "${BOLD}$errors problem(s) found${NC}"
+    print_info "Run 'ai-update' to fix installation issues"
   fi
 }
 
@@ -862,83 +862,83 @@ cmd_update() {
 #
 cmd_explain() {
   echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${BOLD}${BLUE}  Sistema de Gerenciamento de Agentes${NC}"
+  echo -e "${BOLD}${BLUE}  Agent Management System${NC}"
   echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   echo ""
   
-  echo -e "${BOLD}${CYAN}O que são Agentes?${NC}"
-  echo "Agentes são especialistas em áreas específicas (frontend, backend, security, etc)"
-  echo "que Claude pode usar para resolver problemas complexos."
+  echo -e "${BOLD}${CYAN}What are Agents?${NC}"
+  echo "Agents are specialists in specific areas (frontend, backend, security, etc)"
+  echo "that Claude can use to solve complex problems."
   echo ""
   
-  echo -e "${BOLD}${CYAN}Como Funciona:${NC}"
+  echo -e "${BOLD}${CYAN}How It Works:${NC}"
   echo ""
-  echo -e "${GREEN}1. Biblioteca Global${NC}"
-  echo "   • 45 agentes disponíveis em: ${CYAN}$AGENTS_LIB${NC}"
-  echo "   • Sempre disponíveis para ativação"
-  echo ""
-  
-  echo -e "${GREEN}2. Agentes por Projeto${NC}"
-  echo "   • Apenas agentes do perfil ativo são copiados"
-  echo "   • Ficam em: ${CYAN}.claude/agents/${NC}"
-  echo "   • Claude Code lê automaticamente"
+  echo -e "${GREEN}1. Global Library${NC}"
+  echo "   • 45 agents available at: ${CYAN}$AGENTS_LIB${NC}"
+  echo "   • Always available for activation"
   echo ""
   
-  echo -e "${GREEN}3. Perfis${NC}"
-  echo "   • 11 perfis pré-definidos"
-  echo "   • Cada perfil tem 2-5 agentes otimizados"
-  echo "   • Exemplos: frontend, backend, fullstack, mobile, devops"
+  echo -e "${GREEN}2. Per-Project Agents${NC}"
+  echo "   • Only active profile agents are copied"
+  echo "   • Located at: ${CYAN}.claude/agents/${NC}"
+  echo "   • Claude Code reads automatically"
   echo ""
   
-  echo -e "${BOLD}${CYAN}Benefícios:${NC}"
-  echo ""
-  echo -e "  ${GREEN}✓${NC} ${BOLD}Performance:${NC} 60-70% menos tokens (34k → 8-12k)"
-  echo -e "  ${GREEN}✓${NC} ${BOLD}Organização:${NC} Apenas agentes relevantes por projeto"
-  echo -e "  ${GREEN}✓${NC} ${BOLD}Flexibilidade:${NC} Troca de perfil quando necessário"
-  echo -e "  ${GREEN}✓${NC} ${BOLD}Controle:${NC} Ativa/desativa agentes individualmente"
+  echo -e "${GREEN}3. Profiles${NC}"
+  echo "   • 11 pre-defined profiles"
+  echo "   • Each profile has 2-5 optimized agents"
+  echo "   • Examples: frontend, backend, fullstack, mobile, devops"
   echo ""
   
-  echo -e "${BOLD}${CYAN}Arquivos de Contexto:${NC}"
+  echo -e "${BOLD}${CYAN}Benefits:${NC}"
   echo ""
-  echo -e "${YELLOW}1. Configuração Global${NC}"
+  echo -e "  ${GREEN}✓${NC} ${BOLD}Performance:${NC} 60-70% fewer tokens (34k → 8-12k)"
+  echo -e "  ${GREEN}✓${NC} ${BOLD}Organization:${NC} Only relevant agents per project"
+  echo -e "  ${GREEN}✓${NC} ${BOLD}Flexibility:${NC} Switch profiles when needed"
+  echo -e "  ${GREEN}✓${NC} ${BOLD}Control:${NC} Enable/disable agents individually"
+  echo ""
+  
+  echo -e "${BOLD}${CYAN}Context Files:${NC}"
+  echo ""
+  echo -e "${YELLOW}1. Global Configuration${NC}"
   echo "   ${CYAN}~/.claude/CLAUDE.md${NC}"
-  echo "   • Instruções globais sobre sistema de agentes"
-  echo "   • Claude lê em todos os projetos"
+  echo "   • Global instructions about agent system"
+  echo "   • Claude reads in all projects"
   echo ""
   
-  echo -e "${YELLOW}2. Agentes Ativos (por projeto)${NC}"
+  echo -e "${YELLOW}2. Active Agents (per project)${NC}"
   echo "   ${CYAN}.claude/agents/*.md${NC}"
-  echo "   • Apenas agentes do perfil ativo"
-  echo "   • Claude lê automaticamente"
+  echo "   • Only active profile agents"
+  echo "   • Claude reads automatically"
   echo ""
   
-  echo -e "${YELLOW}3. Contexto Compartilhado${NC}"
+  echo -e "${YELLOW}3. Shared Context${NC}"
   echo "   ${CYAN}.ai-context/project-status.md${NC}"
-  echo "   • Compartilhado entre Claude, Gemini, Codex"
-  echo "   • Use para comunicação entre AIs"
+  echo "   • Shared between Claude, Gemini, Codex"
+  echo "   • Use for AI communication"
   echo ""
   
-  echo -e "${YELLOW}4. Referência Completa${NC}"
+  echo -e "${YELLOW}4. Complete Reference${NC}"
   echo "   ${CYAN}~/workspace/primavera/ai-terminal-agent/definitions.md${NC}"
-  echo "   • Mapeamento completo de todos os 45 agentes"
-  echo "   • Quando usar cada agente"
+  echo "   • Complete mapping of all 45 agents"
+  echo "   • When to use each agent"
   echo ""
   
-  echo -e "${BOLD}${CYAN}Workflow Básico:${NC}"
+  echo -e "${BOLD}${CYAN}Basic Workflow:${NC}"
   echo ""
-  echo "  1. ${GREEN}ai-start${NC}              - Menu interativo, escolhe perfil"
-  echo "  2. ${GREEN}ai-agents active${NC}      - Ver agentes ativos"
-  echo "  3. ${GREEN}ai-agents enable <nome>${NC} - Ativar agente adicional"
-  echo "  4. ${GREEN}ai-agents stats${NC}       - Monitorar uso de tokens"
-  echo "  5. ${GREEN}ai-agents profile <nome>${NC} - Trocar perfil"
+  echo "  1. ${GREEN}ai-start${NC}              - Interactive menu, choose profile"
+  echo "  2. ${GREEN}ai-agents active${NC}      - View active agents"
+  echo "  3. ${GREEN}ai-agents enable <name>${NC} - Enable additional agent"
+  echo "  4. ${GREEN}ai-agents stats${NC}       - Monitor token usage"
+  echo "  5. ${GREEN}ai-agents profile <name>${NC} - Switch profile"
   echo ""
   
-  echo -e "${BOLD}${CYAN}Mais Informações:${NC}"
+  echo -e "${BOLD}${CYAN}More Information:${NC}"
   echo ""
-  echo "  ${CYAN}ai-tips sharing${NC}     - Como AIs compartilham contexto"
-  echo "  ${CYAN}ai-agents help${NC}      - Todos os comandos"
-  echo "  ${CYAN}ai-agents list${NC}      - Ver todos os 45 agentes"
-  echo "  ${CYAN}ai-agents suggest${NC}   - Sugestão baseada no projeto"
+  echo "  ${CYAN}ai-tips sharing${NC}     - How AIs share context"
+  echo "  ${CYAN}ai-agents help${NC}      - All commands"
+  echo "  ${CYAN}ai-agents list${NC}      - View all 45 agents"
+  echo "  ${CYAN}ai-agents suggest${NC}   - Project-based suggestion"
   echo ""
 }
 
