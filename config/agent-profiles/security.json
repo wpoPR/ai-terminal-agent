@@ -1,7 +1,7 @@
 {
   "name": "security",
   "display_name": "Security & Audit",
-  "description": "Segurança, auditoria e code review",
+  "description": "Security, audit and code review",
   "agents": [
     "security-auditor",
     "frontend-security-coder",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 11600
 }
-

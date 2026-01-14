@@ -155,7 +155,7 @@ try {
   } else if (error instanceof SafetyError) {
     // Log incident and return safe default
     await logSafetyIncident(error);
-    return { error: 'Conteúdo não pôde ser processado por questões de segurança' };
+    return { error: 'Content could not be processed due to security reasons' };
   } else {
     // Generic error with retry logic
     await logError(error);

@@ -1,7 +1,7 @@
 {
   "name": "fullstack",
   "display_name": "Full Stack Development",
-  "description": "Desenvolvimento web completo com frontend, backend e database",
+  "description": "Complete web development with frontend, backend and database",
   "agents": [
     "frontend-developer",
     "backend-architect",
@@ -10,4 +10,3 @@
   ],
   "estimated_tokens": 10600
 }
-

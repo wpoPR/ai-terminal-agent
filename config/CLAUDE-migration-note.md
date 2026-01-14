@@ -1,122 +1,121 @@
 # CLAUDE.md Migration Notes
 
-## Mudanças na v1.1.0
+## Changes in v1.1.0
 
-Com a implementação do **Sistema de Gerenciamento Dinâmico de Agentes**, a estrutura do CLAUDE.md foi reorganizada.
+With the implementation of the **Dynamic Agent Management System**, the CLAUDE.md structure was reorganized.
 
-### Antes (v1.0.0)
+### Before (v1.0.0)
 
-- **CLAUDE.md global** com lista completa de 45 agentes
-- Arquivo estático com mapeamento completo
-- Todos os agentes sempre carregados (~34k tokens)
+- **Global CLAUDE.md** with complete list of 45 agents
+- Static file with complete mapping
+- All agents always loaded (~34k tokens)
 
-### Depois (v1.1.0)
+### After (v1.1.0)
 
-- **CLAUDE.md global** (`~/.claude/CLAUDE.md`) - Instruções sobre sistema de agentes
-- **Template por projeto** (`templates/claude-project.md`) - Adapta-se ao perfil
-- **definitions.md** - Referência completa de agentes (preservado)
-- **Agentes dinâmicos** - Apenas perfil ativo carregado (~8-12k tokens)
+- **Global CLAUDE.md** (`~/.claude/CLAUDE.md`) - Instructions about agent system
+- **Project template** (`templates/claude-project.md`) - Adapts to profile
+- **definitions.md** - Complete agent reference (preserved)
+- **Dynamic agents** - Only active profile loaded (~8-12k tokens)
 
-### Arquivos
+### Files
 
-1. **`~/.claude/CLAUDE.md`** (novo)
-   - Instruções globais
-   - Sistema de gerenciamento de agentes
-   - Workflow recomendado
-   - Como verificar/ativar agentes
+1. **`~/.claude/CLAUDE.md`** (new)
+   - Global instructions
+   - Agent management system
+   - Recommended workflow
+   - How to check/activate agents
 
-2. **`templates/claude-project.md`** (novo)
-   - Template para projetos
-   - Adapta-se ao perfil ativo
-   - Instruções específicas do projeto
+2. **`templates/claude-project.md`** (new)
+   - Project template
+   - Adapts to active profile
+   - Project-specific instructions
 
-3. **`definitions.md`** (já existia)
-   - Referência completa de todos os 45 agentes
-   - Mapeamento detalhado de quando usar cada agente
-   - Exemplos de fluxos completos
+3. **`definitions.md`** (already existed)
+   - Complete reference of all 45 agents
+   - Detailed mapping of when to use each agent
+   - Complete flow examples
 
-4. **`config/CLAUDE-reference.md`** (antigo CLAUDE.md renomeado)
-   - Backup do arquivo original
-   - Referência histórica
+4. **`config/CLAUDE-reference.md`** (old CLAUDE.md renamed)
+   - Backup of original file
+   - Historical reference
 
-### Como Usar Agora
+### How to Use Now
 
-#### Setup Inicial
+#### Initial Setup
 ```bash
-# O novo CLAUDE.md global já está em ~/.claude/CLAUDE.md
-# Criado automaticamente durante a implementação
+# The new global CLAUDE.md is already at ~/.claude/CLAUDE.md
+# Automatically created during implementation
 ```
 
-#### Por Projeto
+#### Per Project
 ```bash
-cd ~/meu-projeto
+cd ~/my-project
 ai-start
 
-# Menu interativo aparece
-# Escolhe perfil (frontend, backend, fullstack, etc)
-# Agentes são configurados automaticamente
+# Interactive menu appears
+# Choose profile (frontend, backend, fullstack, etc)
+# Agents are configured automatically
 
-# Verificar agentes ativos
+# Check active agents
 ai-agents active
 
-# Ver estatísticas
+# View statistics
 ai-agents stats
 ```
 
-#### Adicionar Agentes Temporariamente
+#### Add Agents Temporarily
 ```bash
-# Precisa de um agente que não está no perfil?
+# Need an agent that's not in the profile?
 ai-agents enable test-automator
 
-# Restart Claude Code para carregar
+# Restart Claude Code to load
 ```
 
-### Benefícios
+### Benefits
 
-1. **Performance**: 60-70% menos tokens
-2. **Flexibilidade**: Perfis por tipo de projeto
-3. **Controle**: Ativar/desativar agentes dinamicamente
-4. **Organização**: Cada projeto com seus agentes
-5. **Manutenção**: Mais fácil de gerenciar
+1. **Performance**: 60-70% less tokens
+2. **Flexibility**: Profiles per project type
+3. **Control**: Enable/disable agents dynamically
+4. **Organization**: Each project with its agents
+5. **Maintenance**: Easier to manage
 
-### Comandos para Referência
+### Reference Commands
 
 ```bash
-# Ver todos os agentes disponíveis
+# See all available agents
 ai-agents list
 
-# Ver mapeamento completo (como no CLAUDE.md antigo)
+# See complete mapping (like old CLAUDE.md)
 cat ~/workspace/primavera/ai-terminal-agent/definitions.md
 
-# Documentação completa do sistema de agentes
+# Complete agent system documentation
 cat ~/workspace/primavera/ai-terminal-agent/docs/agent-management.md
 ```
 
-### Migração de Projetos Existentes
+### Migrating Existing Projects
 
-Se você já tem projetos com o sistema antigo:
+If you already have projects with the old system:
 
 ```bash
-cd ~/projeto-existente
+cd ~/existing-project
 ai-start
 
-# Se não tiver .ai-config, o menu interativo aparece
-# Escolha o perfil apropriado
+# If no .ai-config, interactive menu appears
+# Choose appropriate profile
 
-# Ou configure manualmente
+# Or configure manually
 ai-agents profile fullstack
 ```
 
-### Dúvidas?
+### Questions?
 
-- Sistema de agentes: `ai-agents help`
-- Documentação completa: `docs/agent-management.md`
-- Referência de agentes: `definitions.md`
-- Diagnóstico: `ai-agents doctor`
+- Agent system: `ai-agents help`
+- Full documentation: `docs/agent-management.md`
+- Agent reference: `definitions.md`
+- Diagnostics: `ai-agents doctor`
 
 ---
 
-**Data da Migração**: 2025-01-13  
-**Versão**: v1.1.0  
-**Sistema**: Agent Management System
-
+**Migration Date**: 2025-01-13  
+**Version**: v1.1.0  
+**System**: Agent Management System

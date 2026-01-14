@@ -1,210 +1,210 @@
 # Claude Configuration Guide
 
-Guia completo sobre a configuração do CLAUDE.md no AI Terminal Agent v1.1.0
+Complete guide on CLAUDE.md configuration in AI Terminal Agent v1.1.0
 
-## Visão Geral
+## Overview
 
-Com o sistema de gerenciamento dinâmico de agentes, a configuração do Claude foi reestruturada para suportar:
-- Agentes dinâmicos por projeto
-- Perfis especializados
-- Configuração global + configuração por projeto
+With the dynamic agent management system, Claude configuration was restructured to support:
+- Dynamic agents per project
+- Specialized profiles
+- Global configuration + per-project configuration
 
-## Estrutura de Arquivos
+## File Structure
 
-### 1. CLAUDE.md Global (`~/.claude/CLAUDE.md`)
+### 1. Global CLAUDE.md (`~/.claude/CLAUDE.md`)
 
-**Localização**: `~/.claude/CLAUDE.md`  
-**Propósito**: Instruções globais sobre o sistema de agentes  
-**Criado**: Automaticamente durante `install.sh`
+**Location**: `~/.claude/CLAUDE.md`  
+**Purpose**: Global instructions about the agent system  
+**Created**: Automatically during `install.sh`
 
-Este arquivo instrui o Claude sobre:
-- Sistema de gerenciamento dinâmico de agentes
-- Como verificar agentes disponíveis
-- Como ativar/desativar agentes
-- Workflow recomendado
-- Comandos úteis
+This file instructs Claude about:
+- Dynamic agent management system
+- How to check available agents
+- How to enable/disable agents
+- Recommended workflow
+- Useful commands
 
-**Quando é usado**: Para todos os projetos, como contexto base
+**When used**: For all projects, as base context
 
-### 2. CLAUDE.md por Projeto (Opcional)
+### 2. Per-Project CLAUDE.md (Optional)
 
-**Localização**: `<projeto>/CLAUDE.md`  
-**Propósito**: Contexto específico do projeto  
-**Criado**: Via `generate-project-claude`
+**Location**: `<project>/CLAUDE.md`  
+**Purpose**: Project-specific context  
+**Created**: Via `generate-project-claude`
 
-Este arquivo contém:
-- Perfil ativo no projeto
-- Lista de agentes ativos
-- Instruções específicas do projeto
-- Tipo de projeto detectado
+This file contains:
+- Active profile in the project
+- List of active agents
+- Project-specific instructions
+- Detected project type
 
-**Quando é usado**: Como contexto adicional específico do projeto
+**When used**: As additional project-specific context
 
-### 3. definitions.md (Referência)
+### 3. definitions.md (Reference)
 
-**Localização**: `~/workspace/primavera/ai-terminal-agent/definitions.md`  
-**Propósito**: Referência completa de todos os 45 agentes  
-**Criado**: Parte do repositório
+**Location**: `~/workspace/primavera/ai-terminal-agent/definitions.md`  
+**Purpose**: Complete reference of all 45 agents  
+**Created**: Part of the repository
 
-Este arquivo contém:
-- Mapeamento completo: Tarefa → Agente
-- Exemplos de fluxos completos
-- Quando usar cada agente
-- Priorização de agentes
+This file contains:
+- Complete mapping: Task → Agent
+- Complete flow examples
+- When to use each agent
+- Agent prioritization
 
-**Quando é usado**: Como referência quando precisar de informações sobre agentes específicos
+**When used**: As reference when needing information about specific agents
 
-## Comparação: Antes vs Depois
+## Comparison: Before vs After
 
-### Antes (v1.0.0)
+### Before (v1.0.0)
 
 ```
-config/CLAUDE.md (único arquivo)
-├── Lista completa de 45 agentes
-├── Mapeamento estático
-└── Sempre carregado (~34k tokens)
+config/CLAUDE.md (single file)
+├── Complete list of 45 agents
+├── Static mapping
+└── Always loaded (~34k tokens)
 ```
 
-### Depois (v1.1.0)
+### After (v1.1.0)
 
 ```
 ~/.claude/CLAUDE.md (global)
-├── Instruções sobre sistema de agentes
-├── Como verificar/ativar agentes
-└── Workflow dinâmico
+├── Instructions about agent system
+├── How to check/enable agents
+└── Dynamic workflow
 
-<projeto>/CLAUDE.md (opcional, gerado)
-├── Perfil ativo
-├── Agentes específicos do projeto
-└── Contexto do projeto
+<project>/CLAUDE.md (optional, generated)
+├── Active profile
+├── Project-specific agents
+└── Project context
 
-definitions.md (referência)
-├── Mapeamento completo de agentes
-└── Exemplos detalhados
+definitions.md (reference)
+├── Complete agent mapping
+└── Detailed examples
 ```
 
-## Como Funciona
+## How It Works
 
-### 1. Instalação
+### 1. Installation
 
-Durante `./install.sh`:
+During `./install.sh`:
 ```bash
-# Cria ~/.claude/CLAUDE.md global
+# Creates ~/.claude/CLAUDE.md global
 cp templates/claude-global.md ~/.claude/CLAUDE.md
 ```
 
-### 2. Primeiro Uso em Projeto
+### 2. First Use in Project
 
 ```bash
-cd ~/meu-projeto
+cd ~/my-project
 ai-start
 
-# Menu interativo aparece
-# Escolhe perfil: frontend, backend, fullstack, etc
-# Agentes são copiados para .claude/agents/
+# Interactive menu appears
+# Choose profile: frontend, backend, fullstack, etc
+# Agents are copied to .claude/agents/
 ```
 
-### 3. Gerar CLAUDE.md do Projeto (Opcional)
+### 3. Generate Project CLAUDE.md (Optional)
 
 ```bash
-# No diretório do projeto
+# In project directory
 generate-project-claude
 
-# Gera CLAUDE.md com:
-# - Perfil ativo
-# - Agentes carregados
-# - Instruções específicas
+# Generates CLAUDE.md with:
+# - Active profile
+# - Loaded agents
+# - Specific instructions
 ```
 
-### 4. Claude Lê Contexto
+### 4. Claude Reads Context
 
-Quando Claude inicia em um projeto:
-1. Lê `~/.claude/CLAUDE.md` (global)
-2. Lê `.claude/agents/*.md` (agentes ativos)
-3. Lê `CLAUDE.md` do projeto (se existir)
+When Claude starts in a project:
+1. Reads `~/.claude/CLAUDE.md` (global)
+2. Reads `.claude/agents/*.md` (active agents)
+3. Reads project `CLAUDE.md` (if exists)
 
-## Comandos
+## Commands
 
-### Gerenciar CLAUDE.md Global
+### Manage Global CLAUDE.md
 
 ```bash
-# Ver CLAUDE.md global
+# View global CLAUDE.md
 cat ~/.claude/CLAUDE.md
 
-# Editar CLAUDE.md global
+# Edit global CLAUDE.md
 nano ~/.claude/CLAUDE.md
 
-# Restaurar do template
+# Restore from template
 cp ~/workspace/primavera/ai-terminal-agent/templates/claude-global.md ~/.claude/CLAUDE.md
 ```
 
-### Gerenciar CLAUDE.md por Projeto
+### Manage Per-Project CLAUDE.md
 
 ```bash
-# Gerar CLAUDE.md para projeto atual
-cd ~/meu-projeto
+# Generate CLAUDE.md for current project
+cd ~/my-project
 generate-project-claude
 
-# Gerar com nome customizado
+# Generate with custom name
 generate-project-claude PROJECT-CLAUDE.md
 
-# Regenerar quando mudar perfil
+# Regenerate when changing profile
 ai-agents profile backend
 generate-project-claude
 ```
 
-### Ver Referência Completa
+### View Complete Reference
 
 ```bash
-# Ver todos os agentes e quando usar
+# View all agents and when to use
 cat ~/workspace/primavera/ai-terminal-agent/definitions.md
 
-# Buscar por palavra-chave
+# Search by keyword
 grep -i "frontend" ~/workspace/primavera/ai-terminal-agent/definitions.md
 ```
 
 ## Workflows
 
-### Workflow 1: Novo Projeto
+### Workflow 1: New Project
 
 ```bash
-# 1. Iniciar projeto
-cd ~/novo-projeto
+# 1. Start project
+cd ~/new-project
 ai-start
 
-# 2. Escolher perfil no menu interativo
-# (ex: fullstack)
+# 2. Choose profile in interactive menu
+# (e.g.: fullstack)
 
-# 3. (Opcional) Gerar CLAUDE.md do projeto
+# 3. (Optional) Generate project CLAUDE.md
 generate-project-claude
 
-# 4. Trabalhar normalmente
-# Claude conhece o sistema e os agentes ativos
+# 4. Work normally
+# Claude knows the system and active agents
 ```
 
-### Workflow 2: Trocar Perfil
+### Workflow 2: Change Profile
 
 ```bash
-# 1. Trocar perfil
+# 1. Change profile
 ai-agents profile devops
 
-# 2. Regenerar CLAUDE.md do projeto
+# 2. Regenerate project CLAUDE.md
 generate-project-claude
 
 # 3. Restart Claude Code
-# Novos agentes são carregados
+# New agents are loaded
 ```
 
-### Workflow 3: Adicionar Agente Temporário
+### Workflow 3: Add Temporary Agent
 
 ```bash
-# 1. Verificar agentes ativos
+# 1. Check active agents
 ai-agents active
 
-# 2. Adicionar agente
+# 2. Add agent
 ai-agents enable test-automator
 
-# 3. (Opcional) Regenerar CLAUDE.md
+# 3. (Optional) Regenerate CLAUDE.md
 generate-project-claude
 
 # 4. Restart Claude Code
@@ -212,161 +212,161 @@ generate-project-claude
 
 ## Templates
 
-### Template Global (`templates/claude-global.md`)
+### Global Template (`templates/claude-global.md`)
 
-Instruções globais sobre:
-- Sistema de agentes dinâmicos
-- Como verificar agentes disponíveis
-- Comandos ai-agents
-- Workflow recomendado
-- Otimização de tokens
+Global instructions about:
+- Dynamic agent system
+- How to check available agents
+- ai-agents commands
+- Recommended workflow
+- Token optimization
 
-### Template por Projeto (`templates/claude-project.md`)
+### Per-Project Template (`templates/claude-project.md`)
 
-Template com placeholders:
+Template with placeholders:
 - `{{PROFILE_NAME}}`
 - `{{AGENT_COUNT}}`
 - `{{ACTIVE_AGENTS_LIST}}`
 - `{{PROJECT_TYPE}}`
 
-O script `generate-project-claude` substitui esses placeholders.
+The `generate-project-claude` script replaces these placeholders.
 
-## Customização
+## Customization
 
-### Customizar CLAUDE.md Global
+### Customize Global CLAUDE.md
 
 ```bash
-# Editar template
+# Edit template
 nano ~/workspace/primavera/ai-terminal-agent/templates/claude-global.md
 
-# Re-instalar
+# Re-install
 cd ~/workspace/primavera/ai-terminal-agent
 ./install.sh
 ```
 
-### Customizar Template de Projeto
+### Customize Project Template
 
 ```bash
-# Editar template
+# Edit template
 nano ~/workspace/primavera/ai-terminal-agent/templates/claude-project.md
 
-# Usar template customizado
+# Use custom template
 generate-project-claude
 ```
 
-### Adicionar Instruções Específicas
+### Add Specific Instructions
 
-No projeto, edite o CLAUDE.md gerado:
+In the project, edit the generated CLAUDE.md:
 ```bash
-# Gerar base
+# Generate base
 generate-project-claude
 
-# Adicionar suas instruções
+# Add your instructions
 nano CLAUDE.md
 ```
 
-## Migração de Projetos Existentes
+## Migrating Existing Projects
 
-Se você tem projetos com o CLAUDE.md antigo:
+If you have projects with old CLAUDE.md:
 
 ```bash
-cd ~/projeto-existente
+cd ~/existing-project
 
-# 1. Backup do antigo (se existir)
+# 1. Backup old (if exists)
 mv CLAUDE.md CLAUDE-old.md
 
-# 2. Configurar agentes
-ai-start  # Ou: ai-agents profile <nome>
+# 2. Configure agents
+ai-start  # Or: ai-agents profile <name>
 
-# 3. Gerar novo
+# 3. Generate new
 generate-project-claude
 
-# 4. Comparar e mesclar customizações
+# 4. Compare and merge customizations
 diff CLAUDE-old.md CLAUDE.md
 ```
 
 ## Best Practices
 
-### ✅ Recomendado
+### ✅ Recommended
 
-1. **Mantenha o global simples**: Instruções gerais em `~/.claude/CLAUDE.md`
-2. **Use perfis**: Deixe o sistema gerenciar agentes
-3. **Gere por projeto**: Use `generate-project-claude` para contexto específico
-4. **Regenere ao trocar perfil**: Mantenha sincronizado
-5. **Consulte definitions.md**: Para referência de agentes
+1. **Keep global simple**: General instructions in `~/.claude/CLAUDE.md`
+2. **Use profiles**: Let the system manage agents
+3. **Generate per project**: Use `generate-project-claude` for specific context
+4. **Regenerate when changing profile**: Keep synchronized
+5. **Consult definitions.md**: For agent reference
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Não modifique agentes em .claude/agents/**: Use comandos `ai-agents`
-2. **Não duplique definitions.md**: Use como referência
-3. **Não hardcode lista de agentes**: Deixe dinâmico
-4. **Não ignore tokens**: Monitore com `ai-agents stats`
+1. **Don't modify agents in .claude/agents/**: Use `ai-agents` commands
+2. **Don't duplicate definitions.md**: Use as reference
+3. **Don't hardcode agent list**: Keep dynamic
+4. **Don't ignore tokens**: Monitor with `ai-agents stats`
 
 ## Troubleshooting
 
-### CLAUDE.md global não existe
+### Global CLAUDE.md doesn't exist
 
 ```bash
-# Re-instalar
+# Re-install
 cd ~/workspace/primavera/ai-terminal-agent
 ./install.sh
 ```
 
-### CLAUDE.md do projeto desatualizado
+### Project CLAUDE.md outdated
 
 ```bash
-# Regenerar
+# Regenerate
 generate-project-claude
 ```
 
-### Claude não reconhece agentes
+### Claude doesn't recognize agents
 
 ```bash
-# Verificar agentes ativos
+# Check active agents
 ai-agents active
 
-# Verificar .claude/agents/
+# Check .claude/agents/
 ls -la .claude/agents/
 
 # Restart Claude Code
 ```
 
-### Referência de agente não encontrada
+### Agent reference not found
 
 ```bash
-# Ver mapeamento completo
+# View complete mapping
 cat ~/workspace/primavera/ai-terminal-agent/definitions.md
 
-# Ou buscar
+# Or search
 ai-agents search <keyword>
 ```
 
-## Estrutura Completa
+## Complete Structure
 
 ```
-Sistema CLAUDE.md v1.1.0
+CLAUDE.md System v1.1.0
 │
 ├── Global (~/.claude/CLAUDE.md)
-│   ├── Instruções sobre sistema de agentes
-│   ├── Comandos ai-agents
-│   └── Workflow recomendado
+│   ├── Instructions about agent system
+│   ├── ai-agents commands
+│   └── Recommended workflow
 │
-├── Por Projeto (<projeto>/CLAUDE.md)
-│   ├── Perfil ativo
-│   ├── Agentes carregados
-│   └── Contexto específico
+├── Per Project (<project>/CLAUDE.md)
+│   ├── Active profile
+│   ├── Loaded agents
+│   └── Specific context
 │
-├── Agentes Ativos (<projeto>/.claude/agents/)
+├── Active Agents (<project>/.claude/agents/)
 │   ├── frontend-developer.md
 │   ├── backend-architect.md
-│   └── ... (conforme perfil)
+│   └── ... (per profile)
 │
-└── Referência (definitions.md)
-    ├── Mapeamento completo
-    └── Exemplos de uso
+└── Reference (definitions.md)
+    ├── Complete mapping
+    └── Usage examples
 ```
 
-## Referências
+## References
 
 - [Agent Management Guide](agent-management.md)
 - [Migration Notes](../config/CLAUDE-migration-note.md)
@@ -375,6 +375,5 @@ Sistema CLAUDE.md v1.1.0
 
 ---
 
-**Versão**: v1.1.0  
-**Sistema**: Agent Management System
-
+**Version**: v1.1.0  
+**System**: Agent Management System

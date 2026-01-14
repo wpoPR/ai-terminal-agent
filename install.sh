@@ -130,7 +130,7 @@ create_directories() {
 pre_install_check() {
   local errors=0
   
-  # Verificar se diretório bin existe
+  # Check if bin directory exists
   if [[ ! -d "$BIN_DIR" ]]; then
     echo "📁 Creating $BIN_DIR..."
     if ! mkdir -p "$BIN_DIR" 2>/dev/null; then
@@ -140,13 +140,13 @@ pre_install_check() {
     fi
   fi
   
-  # Verificar permissão de escrita
+  # Check write permission
   if [[ ! -w "$BIN_DIR" ]]; then
     print_warning "No write permission in $BIN_DIR"
     print_info "Installation will continue, but you may need sudo"
   fi
   
-  # Verificar se há conflitos (comandos já existentes)
+  # Check for conflicts (commands already existing)
   local conflicts=()
   for cmd in ai-start ai-stop ai-quick ai-context-check; do
     if command -v "$cmd" &>/dev/null; then
