@@ -15,6 +15,7 @@
 
 - [Features](#features)
 - [Quick Start](#quick-start)
+  - [Migrating Existing Projects](#migrating-existing-projects)
 - [Commands](#commands)
 - [Agent Management](#agent-management)
 - [Shared Context](#shared-context)
@@ -58,6 +59,31 @@ ai status             # Check active workspaces
 ai help               # Full documentation
 ```
 
+### Migrating Existing Projects
+
+If you have projects using the old structure (AGENTS.md, CLAUDE.md, old `.ai-context/`):
+
+```bash
+cd ~/your-old-project
+ai stop               # Optional: save current work
+ai migrate            # Interactive migration with backup
+```
+
+**What `ai migrate` does:**
+1. Creates backup in `.ai-migrate-backup-TIMESTAMP/`
+2. Preserves `decisions.md` and `agents-reference.md`
+3. Removes old files (AGENTS.md, CLAUDE.md, old .ai-context/)
+4. Runs `ai-start` to create new structure
+5. Restores preserved files
+
+```bash
+# Preview changes without making them
+ai migrate --dry-run
+
+# Non-interactive migration
+ai migrate --force
+```
+
 ## Commands
 
 ```bash
@@ -90,6 +116,11 @@ ai context sync           # Sync AI configurations
 ai config doctor          # Health check
 ai config git --setup     # Configure git ignore
 ai config update          # Update from git
+
+# Migration (for old projects)
+ai migrate                # Migrate to new structure
+ai migrate --dry-run      # Preview changes
+ai migrate --force        # Non-interactive
 ```
 
 ## Agent Management

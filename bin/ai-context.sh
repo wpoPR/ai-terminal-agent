@@ -7,29 +7,30 @@
 # Source common library if not already loaded
 if [[ -z "${_AI_COMMON_LOADED:-}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  # Try multiple locations for common.sh
+  if [[ -f "$(dirname "$SCRIPT_DIR")/lib/common.sh" ]]; then
+    source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  elif [[ -f "$HOME/.ai-workspace/lib/common.sh" ]]; then
+    source "$HOME/.ai-workspace/lib/common.sh"
+  fi
 fi
 
 # Templates directory
-TEMPLATES_DIR="$AI_SCRIPT_DIR/templates/context"
+TEMPLATES_DIR="$AI_WORKSPACE_DIR/templates/context"
 CONTEXT_DIR=".ai-context"
 
 # =============================================================================
-# CONTEXT INIT
+# CONTEXT INIT (NEW STRUCTURE - Multi-AI Bootstrap)
 # =============================================================================
 
 cmd_init() {
   local force=false
-  local minimal=false
-  local with_prompts=false
   local silent=false
 
   # Parse arguments
   while [[ $# -gt 0 ]]; do
     case $1 in
       --force) force=true; shift ;;
-      --minimal) minimal=true; shift ;;
-      --with-prompts) with_prompts=true; shift ;;
       --silent|-q) silent=true; shift ;;
       -h|--help) _init_help; return 0 ;;
       *) print_error "Unknown option: $1"; return 1 ;;
@@ -47,57 +48,42 @@ cmd_init() {
     _print_warning() { print_warning "$1"; }
   fi
 
-  # Check if templates exist
-  if [[ ! -d "$TEMPLATES_DIR" ]]; then
-    print_error "Templates directory not found: $TEMPLATES_DIR"
-    _print_info "Please ensure ai-terminal-agent is properly installed"
-    return 1
-  fi
-
   # Header
   if [[ "$silent" != "true" ]]; then
     print_header "Initializing AI Context Structure"
     echo ""
+  fi
 
-    # Check existing structure
-    if [[ -d "$CONTEXT_DIR" ]] && [[ "$force" != "true" ]]; then
-      _check_existing_structure || return 0
-    fi
-  else
-    # Silent mode: skip if already complete
-    if [[ -d "$CONTEXT_DIR" ]]; then
-      local essential_count=0
-      for file in project-status.md current-task.md decisions.md; do
-        [[ -f "$CONTEXT_DIR/$file" ]] && ((essential_count++))
-      done
-      [[ $essential_count -ge 3 ]] && return 0
+  # Check if already initialized (with NEW structure)
+  if [[ -d "$CONTEXT_DIR" ]] && [[ "$force" != "true" ]]; then
+    if [[ -f "$CONTEXT_DIR/ai-handoff.md" ]] && [[ -d "$CONTEXT_DIR/todos" ]]; then
+      if [[ "$silent" != "true" ]]; then
+        print_success "Context structure already initialized (new format)"
+        _print_info "Use --force to reinitialize"
+      fi
+      return 0
     fi
   fi
 
-  # Create directory
-  mkdir -p "$CONTEXT_DIR"
-  _print_success "Created $CONTEXT_DIR/"
+  # Create directory structure
+  mkdir -p "$CONTEXT_DIR/todos"
+  mkdir -p "$CONTEXT_DIR/backup"
+  mkdir -p "docs/solutions"
+  _print_success "Created directories"
 
-  # Define files to copy
-  local files=(
-    "project-status.md"
-    "current-task.md"
+  # Migrate old files to backup if they exist
+  _migrate_old_files
+
+  # Copy NEW context templates
+  local new_templates=(
+    "ai-handoff.md"
+    "code-landmarks.md"
     "decisions.md"
-    "known-issues.md"
-    "roadmap.md"
     "agents-reference.md"
+    "ai-workflows.md"
   )
 
-  [[ "$minimal" == "true" ]] && files=("project-status.md" "current-task.md")
-
-  if [[ "$silent" != "true" ]]; then
-    echo ""
-    echo "Copying template files..."
-    echo ""
-  fi
-
-  # Copy template files
-  for file in "${files[@]}"; do
+  for file in "${new_templates[@]}"; do
     if [[ -f "$TEMPLATES_DIR/$file" ]]; then
       if [[ -f "$CONTEXT_DIR/$file" ]] && [[ "$force" != "true" ]]; then
         _print_warning "$file already exists, skipping"
@@ -106,19 +92,13 @@ cmd_init() {
         _print_success "$file"
       fi
     else
-      print_error "Template not found: $file"
+      # Create default if template missing
+      _create_default_file "$file"
     fi
   done
 
-  # Create README
-  _create_context_readme
-
-  _print_success "README.md"
-
-  # Generate initial prompts if requested
-  if [[ "$with_prompts" == "true" ]]; then
-    _create_initial_prompts
-  fi
+  # Create session marker
+  date +%s > "$CONTEXT_DIR/.session"
 
   # Show summary
   if [[ "$silent" != "true" ]]; then
@@ -126,91 +106,182 @@ cmd_init() {
     print_success "Context structure initialized!"
     echo ""
     echo "Structure created:"
-    echo ""
-    tree -L 2 "$CONTEXT_DIR" 2>/dev/null || find "$CONTEXT_DIR" -type f | sed 's|[^/]*/|  |g'
-
-    echo ""
-    echo "Next steps:"
-    echo ""
-
-    if [[ "$with_prompts" == "true" ]]; then
-      echo "1. Start your AI workspace: ai start"
-      echo "2. In Claude console, run the prompt from:"
-      echo "   cat .ai-context/initial-prompts/claude-init.md"
-    else
-      echo "1. Fill in .ai-context/project-status.md with project details"
-      echo "2. Update .ai-context/current-task.md with current work"
-      echo "3. Tell your AIs to read these files before starting work"
-      echo ""
-      echo "Or run: ai context init --with-prompts"
-      echo "to generate initialization prompts for each AI"
-    fi
+    echo "  $CONTEXT_DIR/"
+    echo "  ├── todos/           # File-based todo system"
+    echo "  ├── backup/          # Migrated old files"
+    echo "  ├── ai-handoff.md    # AI communication hub"
+    echo "  ├── code-landmarks.md # Important code locations"
+    echo "  ├── decisions.md     # Technical decisions"
+    echo "  └── ai-workflows.md  # Multi-AI usage guide"
     echo ""
   fi
 }
 
-_check_existing_structure() {
-  local missing_files=()
-
-  for file in project-status.md current-task.md decisions.md known-issues.md roadmap.md agents-reference.md; do
-    [[ ! -f "$CONTEXT_DIR/$file" ]] && missing_files+=("$file")
-  done
-
-  if [[ ${#missing_files[@]} -eq 0 ]]; then
-    print_success "Structure .ai-context already exists and is complete!"
-    echo ""
-    print_info "Nothing to do. Use:"
-    echo "  ai context check    - Check status"
-    echo "  ai agents active    - See active agents"
-    return 1
-  fi
-
-  if [[ ${#missing_files[@]} -gt 0 ]]; then
-    print_warning "Structure .ai-context is incomplete"
-    echo ""
-    echo "Missing files:"
-    for file in "${missing_files[@]}"; do
-      echo "  - $file"
-    done
-    echo ""
-
-    if [[ -t 0 ]]; then
-      read -p "Add missing files? (y/n): " -n 1 -r
-      echo ""
-      [[ ! $REPLY =~ ^[Yy]$ ]] && return 1
+_migrate_old_files() {
+  local backup_dir="$CONTEXT_DIR/backup"
+  local migrated=false
+  
+  # Files to deprecate (old structure)
+  local old_files=("current-task.md" "known-issues.md" "roadmap.md" "project-status.md")
+  
+  for file in "${old_files[@]}"; do
+    if [[ -f "$CONTEXT_DIR/$file" ]]; then
+      mv "$CONTEXT_DIR/$file" "$backup_dir/"
+      migrated=true
     fi
+  done
+  
+  if $migrated; then
+    _print_warning "Migrated deprecated files to backup/"
+    _print_info "- current-task.md → Use todos/ instead"
+    _print_info "- known-issues.md → Use todos/ with [bug] tag"
+    _print_info "- project-status.md → Use ai-handoff.md"
   fi
+}
 
-  return 0
+_create_default_file() {
+  local file="$1"
+  
+  case "$file" in
+    "ai-handoff.md")
+      cat > "$CONTEXT_DIR/ai-handoff.md" << 'HANDOFF_EOF'
+# AI Handoff
+
+## Current State
+- **Task:** (none)
+- **Stack:** (run ai-stack-detect)
+- **Last AI:** (none)
+- **Updated:** (auto)
+
+---
+
+## Gemini Section
+**Status:** idle
+
+## Claude Section
+**Status:** idle
+**TDD Phase:** (none)
+
+## Codex Section
+**Status:** not-needed
+
+---
+
+## History
+| Time | AI | Action | Result |
+|------|-----|--------|--------|
+
+## Session State
+- **Phase:** not started
+- **Completion:** 0%
+HANDOFF_EOF
+      _print_success "ai-handoff.md (default)"
+      ;;
+    "code-landmarks.md")
+      cat > "$CONTEXT_DIR/code-landmarks.md" << 'LANDMARKS_EOF'
+# Code Landmarks
+
+*Updated by: Claude*
+*Last updated: (not yet)*
+
+## Entry Points
+| Location | Purpose |
+|----------|---------|
+| (to be filled) | |
+
+## Core Business Logic
+| Location | Purpose |
+|----------|---------|
+| (to be filled) | |
+LANDMARKS_EOF
+      _print_success "code-landmarks.md (default)"
+      ;;
+    "decisions.md")
+      cat > "$CONTEXT_DIR/decisions.md" << 'DECISIONS_EOF'
+# Technical Decisions
+
+## Template
+```markdown
+## YYYY-MM-DD: [Decision Title]
+- **Decision:** [What]
+- **Reason:** [Why]
+- **Decided by:** [Claude/Gemini/Codex/User]
+- **Status:** [Implemented/Pending]
+```
+
+---
+
+## Decisions
+(No decisions recorded yet)
+DECISIONS_EOF
+      _print_success "decisions.md (default)"
+      ;;
+    "ai-workflows.md")
+      cat > "$CONTEXT_DIR/ai-workflows.md" << 'WORKFLOWS_EOF'
+# Multi-AI Workflows Guide
+
+> Quick reference for common development scenarios.
+
+## Quick Legend
+| AI | Role | When to Use |
+|----|------|-------------|
+| 🟡 Gemini | Analysis | Start tasks, analyze code |
+| 🔵 Claude | Implementation | Write code, fix bugs |
+| 🟢 Codex | Support | Docs, extra tests |
+
+## Common Flows
+
+### New Feature
+1. Gemini: `!analyze task [description]`
+2. Claude: Implement with TDD
+3. Codex: `!update readme`
+
+### Bug Fix
+1. Gemini: `!analyze task Fix: [bug]`
+2. Claude: TDD approach
+3. Codex: `!document solution`
+
+### Resume Work
+Any AI: "Read .ai-context/ai-handoff.md and continue"
+
+---
+*Full guide at templates/context/ai-workflows.md*
+WORKFLOWS_EOF
+      _print_success "ai-workflows.md (default)"
+      ;;
+  esac
 }
 
 _init_help() {
   cat << 'EOF'
-ai context init - Initialize AI Context Structure
+ai context init - Initialize AI Context Structure (Multi-AI Bootstrap)
 
 USAGE
     ai context init [options]
 
 OPTIONS
-    --force           Overwrite existing files
-    --minimal         Create minimal structure only
-    --with-prompts    Generate initial prompts for AIs
+    --force           Recreate structure even if exists
     --silent, -q      Silent mode (no output)
     -h, --help        Show this help
 
-STRUCTURE CREATED
+NEW STRUCTURE CREATED
     .ai-context/
-    ├── project-status.md     # Project overview and current state
-    ├── current-task.md       # Active task tracking
-    ├── decisions.md          # Technical decisions log
-    ├── known-issues.md       # Bugs and limitations
-    ├── roadmap.md            # Future plans and milestones
-    └── agents-reference.md   # Quick reference of all agents
+    ├── todos/              # File-based todo system (Gemini creates, Claude updates)
+    ├── backup/             # Migrated old files
+    ├── ai-handoff.md       # AI communication hub
+    ├── code-landmarks.md   # Important code locations (Claude writes)
+    ├── stack-config.md     # Auto-detected by ai-stack-detect
+    └── decisions.md        # Technical decisions
+
+    docs/solutions/         # Knowledge base (Codex writes)
+
+MIGRATION
+    Old files (current-task.md, known-issues.md, etc.) are automatically
+    moved to .ai-context/backup/ when reinitializing.
 
 EXAMPLES
-    ai context init                  # Initialize with templates
-    ai context init --force          # Overwrite existing files
-    ai context init --with-prompts   # Create initial prompts for AIs
+    ai context init          # Initialize new structure
+    ai context init --force  # Reinitialize and migrate old files
 
 EOF
 }
@@ -326,70 +397,67 @@ cmd_check() {
     echo "SCENARIO: First time in this project"
     echo ""
     echo "ACTIONS NEEDED:"
-    echo "  1. ai context init --with-prompts"
-    echo "     Creates .ai-context structure with templates"
-    echo ""
-    echo "  2. ai start"
-    echo "     Opens workspace and configures agents"
+    echo "  ai start    # Creates structure and detects stack"
     return 0
   fi
 
-  # SCENARIO 2: Incomplete structure
-  if [[ ! -f "$CONTEXT_DIR/agents-reference.md" ]]; then
-    print_warning "SCENARIO: Incomplete .ai-context structure"
+  # SCENARIO 2: Old structure detected (needs migration)
+  if [[ -f "$CONTEXT_DIR/current-task.md" ]] && [[ ! -f "$CONTEXT_DIR/ai-handoff.md" ]]; then
+    print_warning "SCENARIO: Old structure detected (pre-Multi-AI)"
+    echo ""
+    echo "Old files found:"
+    [[ -f "$CONTEXT_DIR/current-task.md" ]] && echo "  - current-task.md"
+    [[ -f "$CONTEXT_DIR/project-status.md" ]] && echo "  - project-status.md"
+    [[ -f "$CONTEXT_DIR/known-issues.md" ]] && echo "  - known-issues.md"
+    [[ -f "$CONTEXT_DIR/roadmap.md" ]] && echo "  - roadmap.md"
+    echo ""
+    echo "ACTION:"
+    echo "  ai context init --force"
+    echo "  (Old files will be moved to .ai-context/backup/)"
+    return 0
+  fi
+
+  # SCENARIO 3: New structure but missing files
+  if [[ ! -f "$CONTEXT_DIR/ai-handoff.md" ]] || [[ ! -d "$CONTEXT_DIR/todos" ]]; then
+    print_warning "SCENARIO: Incomplete new structure"
     echo ""
     echo "MISSING:"
-    echo "  - agents-reference.md (needed for Gemini agent activation)"
+    [[ ! -f "$CONTEXT_DIR/ai-handoff.md" ]] && echo "  - ai-handoff.md"
+    [[ ! -d "$CONTEXT_DIR/todos" ]] && echo "  - todos/ directory"
+    [[ ! -f "$CONTEXT_DIR/stack-config.md" ]] && echo "  - stack-config.md (run ai-stack-detect)"
     echo ""
     echo "ACTION:"
     echo "  ai context init --force"
     return 0
   fi
 
-  # SCENARIO 3: Ready but no active agents
-  if [[ ! -d "$AI_PROJECT_AGENTS_DIR" ]] || [[ $(ls -A "$AI_PROJECT_AGENTS_DIR" 2>/dev/null | wc -l) -eq 0 ]]; then
-    print_warning "SCENARIO: Context ready, but no active agents"
+  # SCENARIO 4: Ready but no stack detected
+  if [[ ! -f "$CONTEXT_DIR/stack-config.md" ]]; then
+    print_warning "SCENARIO: Stack not detected"
     echo ""
-    echo "OPTIONS:"
-    echo ""
-    echo "  A - Use profile:"
-    echo "     ai agents profile fullstack"
-    echo ""
-    echo "  B - Let Claude decide:"
-    echo "     1. Fill: .ai-context/current-task.md"
-    echo "     2. In Claude: 'Activate agents needed for this task'"
-    echo ""
-    echo "  C - Use Gemini (cheaper):"
-    echo "     1. Fill: .ai-context/current-task.md"
-    echo "     2. In Gemini: 'Read agents-reference.md and current-task.md,"
-    echo "        analyze and run: ai-agents-activate <agents>'"
+    echo "ACTION:"
+    echo "  ai-stack-detect"
     return 0
   fi
 
-  # SCENARIO 4: Everything working
-  print_success "SCENARIO: System fully configured"
+  # SCENARIO 5: Everything working
+  print_success "SCENARIO: System fully configured (Multi-AI)"
   echo ""
 
   local num_agents=$(_count_valid_agents)
+  local num_todos=$(find "$CONTEXT_DIR/todos" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
 
   echo "STATUS:"
-  echo "  - .ai-context structure: OK"
+  echo "  - Structure: NEW (Multi-AI Bootstrap)"
   echo "  - Active agents: $num_agents"
-
-  # Check if context files are empty
-  if [[ -f "$CONTEXT_DIR/project-status.md" ]]; then
-    local lines=$(wc -l < "$CONTEXT_DIR/project-status.md" 2>/dev/null | tr -d ' ')
-    if [[ $lines -lt 20 ]]; then
-      echo ""
-      print_warning "project-status.md seems empty or incomplete"
-      echo "   In Claude: 'Analyze project and fill .ai-context/project-status.md'"
-    fi
-  fi
+  echo "  - Todos: $num_todos"
+  [[ -f "$CONTEXT_DIR/stack-config.md" ]] && echo "  - Stack: detected"
 
   echo ""
   echo "USEFUL COMMANDS:"
   echo "  ai agents active    - See active agents and token usage"
-  echo "  ai context sync     - Sync context between AIs"
+  echo "  ai-stack-detect     - Re-detect project stack"
+  echo "  ls $CONTEXT_DIR/todos/  - View todos"
 }
 
 _count_valid_agents() {
@@ -554,36 +622,36 @@ context_main() {
     diff)  cmd_diff "$@" ;;
     help|--help|-h)
       cat << 'EOF'
-ai context - Manage shared AI context
+ai context - Manage shared AI context (Multi-AI Bootstrap)
 
 USAGE
     ai context <command> [options]
 
 COMMANDS
     init [options]       Initialize .ai-context/ structure
-        --force          Overwrite existing files
-        --minimal        Create minimal structure only
-        --with-prompts   Generate initial prompts for AIs
+        --force          Reinitialize and migrate old files
         --silent         Silent mode
 
     check                Diagnose context state and suggest actions
-    sync                 Sync context between AI configurations
+    sync                 Sync/regenerate AI configurations
     diff                 Compare AI context files
 
 EXAMPLES
-    ai context init                  # Initialize context structure
-    ai context init --with-prompts   # Include initial prompts
-    ai context check                 # Diagnose current state
-    ai context sync                  # Regenerate AI configs
+    ai context init          # Initialize new structure
+    ai context init --force  # Migrate old structure to new
+    ai context check         # Diagnose current state
+    ai context sync          # Regenerate AI configs
 
-STRUCTURE
+NEW STRUCTURE (Multi-AI Bootstrap)
     .ai-context/
-    ├── project-status.md     # Project overview
-    ├── current-task.md       # Active task tracking
-    ├── decisions.md          # Technical decisions (ADR)
-    ├── known-issues.md       # Bugs and limitations
-    ├── roadmap.md            # Future plans
-    └── agents-reference.md   # Available agents reference
+    ├── todos/              # File-based todo system
+    ├── backup/             # Migrated old files
+    ├── ai-handoff.md       # AI communication hub
+    ├── code-landmarks.md   # Important code locations
+    ├── stack-config.md     # Auto-detected stack
+    └── decisions.md        # Technical decisions
+
+    docs/solutions/         # Knowledge base
 
 EOF
       ;;

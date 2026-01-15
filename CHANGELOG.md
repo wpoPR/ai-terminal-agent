@@ -5,6 +5,77 @@ All notable changes to AI Terminal Agent will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-01-15
+
+### Added - Multi-AI Bootstrap System
+
+#### New Context Structure
+- **`.ai-context/ai-handoff.md`**: Consolidated AI communication hub with session state, checkpoints, and handoff instructions
+- **`.ai-context/ai-workflows.md`**: Quick reference guide with 10 common development scenarios (new feature, bug fix, refactoring, etc.)
+- **`.ai-context/code-landmarks.md`**: Human-readable documentation of important code locations
+- **`.ai-context/todos/`**: File-based todo system with YAML frontmatter (Gemini creates, Claude updates)
+- **`.ai-context/stack-config.md`**: Auto-detected stack configuration with commands and quality limits
+
+#### New Commands
+- **`ai migrate`**: Migrate existing projects to new Multi-AI structure
+  - Creates backup before migration
+  - Preserves `decisions.md` and `agents-reference.md`
+  - Removes deprecated files and regenerates configs
+  - Options: `--dry-run`, `--force`, `--no-backup`
+
+- **`ai-stack-detect`**: Automated stack detection
+  - Detects 12+ stacks (TypeScript, Python, Go, C#, Rust, Java, etc.)
+  - Searches in subdirectories (`src/`, `app/`, `lib/`, etc.)
+  - Interactive stack selection when auto-detection fails
+  - Generates quality limits and commands for detected stack
+
+- **`ai-stop`**: End session with summary generation and state cleanup
+
+#### Enhanced AI Templates
+- **Claude (`claude.md`)**: TDD workflow, file responsibilities, recognized keywords (`!checkpoint`, `!handoff`, `!todo update`)
+- **Gemini (`GEMINI.md`)**: Analysis role, code indexing, agent selection, keywords (`!analyze codebase`, `!analyze task`, `!select agents`)
+- **Codex (`CODEX.md`)**: Support role, documentation, solution docs, keywords (`!document solution`, `!add tests`, `!update readme`)
+
+#### Stack Detection Improvements
+- Added 12 stack rules: TypeScript, JavaScript, Python, Go, Rust, Java, C#/.NET, Ruby, PHP, Flutter, Next.js, React, Capacitor
+- Searches common subdirectories for project files
+- Interactive menu when stack not detected
+- Configurable via `~/.ai-workspace/config/stack-rules.json`
+
+### Changed
+- **`ai-workspace.sh`**: Integrated stack detection, uses `ai-context init` for full structure
+- **`generate-project.sh`**: Now uses templates for all AIs (previously Claude used heredoc)
+- **`lib/common.sh`**: Fixed path resolution for installed vs repo locations
+- **README.md**: Added migration documentation section
+
+### Deprecated
+- **Old context files**: `current-task.md`, `known-issues.md`, `project-status.md`, `roadmap.md` (moved to `templates/context/deprecated/`)
+- **`AGENTS.md`**: Renamed to `CODEX.md`
+- **`CLAUDE.md`**: Now at `.claude/claude.md`
+
+### Fixed
+- Stack detection now finds files in subdirectories (e.g., `src/*.csproj`)
+- `ai-context init` creates full structure instead of minimal fallback
+- `generate-project` command works from both repo and installed locations
+- Preserved files during migration retain original content
+
+### Migration Guide (v2.0.0 → v2.1.0)
+
+For existing projects:
+```bash
+cd ~/your-project
+ai stop          # Optional: save current work
+ai migrate       # Interactive migration with backup
+```
+
+For new projects:
+```bash
+cd ~/new-project
+ai start         # Creates new structure automatically
+```
+
+---
+
 ## [2.0.0] - 2026-01-08
 
 ### Added
