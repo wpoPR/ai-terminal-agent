@@ -300,6 +300,12 @@ install_context_templates() {
     cp "$REPO_DIR/templates/solution-template.md" "$WORKSPACE_DIR/templates/"
   fi
   
+  # Copy geminiignore template (prevents Gemini CLI from reading entire codebase)
+  if [[ -f "$REPO_DIR/templates/geminiignore.template" ]]; then
+    cp "$REPO_DIR/templates/geminiignore.template" "$WORKSPACE_DIR/templates/"
+    print_success "Gemini ignore template installed"
+  fi
+  
   # NOTE: These files are DEPRECATED and not copied:
   # - current-task.md (replaced by todos/)
   # - known-issues.md (replaced by todos/ with [bug] tag)

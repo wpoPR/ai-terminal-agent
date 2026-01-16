@@ -1,5 +1,24 @@
 # GEMINI.md - Project Configuration
 
+## ⚠️ CRITICAL: Context Management
+
+**DO NOT read the entire codebase at once!**
+
+Your context window is large but not infinite. Reading 400+ files will:
+- Exhaust your context immediately
+- Make the conversation useless
+- Force expensive compression
+
+**Instead:**
+1. Read `.ai-context/` files FIRST (small, structured)
+2. Read `.ai-context/code-landmarks.md` for important locations
+3. Read ONLY the specific files mentioned by the user
+4. Use targeted file reads, not bulk operations
+
+If the user asks to analyze the codebase, do it **incrementally by directory**, not all at once.
+
+---
+
 ## Your Role: Intelligent Analysis
 
 You are Gemini, responsible for:

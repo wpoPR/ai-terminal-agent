@@ -100,6 +100,27 @@ cmd_start() {
     echo ""
   fi
 
+  # Create .geminiignore if not exists (prevents Gemini CLI from reading entire codebase)
+  if [[ ! -f ".geminiignore" ]]; then
+    local geminiignore_template=""
+    # Try workspace location first
+    if [[ -f "$HOME/.ai-workspace/templates/geminiignore.template" ]]; then
+      geminiignore_template="$HOME/.ai-workspace/templates/geminiignore.template"
+    # Fall back to repo location
+    elif [[ -n "${BASH_SOURCE[0]}" ]]; then
+      local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+      local repo_dir="$(dirname "$script_dir")"
+      if [[ -f "$repo_dir/templates/geminiignore.template" ]]; then
+        geminiignore_template="$repo_dir/templates/geminiignore.template"
+      fi
+    fi
+    
+    if [[ -n "$geminiignore_template" ]]; then
+      cp "$geminiignore_template" .geminiignore
+      print_success ".geminiignore created (prevents Gemini context overflow)"
+    fi
+  fi
+
   # Run stack detection
   if [[ ! -f ".ai-context/stack-config.md" ]]; then
     echo "Detecting project stack..."

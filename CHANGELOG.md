@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ai-context init` creates full structure instead of minimal fallback
 - `generate-project` command works from both repo and installed locations
 - Preserved files during migration retain original content
+- **Gemini context overflow**: Added `.geminiignore` template to prevent Gemini CLI from reading entire codebase (400+ files = 600k+ tokens)
 
 ### Migration Guide (v2.0.0 → v2.1.0)
 
