@@ -1,0 +1,99 @@
+# Gemini CLI Ignore File
+# Prevents automatic reading of entire codebase (causes context overflow)
+
+# Dependencies
+node_modules/
+**/node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.nuxt/
+target/
+bin/
+obj/
+
+# Mobile/Native
+android/
+ios/
+*.apk
+*.ipa
+*.aab
+
+# Large files
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+*.min.js
+*.min.css
+*.map
+
+# Assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+*.mp4
+*.mp3
+*.wav
+*.pdf
+
+# IDE/Cache
+.idea/
+.vscode/
+.cache/
+.turbo/
+.parcel-cache/
+
+# Tests snapshots
+__snapshots__/
+*.snap
+
+# Generated
+*.generated.*
+*.d.ts
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Configs (usually not needed for analysis)
+.eslintrc*
+.prettierrc*
+tsconfig*.json
+jest.config.*
+vite.config.*
+tailwind.config.*
+
+# Docs (read manually if needed)
+docs/
+*.md
+!README.md
+
+# Database
+*.sqlite
+*.db
+migrations/
+
+# Environment
+.env*
+
+# Backup
+*.bak
+*.backup
+*-backup*/

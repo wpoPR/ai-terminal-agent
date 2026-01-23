@@ -8,7 +8,12 @@
 # Source common library if not already loaded
 if [[ -z "${_AI_COMMON_LOADED:-}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  # Try multiple locations for common.sh
+  if [[ -f "$(dirname "$SCRIPT_DIR")/lib/common.sh" ]]; then
+    source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  elif [[ -f "$HOME/.ai-workspace/lib/common.sh" ]]; then
+    source "$HOME/.ai-workspace/lib/common.sh"
+  fi
 fi
 
 # =============================================================================
@@ -47,29 +52,89 @@ cmd_start() {
   echo "Checking AI configuration..."
   [[ -d ".claude" ]] && print_success "Found: .claude/"
   [[ -f "GEMINI.md" ]] && print_success "Found: GEMINI.md"
-  [[ -f "AGENTS.md" ]] && print_success "Found: AGENTS.md"
+  [[ -f "CODEX.md" ]] && print_success "Found: CODEX.md"
+  [[ -f "AGENTS.md" ]] && print_warning "Found: AGENTS.md (old name, will use CODEX.md)"
   [[ -d ".ai-context" ]] && print_success "Found: .ai-context/"
   echo ""
 
-  # Initialize .ai-context structure if it doesn't exist
+  # Initialize .ai-context structure if it doesn't exist or needs upgrade
+  local needs_init=false
+  
   if [[ ! -d ".ai-context" ]]; then
+    needs_init=true
+  elif [[ ! -f ".ai-context/ai-handoff.md" ]] || [[ ! -d ".ai-context/todos" ]]; then
+    # Old structure detected, needs migration
+    needs_init=true
+    print_warning "Migrating to new Multi-AI structure..."
+  fi
+
+  if [[ "$needs_init" == "true" ]]; then
     echo "Initializing AI context structure..."
 
+    # Find ai-context script (with or without .sh extension)
+    local ai_context_script=""
     if [[ -f "$AI_BIN_DIR/ai-context.sh" ]]; then
-      source "$AI_BIN_DIR/ai-context.sh"
-      cmd_init --silent 2>/dev/null && {
-        print_success ".ai-context/ structure created"
+      ai_context_script="$AI_BIN_DIR/ai-context.sh"
+    elif [[ -x "$AI_BIN_DIR/ai-context" ]]; then
+      ai_context_script="$AI_BIN_DIR/ai-context"
+    fi
+
+    if [[ -n "$ai_context_script" ]]; then
+      # Run ai-context init directly instead of sourcing
+      "$ai_context_script" init --silent 2>/dev/null && {
+        print_success ".ai-context/ structure created (Multi-AI)"
       } || {
         print_warning "Could not create .ai-context/ automatically"
         print_info "Run manually: ai context init"
       }
     else
-      # Fallback: create minimal structure
-      mkdir -p .ai-context
-      echo "# Project Status" > .ai-context/project-status.md
-      echo "# Current Task" > .ai-context/current-task.md
+      # Fallback: create minimal NEW structure
+      mkdir -p .ai-context/todos
+      mkdir -p .ai-context/backup
+      mkdir -p docs/solutions
+      echo "# AI Handoff" > .ai-context/ai-handoff.md
+      echo "# Code Landmarks" > .ai-context/code-landmarks.md
       echo "# Decisions" > .ai-context/decisions.md
       print_success ".ai-context/ minimal structure created"
+    fi
+    echo ""
+  fi
+
+  # Create .geminiignore if not exists (prevents Gemini CLI from reading entire codebase)
+  if [[ ! -f ".geminiignore" ]]; then
+    local geminiignore_template=""
+    # Try workspace location first
+    if [[ -f "$HOME/.ai-workspace/templates/geminiignore.template" ]]; then
+      geminiignore_template="$HOME/.ai-workspace/templates/geminiignore.template"
+    # Fall back to repo location
+    elif [[ -n "${BASH_SOURCE[0]}" ]]; then
+      local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+      local repo_dir="$(dirname "$script_dir")"
+      if [[ -f "$repo_dir/templates/geminiignore.template" ]]; then
+        geminiignore_template="$repo_dir/templates/geminiignore.template"
+      fi
+    fi
+    
+    if [[ -n "$geminiignore_template" ]]; then
+      cp "$geminiignore_template" .geminiignore
+      print_success ".geminiignore created (prevents Gemini context overflow)"
+    fi
+  fi
+
+  # Run stack detection
+  if [[ ! -f ".ai-context/stack-config.md" ]]; then
+    echo "Detecting project stack..."
+    
+    if [[ -x "$AI_BIN_DIR/ai-stack-detect.sh" ]]; then
+      "$AI_BIN_DIR/ai-stack-detect.sh" 2>/dev/null && {
+        print_success "Stack detected"
+      } || {
+        print_warning "Stack detection failed (will use defaults)"
+      }
+    elif command -v ai-stack-detect &>/dev/null; then
+      ai-stack-detect 2>/dev/null || true
+    else
+      print_warning "ai-stack-detect not available"
     fi
     echo ""
   fi
@@ -123,18 +188,25 @@ cmd_start() {
   # Generate AI configuration files
   echo "Generating AI configurations..."
 
+  # Find generate-project command (with or without .sh extension)
+  local gen_project=""
   if [[ -x "$AI_BIN_DIR/generate-project.sh" ]]; then
-    "$AI_BIN_DIR/generate-project.sh" claude .claude/claude.md 2>/dev/null && \
+    gen_project="$AI_BIN_DIR/generate-project.sh"
+  elif [[ -x "$AI_BIN_DIR/generate-project" ]]; then
+    gen_project="$AI_BIN_DIR/generate-project"
+  elif command -v generate-project &>/dev/null; then
+    gen_project="generate-project"
+  fi
+
+  if [[ -n "$gen_project" ]]; then
+    "$gen_project" claude .claude/claude.md 2>/dev/null && \
       print_success "Claude configuration generated"
-    "$AI_BIN_DIR/generate-project.sh" gemini GEMINI.md 2>/dev/null && \
+    "$gen_project" gemini GEMINI.md 2>/dev/null && \
       print_success "GEMINI.md generated"
-    "$AI_BIN_DIR/generate-project.sh" codex AGENTS.md 2>/dev/null && \
-      print_success "AGENTS.md generated"
+    "$gen_project" codex CODEX.md 2>/dev/null && \
+      print_success "CODEX.md generated"
   else
-    # Try legacy scripts
-    command -v generate-project-claude &>/dev/null && generate-project-claude .claude/claude.md 2>/dev/null
-    command -v generate-project-gemini &>/dev/null && generate-project-gemini GEMINI.md 2>/dev/null
-    command -v generate-project-codex &>/dev/null && generate-project-codex AGENTS.md 2>/dev/null
+    print_warning "generate-project not found - AI configs not generated"
   fi
   echo ""
 
@@ -146,7 +218,7 @@ cmd_start() {
 
   [[ -f ".claude/claude.md" ]] && cp ".claude/claude.md" "$backup_dir/claude.md.$timestamp.bak"
   [[ -f "GEMINI.md" ]] && cp "GEMINI.md" "$backup_dir/GEMINI.md.$timestamp.bak"
-  [[ -f "AGENTS.md" ]] && cp "AGENTS.md" "$backup_dir/AGENTS.md.$timestamp.bak"
+  [[ -f "CODEX.md" ]] && cp "CODEX.md" "$backup_dir/CODEX.md.$timestamp.bak"
 
   print_success "Backup created"
   echo ""
@@ -327,9 +399,10 @@ cmd_stop() {
   echo ""
 
   echo "Context files preserved:"
-  for file in claude.md gemini.md agents.md codex.md; do
+  for file in .claude/claude.md GEMINI.md CODEX.md; do
     [[ -f "$file" ]] && echo "  - $file"
   done
+  [[ -d ".ai-context" ]] && echo "  - .ai-context/"
 
   echo ""
   echo "To start again:"
