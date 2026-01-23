@@ -1,0 +1,236 @@
+{
+  "version": "1.0",
+  "description": "Language detection rules for ai-stack-detect. First match wins.",
+  "rules": [
+    {
+      "id": "nodejs-vitest",
+      "name": "Node.js with Vitest",
+      "profiles": ["frontend", "backend", "fullstack"],
+      "detect": {
+        "files": ["package.json"],
+        "contains": { "package.json": ["vitest"] }
+      },
+      "limits": {
+        "lines_per_function": 25,
+        "lines_per_file": 250,
+        "params_per_function": 3
+      },
+      "commands": {
+        "test": "npm test",
+        "test_coverage": "npm test -- --coverage",
+        "lint": "npm run lint",
+        "typecheck": "npm run typecheck"
+      }
+    },
+    {
+      "id": "nodejs-jest",
+      "name": "Node.js with Jest",
+      "profiles": ["frontend", "backend", "fullstack"],
+      "detect": {
+        "files": ["package.json"],
+        "contains": { "package.json": ["jest"] }
+      },
+      "limits": {
+        "lines_per_function": 25,
+        "lines_per_file": 250,
+        "params_per_function": 3
+      },
+      "commands": {
+        "test": "npm test",
+        "test_coverage": "npm test -- --coverage",
+        "lint": "npm run lint",
+        "typecheck": "npx tsc --noEmit"
+      }
+    },
+    {
+      "id": "nextjs",
+      "name": "Next.js",
+      "profiles": ["frontend", "fullstack"],
+      "detect": {
+        "files": ["package.json", "next.config.js", "next.config.mjs", "next.config.ts"],
+        "contains": { "package.json": ["next"] }
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 300,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "npm test",
+        "lint": "npm run lint",
+        "build": "npm run build",
+        "dev": "npm run dev"
+      }
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "profiles": ["frontend", "fullstack"],
+      "detect": {
+        "files": ["package.json"],
+        "contains": { "package.json": ["react"] }
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 300,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "npm test",
+        "lint": "npm run lint",
+        "build": "npm run build"
+      }
+    },
+    {
+      "id": "vuejs",
+      "name": "Vue.js",
+      "profiles": ["frontend", "fullstack"],
+      "detect": {
+        "files": ["package.json"],
+        "contains": { "package.json": ["vue"] }
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 400,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "npm run test:unit",
+        "lint": "npm run lint",
+        "build": "npm run build"
+      }
+    },
+    {
+      "id": "python-poetry",
+      "name": "Python with Poetry",
+      "profiles": ["backend", "data", "ai-ml", "fullstack", "research"],
+      "detect": {
+        "files": ["pyproject.toml"],
+        "contains": { "pyproject.toml": ["poetry"] }
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 300,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "poetry run pytest",
+        "test_coverage": "poetry run pytest --cov",
+        "lint": "poetry run ruff check .",
+        "typecheck": "poetry run mypy ."
+      }
+    },
+    {
+      "id": "python-pytest",
+      "name": "Python with pytest",
+      "profiles": ["backend", "data", "ai-ml", "fullstack", "research"],
+      "detect": {
+        "files": ["requirements.txt", "pyproject.toml"]
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 300,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "pytest",
+        "test_coverage": "pytest --cov",
+        "lint": "ruff check .",
+        "typecheck": "mypy ."
+      }
+    },
+    {
+      "id": "csharp",
+      "name": "C# / .NET",
+      "profiles": ["backend", "fullstack"],
+      "detect": {
+        "files": ["*.csproj", "*.sln"]
+      },
+      "limits": {
+        "lines_per_function": 50,
+        "lines_per_file": 500,
+        "params_per_function": 5
+      },
+      "commands": {
+        "test": "dotnet test",
+        "test_coverage": "dotnet test --collect:\"XPlat Code Coverage\"",
+        "lint": "dotnet format --verify-no-changes",
+        "build": "dotnet build"
+      }
+    },
+    {
+      "id": "capacitor",
+      "name": "Capacitor (Ionic)",
+      "profiles": ["mobile", "fullstack"],
+      "detect": {
+        "files": ["capacitor.config.ts", "capacitor.config.json"]
+      },
+      "limits": {
+        "lines_per_function": 30,
+        "lines_per_file": 350,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "npm test",
+        "lint": "npm run lint",
+        "build": "npm run build",
+        "sync": "npx cap sync"
+      }
+    },
+    {
+      "id": "flutter",
+      "name": "Flutter/Dart",
+      "profiles": ["mobile"],
+      "detect": {
+        "files": ["pubspec.yaml"]
+      },
+      "limits": {
+        "lines_per_function": 40,
+        "lines_per_file": 400,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "flutter test",
+        "lint": "dart analyze",
+        "build": "flutter build"
+      }
+    },
+    {
+      "id": "golang",
+      "name": "Go",
+      "profiles": ["backend", "devops"],
+      "detect": {
+        "files": ["go.mod"]
+      },
+      "limits": {
+        "lines_per_function": 40,
+        "lines_per_file": 400,
+        "params_per_function": 4
+      },
+      "commands": {
+        "test": "go test ./...",
+        "test_coverage": "go test -cover ./...",
+        "lint": "golangci-lint run",
+        "build": "go build"
+      }
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "profiles": ["backend", "devops"],
+      "detect": {
+        "files": ["Cargo.toml"]
+      },
+      "limits": {
+        "lines_per_function": 50,
+        "lines_per_file": 500,
+        "params_per_function": 5
+      },
+      "commands": {
+        "test": "cargo test",
+        "lint": "cargo clippy",
+        "build": "cargo build"
+      }
+    }
+  ]
+}

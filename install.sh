@@ -121,8 +121,26 @@ create_directories() {
   mkdir -p "$BIN_DIR"
   mkdir -p "$TEMPLATES_DIR"
   mkdir -p "$WORKSPACE_DIR"/{sessions,backups,summaries/daily,summaries/weekly}
+  mkdir -p "$WORKSPACE_DIR/config"
+  mkdir -p "$WORKSPACE_DIR/templates/context"
+  mkdir -p "$WORKSPACE_DIR/lib"
 
   print_success "Directories created"
+  echo ""
+}
+
+# Install shared library
+install_lib() {
+  echo "📚 Installing shared library..."
+  
+  if [[ -f "$REPO_DIR/lib/common.sh" ]]; then
+    cp "$REPO_DIR/lib/common.sh" "$WORKSPACE_DIR/lib/"
+    chmod +x "$WORKSPACE_DIR/lib/common.sh"
+    print_success "lib/common.sh installed"
+  else
+    print_warning "lib/common.sh not found in repo"
+  fi
+  
   echo ""
 }
 
@@ -199,6 +217,8 @@ create_symlinks() {
     "ai-agents-activate.sh:ai-agents-activate"
     "generate-agent-index.sh:generate-agent-index"
     "generate-daily-summary.sh:generate-daily-summary"
+    "ai-stack-detect.sh:ai-stack-detect"
+    "ai-stop.sh:ai-stop"
   )
 
   for script_pair in "${scripts[@]}"; do
@@ -231,6 +251,68 @@ install_templates() {
   done
 
   print_success "Templates installed"
+  echo ""
+}
+
+# Install stack detection rules
+install_stack_rules() {
+  echo "📋 Installing stack detection rules..."
+  
+  local config_dir="$WORKSPACE_DIR/config"
+  mkdir -p "$config_dir"
+  
+  if [[ -f "$REPO_DIR/config/stack-rules.json" ]]; then
+    cp "$REPO_DIR/config/stack-rules.json" "$config_dir/"
+    print_success "Stack rules installed"
+  else
+    print_warning "stack-rules.json not found"
+  fi
+  
+  echo ""
+}
+
+# Install context templates
+install_context_templates() {
+  echo "📝 Installing context templates..."
+  
+  local context_templates_dir="$WORKSPACE_DIR/templates/context"
+  mkdir -p "$context_templates_dir"
+  
+  # Copy NEW context templates only (not deprecated ones)
+  local new_templates=(
+    "ai-handoff.md"
+    "code-landmarks.md"
+    "todo-template.md"
+    "stack-config.md"
+    "decisions.md"
+    "agents-reference.md"
+    "ai-workflows.md"
+  )
+  
+  for template in "${new_templates[@]}"; do
+    if [[ -f "$REPO_DIR/templates/context/$template" ]]; then
+      cp "$REPO_DIR/templates/context/$template" "$context_templates_dir/"
+    fi
+  done
+  
+  # Copy solution template
+  if [[ -f "$REPO_DIR/templates/solution-template.md" ]]; then
+    cp "$REPO_DIR/templates/solution-template.md" "$WORKSPACE_DIR/templates/"
+  fi
+  
+  # Copy geminiignore template (prevents Gemini CLI from reading entire codebase)
+  if [[ -f "$REPO_DIR/templates/geminiignore.template" ]]; then
+    cp "$REPO_DIR/templates/geminiignore.template" "$WORKSPACE_DIR/templates/"
+    print_success "Gemini ignore template installed"
+  fi
+  
+  # NOTE: These files are DEPRECATED and not copied:
+  # - current-task.md (replaced by todos/)
+  # - known-issues.md (replaced by todos/ with [bug] tag)
+  # - roadmap.md (replaced by todos/ with p3)
+  # - project-status.md (replaced by ai-handoff.md)
+  
+  print_success "Context templates installed"
   echo ""
 }
 
@@ -406,8 +488,11 @@ main() {
   setup_iterm_keybinding
   check_ai_clis
   create_directories
+  install_lib
   create_symlinks
   install_templates
+  install_stack_rules
+  install_context_templates
   install_completion
   setup_agents
   setup_git_ignore

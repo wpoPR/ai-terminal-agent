@@ -75,6 +75,7 @@ detect_project_type() {
 
 generate_claude() {
   local output_file="${1:-.claude/claude.md}"
+  local template_file="$TEMPLATES_DIR/claude-project.md"
 
   mkdir -p .claude
 
@@ -82,128 +83,51 @@ generate_claude() {
   get_active_agents
   detect_project_type
 
-  cat > "$output_file" << EOF
-# Project Context for Claude
+  if [[ -f "$template_file" ]]; then
+    local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+    cat "$template_file" | \
+      sed "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" | \
+      sed "s/{{PROFILE_NAME}}/$PROFILE/g" | \
+      sed "s/{{TIMESTAMP}}/$timestamp/g" \
+      > "$output_file"
+  else
+    # Fallback: generate minimal config if template not found
+    cat > "$output_file" << EOF
+# Claude Configuration - ${PROJECT_NAME}
 
-> This file is auto-generated based on active agent profile.
-> Managed by: AI Terminal Agent v2.0.0
-> Profile: ${PROFILE}
-> Active Agents: ${AGENT_COUNT}
+## Role: Implementation with TDD
 
-## Project Overview
+You are Claude, responsible for implementing features using Test-Driven Development.
 
-**Name**: ${PROJECT_NAME}
-**Type**: ${PROJECT_TYPE}
-**Agent Profile**: ${PROFILE}
+### File Responsibilities
 
-## Active Agents
+**MUST Read:**
+- \`.ai-context/stack-config.md\` - Commands for test/lint
+- \`.ai-context/ai-handoff.md\` - Current state
+- \`.ai-context/todos/\` - Task from Gemini
 
-${ACTIVE_AGENTS}
+**MUST Write:**
+- \`.ai-context/todos/\` - UPDATE (Gemini creates)
+- \`.ai-context/ai-handoff.md\` - Your status
+- Source code and tests
 
-## Agent System
+### TDD Loop
+1. RED - Write failing test
+2. GREEN - Implement to pass
+3. VALIDATE - Lint + typecheck
 
-This project uses **AI Terminal Agent** with dynamic agent management.
-
-### Check Active Agents
-
-\`\`\`bash
-# See active agents in this project
-ai agents active
-
-# See token statistics
-ai agents stats
-
-# List all available agents
-ai agents list
-\`\`\`
-
-### Manage Agents
-
-\`\`\`bash
-# Enable an additional agent
-ai agents enable <name>
-
-# Disable an agent
-ai agents disable <name>
-
-# Switch profile
-ai agents profile <name>
-\`\`\`
-
-## Workflow with Agents
-
-### 1. Understand Context
-- Use \`Plan\` to explore the codebase
-- Use \`Explore\` to understand structure
-- Check available agents: \`ai agents active\`
-
-### 2. Work with Active Agents
-Agents in \`.claude/agents/\` are available for use.
-**Only these agents are in your context.**
-
-For this project (profile: **${PROFILE}**):
-${ACTIVE_AGENTS}
-
-### 3. Sequential Thinking
-For complex tasks:
-1. Break down the problem
-2. Identify necessary agents
-3. If a needed agent is not active: \`ai agents enable <name>\`
-4. Execute in sequence
-5. Validate results
-
-## Best Practices
-
-### Always
-- Check active agents before starting (\`ai agents active\`)
-- Use Sequential Thinking for complex tasks
-- Declare which agent you're using and why
-- Validate results
-- Monitor tokens (\`ai agents stats\`)
-
-### Avoid
-- Assuming all agents are available
-- Using agents without explaining why
-- Ignoring token limits (15k recommended)
-- Skipping result validation
-
-## Token Management
-
-Current usage: Run \`ai agents stats\`
-
-- **Recommended limit**: 15,000 tokens
-- **Your profile (${PROFILE})**: ~${AGENT_COUNT} active agents
-
-If tokens are high:
-\`\`\`bash
-ai agents stats              # See detailed usage
-ai agents profile minimal    # Switch to lighter profile
-ai agents disable <name>     # Disable specific agents
-\`\`\`
-
-## Useful Commands
-
-\`\`\`bash
-# Visualization
-ai agents active             # Active agents
-ai agents info <name>        # Agent details
-ai agents search <keyword>   # Search agents
-
-# Management
-ai agents profile list       # See available profiles
-ai agents suggest            # Get profile suggestion
-ai config doctor             # System diagnostics
-
-# Workflow integration
-ai status                    # Status + active agents
-\`\`\`
+### Keywords
+| Keyword | Action |
+|---------|--------|
+| \`!ai-help\` | Show commands |
+| \`!checkpoint\` | Save state |
+| \`!todo complete\` | Mark done |
 
 ---
-
-**Generated**: $(date)
-**System**: AI Terminal Agent v2.0.0
-**Profile**: ${PROFILE}
+Generated: $(date +"%Y-%m-%d %H:%M:%S")
+Profile: ${PROFILE}
 EOF
+  fi
 
   echo "Generated $output_file"
   echo "  Profile: $PROFILE"
@@ -269,7 +193,7 @@ EOF
 # =============================================================================
 
 generate_codex() {
-  local output_file="${1:-AGENTS.md}"
+  local output_file="${1:-CODEX.md}"
   local template_file="$TEMPLATES_DIR/codex-project.md"
 
   get_project_info
@@ -333,12 +257,13 @@ USAGE
 TYPES
     claude [file]    Generate Claude configuration (default: .claude/claude.md)
     gemini [file]    Generate Gemini configuration (default: GEMINI.md)
-    codex [file]     Generate Codex configuration (default: AGENTS.md)
+    codex [file]     Generate Codex configuration (default: CODEX.md)
     all              Generate all configuration files
 
 EXAMPLES
     generate-project claude
     generate-project gemini GEMINI.md
+    generate-project codex CODEX.md
     generate-project all
 
 EOF

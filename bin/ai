@@ -17,9 +17,16 @@ while [[ -L "$SCRIPT_SOURCE" ]]; do
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" && pwd)"
 
-# Source common library
+# Source common library (try multiple locations)
 LIB_DIR="$(dirname "$SCRIPT_DIR")/lib"
-source "$LIB_DIR/common.sh"
+if [[ -f "$LIB_DIR/common.sh" ]]; then
+  source "$LIB_DIR/common.sh"
+elif [[ -f "$HOME/.ai-workspace/lib/common.sh" ]]; then
+  source "$HOME/.ai-workspace/lib/common.sh"
+else
+  echo "Error: common.sh not found" >&2
+  exit 1
+fi
 
 # =============================================================================
 # HELP
@@ -70,6 +77,11 @@ COMMANDS
         export [file]        Export configuration to file
         import <file>        Import configuration from file
         update               Update AI Terminal Agent from git
+
+    migrate                  Migrate project to new Multi-AI structure
+        --dry-run            Preview changes without modifying
+        --force              Non-interactive migration
+        --no-backup          Skip backup (not recommended)
 
     help [topic]             Show help for a topic
         topics: start, agents, context, workflow, division
@@ -139,6 +151,11 @@ main() {
     help|h)
       source "$SCRIPT_DIR/ai-help-unified.sh"
       help_main "$@"
+      ;;
+
+    # Migration command
+    migrate)
+      exec "$SCRIPT_DIR/ai-migrate.sh" "$@"
       ;;
 
     # Backward compatibility aliases

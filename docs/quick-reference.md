@@ -17,11 +17,11 @@ iTerm2 will open with:
 
 | Command | Description |
 |---------|-------------|
-| `ai start` | Start workspace in current project |
+| `ai start` | Start workspace (creates .ai-context/, detects stack) |
 | `ai stop` | Close workspace and generate summary |
 | `ai status` | Show active workspaces |
+| `ai migrate` | Migrate old projects to new structure |
 | `ai help` | Full documentation |
-| `ai help tips` | Quick tips and examples |
 
 ### Workspace Management
 
@@ -69,151 +69,153 @@ ai config import <file>      # Import configuration
 
 ## When to Use Each AI
 
-### Claude (Analysis & Architecture)
+### Gemini (Analysis & Planning)
 ```
-✅ Complex code analysis
-✅ Feature planning
+✅ Task analysis & complexity estimation
+✅ Agent selection for Claude
+✅ Code indexing & duplicate detection
+✅ PR size verification
+✅ Research & comparison
+
+❌ Write source code
+❌ Update code-landmarks.md
+```
+
+**Example:**
+```
+!analyze task Add user authentication with JWT
+```
+
+### Claude (Implementation)
+```
+✅ TDD workflow (test first)
+✅ Feature implementation
 ✅ Refactoring
 ✅ Difficult debugging
-✅ Code review
+✅ Update code-landmarks.md
 
-❌ Web research
-❌ Simple repetitive code
-```
-
-**Example:**
-```
-Analyze this project and create .ai-context/project-status.md
-with: objective, progress, next steps
-```
-
-### Gemini (Research & Docs)
-```
-✅ Research libraries
-✅ Compare technologies
-✅ Write documentation
-✅ Generate examples
-✅ Query APIs
-
-❌ Implement code
-❌ Complex debugging
+❌ Task planning (Gemini's job)
+❌ Solution documentation
 ```
 
 **Example:**
 ```
-Research the best JWT libraries for Node.js
-Compare jsonwebtoken vs jose vs paseto
+Read .ai-context/ and implement auth
+!checkpoint after login feature
 ```
 
-### Codex (Implementation)
+### Codex (Documentation & Tests)
 ```
-✅ Repetitive code
-✅ Unit tests
-✅ Simple components
-✅ Snippets
-✅ Code completion
+✅ Solution documentation
+✅ Add tests to existing code
+✅ Update README
+✅ API documentation
 
+❌ Primary implementation
 ❌ Architectural decisions
-❌ Deep analysis
 ```
 
 **Example:**
 ```
-Create unit tests for src/auth/jwt.js
+!document solution for auth implementation
+!add tests for src/auth/
 ```
 
 ---
 
 ## Shared Context System
 
-### Recommended Structure
+### Structure (v2.1+)
 
 ```
 your-project/
 ├── .ai-context/              # Shared AI "memory"
-│   ├── project-status.md     # Project overview
-│   ├── current-task.md       # Active task
+│   ├── ai-handoff.md         # AI communication hub
+│   ├── ai-workflows.md       # Common scenario guide
+│   ├── code-landmarks.md     # Important code locations
 │   ├── decisions.md          # Technical decisions
-│   ├── known-issues.md       # Bugs and limitations
-│   └── roadmap.md            # Future plans
-├── docs/                     # Public documentation
+│   ├── stack-config.md       # Auto-detected stack info
+│   ├── todos/                # File-based tasks
+│   │   └── 001-task.md       # Individual todo files
+│   └── backup/               # Migration backups
+├── .geminiignore             # Prevents Gemini context overflow
+├── docs/solutions/           # Documented solutions
 └── [your code]
 ```
 
+### AI Roles & Keywords
+
+| AI | Role | Keywords |
+|----|------|----------|
+| **Gemini** | Analysis | `!analyze task`, `!select agents`, `!todo create` |
+| **Claude** | Implementation | `!checkpoint`, `!handoff`, `!todo update` |
+| **Codex** | Documentation | `!document solution`, `!add tests` |
+
 ### How to Share Knowledge
 
-**1. Claude analyzes and creates context:**
+**1. Gemini analyzes and creates todos:**
 ```
-Analyze the project and create .ai-context/project-status.md
-```
-
-**2. Other AIs read the context:**
-```
-# In Gemini or Codex:
-Read .ai-context/project-status.md
-
-[your specific task]
+!analyze task Add user authentication
 ```
 
-**3. Keep it updated:**
+**2. Claude implements and updates:**
 ```
-# In Claude (after changes):
-Update .ai-context/project-status.md with what we did today
+Read .ai-context/ and implement the auth task
+```
+
+**3. Codex documents:**
+```
+!document solution for auth implementation
 ```
 
 ---
 
 ## Common Workflows
 
-### 1. New Project
+### 1. New Feature
 ```
 1. ai start
-2. Claude: "Create initial project structure for [type]"
-3. Claude: "Create .ai-context/project-status.md"
-4. Gemini: "Research best practices for [stack]"
-5. Codex: "Implement basic boilerplate"
+2. Gemini: "!analyze task Add user authentication"
+   → Creates todo, recommends agents
+3. Claude: "Read .ai-context/ and implement"
+   → Uses TDD, updates landmarks
+4. Codex: "!document solution for auth"
+5. ai stop
 ```
 
-### 2. Existing Project (First Time)
+### 2. Bug Fix
 ```
 1. ai start
-2. Claude: "Analyze this project and create .ai-context/project-status.md"
-3. Claude: "List next steps in .ai-context/roadmap.md"
+2. Gemini: "!analyze task Fix login timeout bug"
+3. Claude: "Debug and fix the issue"
+   → !checkpoint after fix
+4. Codex: "!add tests for regression prevention"
+5. ai stop
+```
+
+### 3. Refactoring
+```
+1. ai start
+2. Gemini: "!analyze codebase"
+   → Generates code-index.json, finds duplicates
+3. Claude: "Refactor based on analysis"
+4. ai stop
+```
+
+### 4. First Time in Existing Project
+```
+1. ai start (auto-detects stack)
+2. Gemini: "!analyze codebase"
+3. Claude: "Update .ai-context/code-landmarks.md"
 4. [Work normally]
-5. ai stop (generates summary)
-```
-
-### 3. Add Feature
-```
-1. ai start
-2. Claude: "Read .ai-context/project-status.md
-           Create plan for feature X in .ai-context/feature-x-plan.md"
-3. Gemini: "Research best libs for [aspect of feature]"
-4. Codex: "Implement feature X according to plan"
-5. Claude: "Review code and update documentation"
-6. ai stop
-```
-
-### 4. Fix Bug
-```
-1. ai start
-2. Claude: "Analyze the bug: [description]
-           Reproduce the problem
-           Identify the cause"
-3. Claude: "Implement fix"
-4. Codex: "Create test to prevent regression"
 5. ai stop
 ```
 
-### 5. Refactoring
+### 5. Migrate Old Project
 ```
-1. ai start
-2. Claude: "Analyze [module/file]
-           Identify code smells
-           Create refactoring plan"
-3. Claude: "Execute refactoring step by step"
-4. Claude: "Verify tests still pass"
-5. ai stop
+1. ai stop (if active)
+2. ai migrate (creates backup, converts structure)
+3. ai start (use new structure)
 ```
 
 ---
@@ -265,64 +267,71 @@ Update .ai-context/project-status.md with what we did today
 
 ## Prompt Templates
 
-### Initial Project Analysis
+### For Gemini - Task Analysis
 ```
-Analyze this project and give me:
+!analyze task [describe what you want to do]
 
-1. **Objective:** What does the project do?
-2. **Stack:** Technologies used
-3. **Structure:** Folder/file organization
-4. **Status:** What's done? What's missing?
-5. **Next Steps:** Priority 1, 2, 3
-
-Create .ai-context/project-status.md with this information.
+Example:
+!analyze task Add user authentication with JWT and refresh tokens
 ```
 
-### Feature Planning
+### For Gemini - Agent Selection
 ```
-I want to add: [describe the feature]
+!select agents
 
-Based on .ai-context/project-status.md:
-
-1. Create implementation plan
-2. List files to be created/modified
-3. Identify necessary dependencies
-4. Estimate complexity (simple/medium/complex)
-
-Save in .ai-context/feature-[name]-plan.md
+(Run after !analyze task to get agent recommendations)
 ```
 
-### Solution Research
+### For Claude - Start Implementation
 ```
-I need: [describe the problem/need]
-
-Research and compare:
-- Option A vs B vs C
-- Pros and cons
-- Recommendation with justification
-
-Focus on: [important criteria: performance, size, community, etc]
+Read .ai-context/ and implement the [task name] todo.
+Use TDD workflow.
 ```
 
-### Bug Debugging
+### For Claude - Checkpoint
 ```
-Bug: [describe the symptom]
+!checkpoint
 
-Steps to reproduce:
-1. [step 1]
-2. [step 2]
-3. [error appears]
+(Saves current progress to ai-handoff.md)
+```
 
-Please:
-1. Locate related code
-2. Identify root cause
-3. Propose fix
-4. Implement if approved
+### For Claude - Handoff
+```
+!handoff
+
+(Generates ready-to-copy prompt for next AI)
+```
+
+### For Codex - Document Solution
+```
+!document solution for [what was implemented]
+
+Example:
+!document solution for JWT authentication with refresh tokens
+```
+
+### For Codex - Add Tests
+```
+!add tests for [file or module]
+
+Example:
+!add tests for src/auth/
 ```
 
 ---
 
 ## Troubleshooting
+
+### Gemini context overflow (400+ files read at once)
+```bash
+# Check if .geminiignore exists:
+ls -la .geminiignore
+
+# If not, copy the template:
+cp ~/.ai-workspace/templates/geminiignore.template .geminiignore
+
+# Or run ai start again (creates it automatically)
+```
 
 ### iTerm2 doesn't open splits automatically
 ```bash
@@ -347,6 +356,15 @@ ls -la .ai-context/
 
 # If not:
 ai context init
+```
+
+### Old project structure
+```bash
+# Migrate to new structure:
+ai migrate
+
+# Preview changes first:
+ai migrate --dry-run
 ```
 
 ---

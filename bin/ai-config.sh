@@ -7,7 +7,12 @@
 # Source common library if not already loaded
 if [[ -z "${_AI_COMMON_LOADED:-}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  # Try multiple locations for common.sh
+  if [[ -f "$(dirname "$SCRIPT_DIR")/lib/common.sh" ]]; then
+    source "$(dirname "$SCRIPT_DIR")/lib/common.sh"
+  elif [[ -f "$HOME/.ai-workspace/lib/common.sh" ]]; then
+    source "$HOME/.ai-workspace/lib/common.sh"
+  fi
 fi
 
 # Configuration file paths

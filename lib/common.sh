@@ -58,11 +58,21 @@ AI_PROJECT_AGENTS_DIR=".claude/agents"
 AI_PROJECT_CONFIG=".ai-config"
 AI_PROJECT_CONTEXT=".ai-context"
 
-# Script location
+# Script location (supports both repo and installed locations)
 AI_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-AI_BIN_DIR="$AI_SCRIPT_DIR/bin"
+
+# Check if we're running from installed location (~/.ai-workspace)
+# In that case, bin is in ~/bin, not ~/.ai-workspace/bin
+if [[ -d "$AI_SCRIPT_DIR/bin" ]]; then
+  AI_BIN_DIR="$AI_SCRIPT_DIR/bin"
+elif [[ -d "$HOME/bin" ]]; then
+  AI_BIN_DIR="$HOME/bin"
+else
+  AI_BIN_DIR="$AI_SCRIPT_DIR/bin"
+fi
+
 AI_LIB_DIR="$AI_SCRIPT_DIR/lib"
-AI_TEMPLATES_DIR="$AI_SCRIPT_DIR/templates"
+AI_TEMPLATES_DIR="$AI_WORKSPACE_DIR/templates"
 
 # =============================================================================
 # VALIDATION HELPERS
